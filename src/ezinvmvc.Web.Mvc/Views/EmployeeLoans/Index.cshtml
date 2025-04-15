@@ -1,0 +1,386 @@
+﻿@using ezinvmvc.Web.Startup
+
+@{
+    ViewBag.CurrentPageName = PageNames.Employee_Loans;
+}
+@section scripts
+    {
+
+    <script src="~/view-resources/Views/EmployeeLoans/IndexLoans.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-10 col-xl-10">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Employee Loan</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-xl-2">
+                <div class="text-right" style="padding-top:10px">
+                    <button id="EmployeeList" data-toggle="modal" style="width:100%" data-target="#EmployeeListModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-list-ol"></i>&nbsp;Employees</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-10 col-xl-10">
+                                <form name="EmployeeId" role="form" novalidate class="form-validation">
+                                    <input id="fullName" name="fullName" type="text" class="form-control" readonly required maxlength="128" placeholder="Select Employee">
+                                    <input id="EmpId" name="EmpId" type="hidden" class="form-control" required maxlength="128">
+                                </form>
+                                <form name="EmployeeIdFormId" role="form" novalidate class="form-validation">
+                                    <input id="Id" name="Id" type="hidden" class="form-control" maxlength="128">
+                                </form>
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <button id="CompressButton" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" style="width:100%" class="btn btn-outline-primary btn-lg"><i class="fa fa-expand"></i>&nbsp;Expand</button>
+                                <button id="ExpandButton" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" style="width:100%" class="btn btn-outline-primary btn-lg"><i class="fa fa-compress"></i>&nbsp;Minimize</button>
+                            </div>
+                            <div class="col-md-12 col-xl-12 m--margin-top-10">
+                                <div id="accordion">
+                                    <div id="collapseTwo" class="panel-collapse out collapse">
+                                        <form name="LoanForm" role="form" novalidate class="form-validation">
+                                            <div class="text-right" style="padding-top:15px">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 col-xl-4">
+                                                    <strong class="color-red">DEDUCTION</strong>
+                                                    <div class="input-group">
+                                                        <select name="DedId" id="DedId" class="selectpicker form-control">
+                                                            <option selected value=0>-- Select --</option>
+                                                            <option value="1">Loans</option>
+                                                            <option value="2">Others</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8 col-xl-8">
+                                                    <input id="Status" name="Status" type="hidden" class="form-control" value="Active" maxlength="128">
+
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="padding-top:15px">
+                                                </div>
+                                                <div class="col-md-12 col-xl-12 card-header">
+                                                    <strong class="color-red">MEMBERS APPLICATION FORM</strong>
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="padding-top:15px">
+                                                </div>
+                                                @*App*@
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="Reference">Reference No.</label>
+                                                    <input id="ApplicationNo" name="ApplicationNo" type="text" class="form-control" placeholder="App No" maxlength="128" required readonly>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4" hidden>
+                                                    <label for="ReceivedBy">Received By</label>
+                                                    <input id="ReceivedBy" name="ReceivedBy" type="text" class="form-control" placeholder="Received By" maxlength="128">
+
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="DateReceived">Date Received</label>
+                                                    <input id="DateReceived" name="DateReceived" type="text" class="input-md form-control-md form-control date-picker" placeholder="Date">
+                                                </div>
+                                                @*Header*@
+                                                <div class="col-md-12 col-xl-12" style="padding-top:15px">
+                                                </div>
+                                                <div class="col-md-12 col-xl-12 card-header">
+                                                    <strong class="color-red">PART I - EMPLOYEE TO FILL IN ALL ITEM</strong>
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="padding-top:15px">
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="SSSPHILHEALTHNo">SSS/ PAGIBIG No #</label>
+                                                    <input id="SSSPHILHEALTHNo" name="SSSPHILHEALTHNo" type="text" class="form-control" placeholder="Ref No" maxlength="128">
+
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="SSSPHILHEALTHNo">Deduction Title</label>
+                                                    <div class="input-group">
+                                                        <select name="LoanTitle" id="LoanTitle" class="selectpicker form-control" required></select>
+                                                        <span class="input-group-btn" hidden>
+                                                            <button id="AddLoanTitle" type="button" class="btn btn-default" data-toggle="modal" data-target="#LoanTitleCreateModal">
+                                                                <i class="fa fa-plus"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                    <input id="TINNo" name="TINNo" type="hidden" class="form-control" placeholder="TIN No" maxlength="128" required readonly>
+
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="LoanType">Deduction Type</label>
+                                                    <div class="input-group">
+                                                        <select name="LoanType" id="LoanType" class="selectpicker form-control" data-live-search="true" required>
+
+                                                        </select>
+                                                        <span class="input-group-btn">
+                                                            <button id="AddLoanType" type="button" class="btn btn-default" data-toggle="modal" data-target="#LoanTypeCreateModal">
+                                                                <i class="fa fa-plus"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="FirstName">First Name</label>
+                                                    <input id="FirstName" name="FirstName" type="text" class="form-control" placeholder="First Name" maxlength="128" required readonly>
+
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="MiddleName">Middle Name</label>
+                                                    <input id="MiddleName" name="MiddleName" type="text" class="form-control" placeholder="Middle Name" maxlength="128" required readonly>
+
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="LastName">Last Name</label>
+                                                    <input id="LastName" name="LastName" type="text" class="form-control" placeholder="Last Name" maxlength="128" required readonly>
+                                                </div>
+                                                <div class="col-md-12 col-xl-12">
+                                                    <label for="Address">Address</label>
+                                                    <textarea name="Address" id="Address" rows="2" placeholder="Address..." class="form-control" required readonly></textarea>
+                                                </div>
+
+                                                @*Header*@
+                                                <div class="col-md-12 col-xl-12" hidden style="padding-top:15px">
+
+                                                    <div class="col-md-12 col-xl-12 card-header">
+                                                        <strong class="color-red">PART II - EMPLOYERS TO FILL IN ALL ITEM</strong>
+                                                    </div>
+                                                    <div class="col-md-12 col-xl-12" style="padding-top:15px">
+                                                    </div>
+
+
+                                                    <div class="col-md-4 col-xl-4">
+                                                        <label for="EmployersName">Employers Name</label>
+                                                        <select name="EmployersName" id="EmployersName" class="selectpicker validate form-control" tabindex="-1" data-live-search="true"></select>
+
+                                                    </div>
+                                                    <div class="col-md-4 col-xl-4">
+                                                        <label for="EmployersIDNo">Employers ID No</label>
+                                                        <input id="EmployersIDNo" name="EmployersIDNo" type="text" class="form-control" placeholder="Employers ID No/ Ref" maxlength="128">
+
+                                                    </div>
+                                                    <div class="col-md-4 col-xl-4">
+                                                        <label for="PostalCode">Postal Code</label>
+                                                        <input id="PostalCode" name="PostalCode" type="text" class="form-control" placeholder="Postal Code" maxlength="128">
+                                                    </div>
+                                                    <div class="col-md-12 col-xl-12">
+                                                        <label for="EmployersAddress">Employers Address</label>
+                                                        <textarea name="EmployersAddress" id="EmployersAddress" rows="2" placeholder="Employers Address..." class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                                @*Header*@
+                                                <div class="col-md-12 col-xl-12" style="padding-top:15px">
+                                                </div>
+                                                <div class="col-md-12 col-xl-12 card-header">
+                                                    <strong class="color-red">PART II - EMPLOYEE AMORTIZATION</strong>
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="padding-top:15px">
+                                                </div>
+                                                <div class="col-md-3 col-xl-3">
+                                                    <label for="LoanAmount">Amount</label>
+                                                    <input id="LoanAmount" name="LoanAmount" type="text" class="form-control" placeholder="Loan Amount" maxlength="128">
+
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="DateStart">Start</label>
+                                                    <input id="DateStart" name="DateStart" type="text" class="input-md form-control-md form-control date-picker" placeholder="Date">
+
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="DateEnd">End</label>
+                                                    <input id="DateEnd" name="DateEnd" type="text" class="input-md form-control-md form-control date-picker" placeholder="Date">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="MonthlyAmortization">Monthly</label>
+                                                    <input id="MonthlyAmortization" name="MonthlyAmortization" type="text" class="form-control" placeholder="Amount" maxlength="128">
+                                                </div>
+                                                <div class="col-md-3 col-xl-3">
+                                                    <label for="DeductionType">Deduction Type</label>
+                                                    <div class="input-group">
+                                                        @*<select name="DeductionType" id="DeductionType" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>*@
+                                                        <select name="DeductionType" id="DeductionType" class="form-control">
+                                                            <option value="" selected>-Cut Off-</option>
+                                                            <option value="3">1st</option>
+                                                            <option value="4">2nd</option>
+                                                            <option value="1">Both</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="row">
+                                            <div class="col-md-8 col-xl-8">
+                                                <div class="text-left" style="padding-top:30px">
+                                                    <div class="btn-group" role="group" style="width:100%">
+                                                        <button id="forceclose" name="forceclose" class="btn btn-outline-danger"><i class="fa fa-window-close-o"></i>&nbsp; Force Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4 col-xl-4">
+                                                <div class="text-right" style="padding-top:30px">
+                                                    <div class="btn-group" role="group" style="width:100%">
+                                                        <button id="NewLoanbutton" style="width:100%" class="btn btn-outline-success"><i class="fa fa-eraser"></i>&nbsp; New</button>
+                                                        <button id="UpdateLoanbutton" style="width:100%" class="btn btn-outline-primary"><i class="fa fa-save"></i>&nbsp;Update</button>
+                                                        @*<button id="RatesTablebutton" style="width:100%" data-toggle="modal" data-target="#OTTableListModal" class="btn btn-outline-danger"><i class="fa fa-list"></i>&nbsp;New&nbsp;Rates</button>*@
+                                                        <button id="SaveLoanbutton" style="width:100%" class="btn btn-outline-primary"><i class="fa fa-save"></i>&nbsp; Save</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right" style="padding-top:20px">
+                        </div>
+                        <table id="EmployeLoans" class="display table table-striped table-bordered table-hover dt-responsive">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th width="25%">Name</th>
+                                    <th>AppNo</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th width="15%">Title</th>
+                                    <th width="20%">Type</th>
+                                    <th>Amortization</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>@L("Actions")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="EmployeeListModal" tabindex="-1" role="dialog" aria-labelledby="EmployeeListModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Employee List</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row align-items-center m--margin-bottom-10">
+                    <div class="col-md-1 col-xl-1">
+                    </div>
+                    <div class="col-md-4 col-xl-4">
+                        <div class="form-group">
+                            <select name="SearchBy" id="SearchBy" class="selectpicker form-control">
+                                <option value=0>-- Search By --</option>
+                                <option value="CompleteName">Full Name</option>
+                                <option value="Department">Department</option>
+                                <option value="Division">Division</option>
+                                <option value="Sectors">Sectors</option>
+                                <option value="Position">Position</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-xl-3 ">
+                        <div class="form-group">
+                            <select name="StatusId" id="StatusId" class="selectpicker form-control" multiple>
+                                <option value="1" selected>Hired</option>
+                                <option value="2">Resigned</option>
+                                <option value="3">Terminated</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-xl-4">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" id="EmployeeTableFilter" class="form-control m-input" placeholder="Search...">
+                                <span class="input-group-btn">
+                                    <button id="GetEmployeeButton" class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-xl-12">
+                        <table id="EmployeesTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Employee ID</th>
+                                    <th>Full Name</th>
+                                    <th>Cell No</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Status</th>
+                                    <th>@L("Actions")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="LoanTitleCreateModal" tabindex="-1" role="dialog" aria-labelledby="LoanTitleCreateModallLabel" data-backdrop="static">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Loan Title</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row align-items-center m--margin-bottom-10">
+                    <div class="col-md-12 col-xl-12">
+                        <form name="FormLoanTitleName" role="form" novalidate class="form-validation">
+                            <input id="LoanTitleName" name="LoanTitleName" type="text" class="form-control" placeholder="Loan Title Name" maxlength="128" required>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="SaveLoanTitlebutton" class="btn btn-outline-primary"><i class="fa fa-save"></i>&nbsp; Save</button>
+                <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="LoanTypeCreateModal" tabindex="-1" role="dialog" aria-labelledby="LoanTypeCreateModallLabel" data-backdrop="static">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Loan Type</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row align-items-center m--margin-bottom-10">
+                    <div class="col-md-12 col-xl-12">
+                        <form name="FormLoanTypeName" role="form" novalidate class="form-validation">
+                            <select name="LoanTitleId" id="LoanTitleId" class="selectpicker form-control" tabindex="-1" data-live-search="true" required>
+                            </select>
+                            <input id="LoanTypeName" name="LoanTypeName" type="text" class="form-control" placeholder="Loan Type Name" maxlength="128" required>
+                            </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="SaveLoanTypebutton" class="btn btn-outline-primary"><i class="fa fa-save"></i>&nbsp; Save</button>
+                <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+            </div>
+        </div>
+    </div>
+</div>

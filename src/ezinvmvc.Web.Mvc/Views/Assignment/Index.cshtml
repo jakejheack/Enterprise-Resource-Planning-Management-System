@@ -1,0 +1,145 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Rfq
+
+@{
+    //ViewData["Title"] = "RFQ";
+
+    ViewBag.CurrentPageName = PageNames.Assignment;
+
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Assignment/Index.js" asp-append-version="true"></script>
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Assignment List</h1>
+                    </div>
+                </div>
+            </div>
+            @*<div class="col-md-6 col-xl-6">
+                <div class="text-right" style="padding-top:10px">
+                    @if (IsGranted(PermissionNames.Pages_Assignment_Export))
+                    {
+                        <button id="ExportButton" class="btn btn-outline-success btn-sm" hidden>Export</button>
+                        <div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Menu
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                <a id="ExportToExcelButton" class="dropdown-item" href="#"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Export</a>
+                                <a id="ExportToPDFButton" class="dropdown-item" href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</a>
+
+                            </div>
+                        </div>
+                    }
+
+                    @if (IsGranted(PermissionNames.Pages_Assignment_Create))
+                    {
+                        <button id="CreateNewRfqButton" onclick="location.href='@Url.Action("Create", "Assignment")'" target="_blank" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create</button>
+                    }
+                </div>
+            </div>*@
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        <div class="row align-items-center m--margin-bottom-10">
+                            <input type="text" id="h1" value="@Model.EmpId" hidden>
+                            <input type="text" id="hassignid" hidden>
+                            @*<div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                                        <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="DateFrom" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker3">
+                                        <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <div class="input-group date" id="datetimepicker4" data-target-input="nearest">
+                                        <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="DateTo" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker4">
+                                        <div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <input type="text" id="DateFrom" name="DateFrom" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <input type="text" id="DateTo" name="DateTo" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                </div>
+                            </div>
+                            @*@<div class="col-md-3 col-xl-3">
+            <div class="form-group">
+                <select id="StatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                    <option value="1">Draft</option>
+                    <option value="2">Submitted</option>
+                    <option value="3">For Revision</option>
+                    <option value="4">Closed</option>
+                    <option value="5">Revised</option>
+                </select>
+            </div>
+        </div>*@
+                            <div class="col-md-6 col-xl-6">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" id="SearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="RFQ Code / Quotation Code / Assigned Person">
+                                        <span class="input-group-btn">
+                                            <button id="SearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                            @*<button id="SearchButton" class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>*@
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="AssignmentTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="15%">RFQ Code</th>
+                                            <th width="15%">Quotation Code</th>
+                                            <th width="15%">Assigned Person</th>
+                                            <th width="20%">Email</th>
+                                            <th width="15%">Date</th>
+                                            <th width="10%">Status</th>
+                                            <th width="5%">@L("Actions")</th>
+                                            <th></th>@*StatusId*@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

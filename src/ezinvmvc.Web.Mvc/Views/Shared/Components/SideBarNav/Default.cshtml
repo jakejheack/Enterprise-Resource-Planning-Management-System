@@ -1,0 +1,97 @@
+﻿@using Abp.Collections.Extensions
+@using ezinvmvc.Web.Views
+@using ezinvmvc.Web.Views.Shared.Components.SideBarNav
+@model SideBarNavViewModel
+@{
+    var calculateMenuUrl = new Func<string, string>((url) =>
+    {
+        if (string.IsNullOrEmpty(url))
+        {
+            return ApplicationPath;
+        }
+
+        if (UrlChecker.IsRooted(url))
+        {
+            return url;
+        }
+
+        return ApplicationPath + url;
+    });
+}
+<nav class="navbar navbar-expand-sm navbar-default">
+    <div id="main-menu" class="main-menu collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            <li class="active">
+                <a asp-controller="Home" asp-action="Index"><i class="menu-icon fa fa-laptop"></i>Dashboard </a>
+            </li>
+            @*<li class="menu-title">Menu</li>*@
+            @foreach (var menuItem in Model.MainMenu.Items)
+            {
+                string strclass = "";
+                @if (!menuItem.Items.IsNullOrEmpty())
+                {
+                    strclass = "menu-item-has-children dropdown";
+                }
+                    <li class="@strclass @(Model.ActiveMenuItemName == menuItem.Name ? "active" : "")">
+                        @if (menuItem.Items.IsNullOrEmpty())
+                        {
+                            <a href="@calculateMenuUrl(menuItem.Url)">
+                                @if (!string.IsNullOrWhiteSpace(menuItem.Icon))
+                                {
+                                    <i class="menu-icon fa fa-@menuItem.Icon"></i>
+                                }
+                                @menuItem.DisplayName
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (!string.IsNullOrWhiteSpace(menuItem.Icon))
+                                {
+                                    <i class="menu-icon fa fa-@menuItem.Icon"></i>
+                                }
+                                @menuItem.DisplayName
+                            </a>
+                            <ul class="sub-menu children dropdown-menu">
+                                @foreach (var subMenuItem in menuItem.Items)
+                                {
+                                    <li class="menu-item-has-children dropdown @(Model.ActiveMenuItemName == subMenuItem.Name ? "active" : "")">
+                                        @if (subMenuItem.Items.IsNullOrEmpty())
+                                        {
+                                        <a href="@calculateMenuUrl(subMenuItem.Url)">
+                                            @*@if (!string.IsNullOrWhiteSpace(subMenuItem.Icon))
+                                            {
+                                                <i class="menu-icon fa fa-@menuItem.Icon"></i>
+                                            }*@
+                                            @subMenuItem.DisplayName
+                                        </a>
+                                        }
+                                        else
+                                        {
+                                        <a href="javascript:void(0);" class="dropdown-toggle">
+                                            @*@if (!string.IsNullOrWhiteSpace(subMenuItem.Icon))
+                                            {
+                                                <i class="menu-icon fa fa-@menuItem.Icon"></i>
+                                            }*@
+                                            @subMenuItem.DisplayName
+                                        </a>
+                                            <ul class="sub-menu children dropdown-menu">
+                                                @foreach (var subSubMenuItem in subMenuItem.Items)
+                                                {
+                                                    <li class="@(Model.ActiveMenuItemName == subSubMenuItem.Name ? "active" : "")">
+                                                        <a href="@calculateMenuUrl(subSubMenuItem.Url)">
+                                                            @subSubMenuItem.DisplayName
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </li>
+            }
+            </ul>
+    </div>
+</nav>

@@ -1,0 +1,309 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.RFP
+
+@model RFPCreateModel
+@{
+    //ViewData["Title"] = "RFQ";
+
+    ViewBag.CurrentPageName = PageNames.RFP_Details;
+
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/RFP/Details.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>
+                            <input id="Id" class="form-control font-weight-bold" disabled type="hidden" name="Id" value="@ViewBag.Id" required>
+                            Details RFP
+                            <span id="StatusBadge"></span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            @*<div class="col-md-6 col-xl-6">
+                    <div class="float-right" style="padding-top:10px">
+                        <button id="SaveButton" class="btn btn-outline-primary btn-sm"><i class="fa fa-save"></i>&nbsp; Save</button>
+                    </div>
+                </div>*@
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body card-block">
+                        <form id="RfpForm" name="RfpForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+                            <div class="row clearfix">
+                                <div class="col-md-12  col-xl-12">
+                                    <div class="card">
+                                        <div class="card-body card-block">
+                                            <div class="row">
+                                                @*<div class="col-md-6  col-xl-6" style="display:none">*@
+
+                                                @*</div>*@
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="form-group">
+                                                        <label for="RFQ">Series</label>
+                                                        <div class="input-group">
+                                                            <input id="Id" type="hidden" value="@ViewBag.Id" name="Id">
+                                                            <input id="RefNo" class="form-control font-weight-bold" disabled type="text" name="RefNo" required>
+                                                            <input id="Code" type="hidden" name="Code">
+                                                            <input id="Series" type="hidden" name="SeriesTypeId">
+                                                            <input id="StatusId" type="hidden" name="StatusId">
+                                                            <input id="QuotationCode" type="hidden" name="QuotationCode">
+                                                            <input id="RevisionNo" type="hidden" name="RevisionNo">
+                                                            <input id="Prefix" type="hidden" name="Prefix">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 col-xl-6">
+                                                    <div class="form-group">
+                                                        <label for="RFQ">Company</label>
+                                                        <div class="input-group">
+                                                            <select name="CompanyId" id="Companies" class="selectpicker form-control" tabindex="-1" data-live-search="true" required disabled></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-md-6 col-xl-6">
+                                                    <div class="form-group">
+                                                        <label>Date</label>
+                                                        <div class="input-group date" data-provide="datepicker" disabled>
+                                                            <input type="text" name="TransactionTime" class="form-control date-picker" value='@System.DateTime.Now.ToString("MM/dd/yyyy")' required disabled>
+                                                            <div class="input-group-addon">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 col-xl-6">
+                                                    <label for="RFP">Request</label>
+                                                    <input type="hidden" id="RequestId" name="RequestId" value="1">
+                                                    @*<input type="hidden" id="Request" name="Request">*@
+                                                    <input type="text" id="RequestCode" name="RequestCode" class="form-control" placeholder="Type here" readonly>
+                                                </div>
+
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="form-group">
+                                                        <label for="txtClient">Vendor/Company Name</label>
+                                                        <input id="ClientId" type="hidden" name="ClientId" required>
+                                                        <input id="ClientName" class="form-control" type="text" name="ClientName" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6 ">
+                                                    <div class="form-group">
+                                                        <label for="txtNotes">Notes</label>
+                                                        <textarea id="Notes" name="Notes" class="form-control" rows="4" maxlength="328" readonly></textarea>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-md-12  col-xl-12">
+                                    <div class="card">
+                                        <div class="card-body card-block">
+                                            <div class="row">
+                                                <div class="col-md-12  col-xl-12">
+                                                    <div class="form-group">
+                                                        <table id="ItemsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th width="5%">#</th>@*0*@
+                                                                    <th width="35%">Item</th>@*1*@
+                                                                    <th width="15%">Qty</th>@*2*@
+                                                                    <th width="15%">Price</th>@*3 Price*@
+                                                                    <th width="10%">Less</th>@*4 DiscTotal*@
+                                                                    <th width="15%">Amount</th>@*5 Total*@
+                                                                    <th width="5%"></th>@*6 Total*@
+                                                                    <th></th>@*7 ProductId*@
+                                                                    <th></th>@*8 Description*@
+                                                                    <th></th>@*9 OrderQty*@
+                                                                    <th></th>@*10 UnitId*@
+                                                                    <th></th>@*11 Disc1*@
+                                                                    <th></th>@*12 DiscType1*@
+                                                                    <th></th>@*13 Disc2*@
+                                                                    <th></th>@*14 DiscType2*@
+                                                                    <th></th>@*15 Disc3*@
+                                                                    <th></th>@*16 DiscType3*@
+                                                                    <th></th>@*17 GroupName*@
+                                                                    <th></th>@*18 Reference*@
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                        <table id="itemsTableDeleted" class="display table table-striped table-bordered table-hover dt-responsive nowrap" style="display:none;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th width="5%">#</th>@*0*@
+                                                                    <th width="35%">Item</th>@*1*@
+                                                                    <th width="15%">Qty</th>@*2*@
+                                                                    <th width="15%">Price</th>@*3 Price*@
+                                                                    <th width="10%">Less</th>@*4 DiscTotal*@
+                                                                    <th width="15%">Amount</th>@*5 Total*@
+                                                                    <th width="5%"></th>@*6 Total*@
+                                                                    <th></th>@*7 ProductId*@
+                                                                    <th></th>@*8 Description*@
+                                                                    <th></th>@*9 OrderQty*@
+                                                                    <th></th>@*10 UnitId*@
+                                                                    <th></th>@*11 Disc1*@
+                                                                    <th></th>@*12 DiscType1*@
+                                                                    <th></th>@*13 Disc2*@
+                                                                    <th></th>@*14 DiscType2*@
+                                                                    <th></th>@*15 Disc3*@
+                                                                    <th></th>@*16 DiscType3*@
+                                                                    <th></th>@*17 GroupName*@
+                                                                    <th></th>@*18 Reference*@
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-md-12  col-xl-12">
+                                    <div class="card">
+                                        <div class="card-body card-block">
+                                            <div class="row">
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="row form-group">
+                                                        <div class="col-md-3 col-xl-3 text-left" style="padding-top:5px">
+                                                            <label for="email-input" class=" form-control-label">Payment Term</label>
+                                                        </div>
+                                                        <div class="col-md-8 col-xl-8">
+                                                            <select name="PaymentTermId" id="PaymentTerms" class="selectpicker form-control" tabindex="-1" data-live-search="true" disabled></select>
+                                                        </div>
+                                                        <div class="col-md-1 col-xl-1 text-left">
+                                                        </div>
+                                                    </div>
+                                                    @*<div class="row form-group">
+                                                            <div class="col-md-3 col-xl-3 text-left" style="padding-top:5px">
+                                                                <label for="email-input" class=" form-control-label">Delivery Type</label>
+                                                            </div>
+                                                            <div class="col-md-8 col-xl-8">
+                                                                <select name="DeliveryTypeId" id="DeliveryTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                                            </div>
+                                                            <div class="col-md-1 col-xl-1 text-left">
+                                                            </div>
+                                                        </div>*@
+                                                    <div class="row form-group">
+                                                        <div class="col-md-3 col-xl-3 text-left" style="padding-top:5px">
+                                                            <label for="email-input" class=" form-control-label">Tax Type</label>
+                                                        </div>
+                                                        <div class="col-md-8 col-xl-8">
+                                                            <select name="TaxTypeId" id="TaxTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true" disabled></select>
+                                                        </div>
+                                                        <div class="col-md-1 col-xl-1 text-left">
+                                                        </div>
+                                                    </div>
+                                                    @*<div class="row form-group">
+                                                            <div class="col-md-3 col-xl-3 text-left" style="padding-top:5px">
+                                                                <label for="email-input" class=" form-control-label">Warranty</label>
+                                                            </div>
+                                                            <div class="col-md-8 col-xl-8">
+                                                                <select name="WarrantyTypeId" id="WarrantyTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                                            </div>
+                                                            <div class="col-md-1 col-xl-1 text-left">
+                                                            </div>
+                                                        </div>*@
+                                                </div>
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="row form-group">
+                                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                            <label for="email-input" class=" form-control-label"><strong>Discount</strong></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="text" id="DiscountTotal" disabled name="DiscountTotal" class="form-control text-right text-danger" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                            <label for="email-input" class=" form-control-label"><strong>Net Total</strong></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="text" id="NetTotal" disabled name="NetTotal" class="form-control text-right" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                            <label for="email-input" class=" form-control-label"><strong>Tax</strong></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="text" id="Tax" disabled name="Tax" class="form-control text-right" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                            <label for="email-input" class=" form-control-label"><strong>Total</strong></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="text" id="Total" disabled name="Total" class="form-control text-right" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix" hidden>
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="card" id="accordion">
+                                        <div class="card-header">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                                <span class="glyphicon glyphicon-file">
+                                                </span>Terms and Conditions
+                                            </a>
+                                        </div>
+                                        <div id="collapseOne" class="panel-collapse collapse in">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-12  col-xl-12">
+                                                        <div class="form-group">
+                                                            <textarea id="TermsAndConditions" name="TermsAndConditions" class="form-control" rows="10"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

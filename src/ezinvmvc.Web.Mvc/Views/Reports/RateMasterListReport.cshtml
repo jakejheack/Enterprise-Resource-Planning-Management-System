@@ -1,0 +1,155 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Sales
+@using ezinvmvc.Web.Models.Employees
+@{
+    ViewBag.CurrentPageName = PageNames.RateMasterListReport;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Reports/RateMasterListReport.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Employee Rate Master List Report</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="ExportToExcelButton" class="btn btn-outline-success btn-sm"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                    <button id="Print" class="btn btn-outline-primary btn-sm"><i class="fa fa-print"></i>&nbsp; Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        <div class="row align-items-center m--margin-bottom-10">
+                            <div class="col-md-3 col-xl-3" hidden>
+                                <div class="form-group">
+                                    <label for="FilterBy">Filter By</label>
+                                    <select name="FilterBy" id="FilterBy" class="selectpicker form-control">
+                                        <option value=0>-- Filter By --</option>
+                                        <option value="Company">Company</option>
+                                        <option value="Position">Position</option>
+                                        <option value="TaxStatus">Tax Status</option>
+                                        <option value="Sectors">Employment Status</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="IDCompany" class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <label for="FilterBy">Company</label>
+                                    <select name="sectors" id="sectors" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                </div>
+                            </div>
+
+
+                            <div id="IDDepartment" class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <label for="FilterBy">Department</label>
+                                    <select name="Department" id="Department" class="selectpicker form-control">
+                                        <option value=0>-- Select Department --</option>
+                                        <option value="0">Department</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="IDPosition" class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <label for="FilterBy">Position</label>
+                                    <select name="Position" id="Position" class="selectpicker form-control">
+                                        <option value=0>-- Select Position --</option>
+                                        <option value="0">Position</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="IDEmpstatus" class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <label for="FilterBy">Emp Status</label>
+                                    <select name="StatusId" id="StatusId" class="selectpicker form-control">
+                                        <option value="">--All--</option>
+                                        <option value="1" selected>Hired</option>
+                                        <option value="2">Resigned</option>
+                                        <option value="3">Terminated</option>
+                                        <option value="4">Rehired</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="IDEmployeeCode" class="col-md-3 col-xl-3">
+                                <label for="EmployeeCode">Employee Code</label>
+                                <div class="form-group">
+                                    <input id="EmployeeCode" class="form-control input-md" type="text" name="EmployeeCode">
+                                </div>
+                            </div>
+                            <div id="IDEmployeename" class="col-md-3 col-xl-3">
+                                <label for="EmployeeName">Employee Name</label>
+                                <div class="form-group">
+                                    <input id="Employeename" name="Employeename" class="form-control" type="text">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xl-3" style="padding-top: 28px;">
+                                <div class="form-group">
+                                    <button id="SearchFilter" name="SearchFilter" class="btn btn-outline-success btn-md" style="width: 100%;"><i class="fa fa-search"></i>&nbsp;Search</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* List *@
+
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="EmpTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap sortTable1" style="font-family:sans-serif;font-size: small;">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Company</th>@*Sectorsid 1*@
+                                            <th>Dept</th>@*departmentid 2*@
+                                            <th>Position</th>@*Positionid 3*@
+                                            <th>Code</th>@*EmployeeCode 4*@
+                                            <th>Name</th>@*5*@
+                                            <th>Gender</th>@*Gender 6*@
+                                            <th>Type</th>@*Type 7*@
+                                            <th>TaxStatus</th>@*TaxStatus 8*@
+                                            <th>Period</th>@*StatusId 9*@
+                                            <th>Basic</th>@*StatusId 10*@
+                                            <th>Daily</th>@*StatusId 11*@
+                                            <th>Hourly</th>@*StatusId 12*@
+                                            <th>Min</th>@*StatusId 13*@
+                                            <th>Allowance</th>@*StatusId 14*@
+                                            <th>HireDate</th>@*HireDate 15*@
+                                            <th>EndDate</th>@*EndDate 16*@
+                                            <th>Years</th>@*ManagerId 17*@
+                                            <th>Status</th>@*StatusId 18*@
+                                            <th>BirthDate</th>@*BirthDate 19*@
+                                            <th>SSS</th>@*SSS 20*@
+                                            <th>PhilHealthNo</th>@*PhilHealthNo 21*@
+                                            <th>PagIbigNo</th>@*PagIbigNo 22*@
+                                            <th>TIN</th>@*TIN 23*@
+                                            <th>BankNo</th>@*BankNo 24*@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

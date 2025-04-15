@@ -1,0 +1,581 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+
+@{
+    //ViewData["Title"] = "RFQ";
+
+    ViewBag.CurrentPageName = PageNames.CV_Details;
+
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/CV/Details.js" asp-append-version="true"></script>
+    <script src="~/js/toWords.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>
+                            <input id="Id" class="form-control font-weight-bold" disabled type="hidden" name="Id" value="@ViewBag.Id" required>
+                            Check Voucher Details
+
+                            <span id="StatusBadge"></span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="btnPrint" class="btn btn-outline-secondary btn-sm"><i class="fa fa-print"></i>&nbsp; Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body card-block">
+                        <form id="RfpForm" name="CVForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+                            <div class="row clearfix">
+                                <div class="col-md-12  col-xl-12">
+                                    <div class="card">
+                                        <div class="card-body card-block">
+                                            <div class="row">
+                                                @*<div class="col-md-6  col-xl-6" style="display:none">*@
+
+                                                @*</div>*@
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="form-group">
+                                                        <label for="RFQ">Series</label>
+                                                        <div class="input-group">
+                                                            <input id="Id" type="hidden" value="@ViewBag.Id" name="Id">
+                                                            <input id="AccountsId" type="hidden" name="AccountsId">
+                                                            <input id="RefNo" class="form-control font-weight-bold" disabled type="text" name="RefNo" required>
+                                                            <input id="Code" type="hidden" name="Code">
+                                                            <input id="Series" type="hidden" name="SeriesTypeId">
+                                                            <input id="StatusId" type="hidden" name="StatusId">
+                                                            <input id="QuotationCode" type="hidden" name="QuotationCode">
+                                                            <input id="RevisionNo" type="hidden" name="RevisionNo">
+                                                            <input id="Prefix" type="hidden" name="Prefix">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-md-6 col-xl-6">
+                                                    <div class="form-group">
+                                                        <label for="RFQ">Company</label>
+                                                        <div class="input-group">
+                                                            <select name="CompanyId" id="Companies" class="selectpicker form-control" tabindex="-1" data-live-search="true" required disabled></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-md-6 col-xl-6">
+                                                    <div class="form-group">
+                                                        <label>Date</label>
+                                                        <div class="input-group date" data-provide="datepicker" disabled>
+                                                            <input type="text" name="TransactionTime" id="TransactionTime" class="form-control date-picker" value='@System.DateTime.Now.ToString("MM/dd/yyyy")' required disabled>
+                                                            <div class="input-group-addon">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 col-xl-6">
+                                                    <label for="RFP">Request</label>
+
+                                                    <input type="hidden" id="IsFullyPaid" name="IsFullyPaid">
+                                                    <input type="hidden" id="RequestId" name="RequestId">
+                                                    <input type="hidden" id="RequestCode" name="RequestCode">
+                                                    @*<input type="hidden" id="Request" name="Request">*@
+                                                    <input type="text" id="Request" name="RequestCode" class="form-control" disabled>
+                                                </div>
+
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="form-group">
+                                                        <label for="txtClient">Vendor</label>
+                                                        <input id="ClientId" type="hidden" name="ClientId" required>
+                                                        <input id="ClientName" class="form-control" type="text" name="ClientName" readonly>
+                                                    </div>
+                                                </div>
+                                                @*<div class="col-md-6 col-xl-6 ">
+                                                        <div class="form-group">
+                                                            <label for="txtNotes">Notes</label>
+                                                            <textarea id="Notes" name="Notes" class="form-control" rows="4" maxlength="328"></textarea>
+                                                        </div>
+                                                    </div>*@
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix" hidden>
+                                <div class="col-md-12  col-xl-12">
+                                    <div class="card">
+                                        <div class="card-body card-block">
+                                            <div class="row">
+                                                <div class="col-md-3  col-xl-3">
+                                                    <div class="form-group">
+                                                        <label for="RFQ">Mode of Payment</label>
+                                                        <div class="input-group">
+                                                            <select name="Paymentmode" id="Paymentmode" class="selectpicker form-control" tabindex="-1" data-live-search="true" required>
+                                                                <option value="1">Cash</option>
+                                                                <option value="2">Credit Card</option>
+                                                                <option value="3">Bank Transfer</option>
+                                                                <option value="4">CWT</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <div class="form-group">
+                                                        <label for="txtClient">Check Name</label>
+                                                        <input id="CheckName" class="form-control" type="text" name="CheckName" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3  col-xl-3">
+                                                    <div class="form-group">
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3  col-xl-3" hidden>
+                                                    <div class="form-group">
+                                                        <label for="txtClient">Account</label>
+                                                        <input id="AccountId" type="hidden" name="AccountId" required>
+                                                        <input id="Account" class="form-control" type="text" name="Account" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4  col-xl-4">
+                                                    <div class="form-group" hidden>
+                                                        <label for="txtClient">Check Number</label>
+                                                        <input id="CheckNumber" class="form-control" type="text" name="CheckNumber">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3  col-xl-3" hidden>
+                                                    <div class="form-group">
+                                                        <label>Check Date</label>
+                                                        <div class="input-group date" data-provide="datepicker" disabled>
+                                                            <input type="text" name="CheckDate" id="CheckDate" class="form-control date-picker" value='@System.DateTime.Now.ToString("MM/dd/yyyy")' required>
+                                                            <div class="input-group-addon">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3  col-xl-3" hidden>
+                                                    <div class="form-group" hidden>
+                                                        <label for="txtClient">Account</label>
+                                                        <input id="PaymentAccountId" type="hidden" name="PaymentAccountId" required>
+                                                        <input id="AccountId" type="hidden" name="AccountId" required>
+                                                        <input id="Account" class="form-control" type="text" name="Account" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3  col-xl-3">
+                                                    <div class="form-group">
+                                                        <label for="txtClient">Paid Amount</label>
+                                                        <input id="PaidAmount" class="form-control" type="text" name="PaidAmount" readonly>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row" hidden>
+                                                <div class="col-md-3  col-xl-3">
+                                                </div>
+
+                                                <div class="col-md-3  col-xl-3">
+                                                </div>
+
+                                                <div class="col-md-3  col-xl-3">
+                                                    <div class="form-group">
+                                                        <label for="txtNotes">EWT Type</label>
+                                                        <select name="EWTTypes" id="EWTTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3  col-xl-3">
+                                                    <div class="form-group">
+                                                        <label>EWT</label>
+                                                        <input type="text" id="EWT" name="EWT" class="form-control text-right" value="0" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-md-12 col-xl-12 ">
+                                    <div class="form-group">
+                                        <label for="txtNotes">Notes</label>
+                                        <textarea id="Notes" name="Notes" class="form-control" rows="4" maxlength="328"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-md-12  col-xl-12">
+                                    <div class="card">
+                                        <div class="card-body card-block">
+                                            <div class="row">
+                                                <div class="col-md-12  col-xl-12">
+                                                    <div class="form-group">
+                                                        <table id="ItemsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th width="5%">#</th>@*0*@
+                                                                    <th width="35%">Item</th>@*1*@
+                                                                    <th width="15%"></th>@*2*@
+                                                                    <th width="15%">Price</th>@*3 Price*@
+                                                                    <th width="10%">Less</th>@*4 DiscTotal*@
+                                                                    <th width="15%">Amount</th>@*5 Total*@
+                                                                    <th width="5%"></th>@*6 Total*@
+                                                                    <th></th>@*7 ProductId*@
+                                                                    <th></th>@*8 Description*@
+                                                                    <th></th>@*9 OrderQty*@
+                                                                    <th></th>@*10 UnitId*@
+                                                                    <th></th>@*11 Disc1*@
+                                                                    <th></th>@*12 DiscType1*@
+                                                                    <th></th>@*13 Disc2*@
+                                                                    <th></th>@*14 DiscType2*@
+                                                                    <th></th>@*15 Disc3*@
+                                                                    <th></th>@*16 DiscType3*@
+                                                                    <th></th>@*17 GroupName*@
+                                                                    <th></th>@*18 Reference*@
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-md-12  col-xl-12">
+                                    <div class="card">
+                                        <div class="card-body card-block">
+                                            <div class="row">
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="row form-group">
+                                                        <div class="col-md-3 col-xl-3 text-left" style="padding-top:5px">
+                                                            <label for="email-input" class=" form-control-label">Payment Term</label>
+                                                        </div>
+                                                        <div class="col-md-8 col-xl-8">
+                                                            <select name="PaymentTermId" id="PaymentTerms" class="selectpicker form-control" tabindex="-1" data-live-search="true" disabled></select>
+                                                        </div>
+                                                        <div class="col-md-1 col-xl-1 text-left">
+                                                        </div>
+                                                    </div>
+                                                    @*<div class="row form-group">
+                                                            <div class="col-md-3 col-xl-3 text-left" style="padding-top:5px">
+                                                                <label for="email-input" class=" form-control-label">Delivery Type</label>
+                                                            </div>
+                                                            <div class="col-md-8 col-xl-8">
+                                                                <select name="DeliveryTypeId" id="DeliveryTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                                            </div>
+                                                            <div class="col-md-1 col-xl-1 text-left">
+                                                            </div>
+                                                        </div>*@
+                                                    <div class="row form-group">
+                                                        <div class="col-md-3 col-xl-3 text-left" style="padding-top:5px">
+                                                            <label for="email-input" class=" form-control-label">Tax Type</label>
+                                                        </div>
+                                                        <div class="col-md-8 col-xl-8">
+                                                            <select name="TaxTypeId" id="TaxTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true" disabled></select>
+                                                        </div>
+                                                        <div class="col-md-1 col-xl-1 text-left">
+                                                        </div>
+                                                    </div>
+                                                    @*<div class="row form-group">
+                                                            <div class="col-md-3 col-xl-3 text-left" style="padding-top:5px">
+                                                                <label for="email-input" class=" form-control-label">Warranty</label>
+                                                            </div>
+                                                            <div class="col-md-8 col-xl-8">
+                                                                <select name="WarrantyTypeId" id="WarrantyTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                                            </div>
+                                                            <div class="col-md-1 col-xl-1 text-left">
+                                                            </div>
+                                                        </div>*@
+                                                </div>
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="row form-group">
+                                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                            <label for="email-input" class=" form-control-label"><strong>Discount</strong></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="text" id="DiscountTotal" disabled name="DiscountTotal" class="form-control text-right text-danger" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                            <label for="email-input" class=" form-control-label"><strong>Net Total</strong></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="text" id="NetTotal" disabled name="NetTotal" class="form-control text-right" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                            <label for="email-input" class=" form-control-label"><strong>Tax</strong></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="text" id="Tax" disabled name="Tax" class="form-control text-right" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                            <label for="email-input" class=" form-control-label"><strong>Total</strong></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="text" id="TotalId" name="TotalId" hidden>
+                                                            <input type="text" id="Total" disabled name="Total" class="form-control text-right" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix" id="divPaid">
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                                Payment Details
+                                            </a>
+                                        </div>
+                                        <div id="collapseTwo" class="panel-collapse collapse in show">
+                                            <div class="card-body card-block">
+                                                <div class="row">
+                                                    <div class="col-md-12  col-xl-12" style="overflow:auto">
+                                                        <div class="form-group" style="width:800px !important">
+                                                            @*<input type="text" id="DateFrom" name="DateFrom" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                                                <input type="text" id="DateTo" name="DateTo" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>*@
+                                                            <table id="PaidTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th width="5%">#</th>@*0*@
+                                                                        <th width="15%">Code</th>@*1*@
+                                                                        <th width="10%">Date</th>@*2*@
+                                                                        <th width="10%">Total</th>@*2*@
+                                                                        <th width="10%">Mode</th>@*2*@
+                                                                        <th width="10%">Ref#</th>@*3 Check Number*@
+                                                                        <th width="10%">Check Date</th>@*3 Check Number*@
+                                                                        <th width="10%">Amount</th>@*4 Price*@
+                                                                        <th width="10%">EWT Type</th>@*4 Price*@
+                                                                        <th width="10%">Amount</th>@*4 Price*@
+
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="card">
+                                        <div class="card-body card-block">
+                                            <div class="row">
+
+                                                <div class="col-md-12  col-xl-12">
+                                                    <div class="row form-group">
+                                                        <div class="col-md-6 col-xl-6 text-right">
+                                                            <label for="email-input" class=" form-control-label"><strong>Total Balance</strong></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="text" id="TotalAmountPaid" disabled name="TotalAmountPaid" class="form-control text-right" required>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        <div class="col-md-6 col-xl-6 text-right">
+                                                            <label for="email-input" class=" form-control-label"><strong>Total Amount Paid</strong></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="text" id="TotalBalance" disabled name="TotalBalance" class="form-control text-right text-danger" required>
+
+                                                            <input type="text" id="TotalBalanceActual" disabled name="TotalBalanceActual" class="form-control text-right text-danger" hidden>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix" hidden>
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="card" id="accordion">
+                                        <div class="card-header">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                                <span class="glyphicon glyphicon-file">
+                                                </span>Terms and Conditions
+                                            </a>
+                                        </div>
+                                        <div id="collapseOne" class="panel-collapse collapse in">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-12  col-xl-12">
+                                                        <div class="form-group">
+                                                            <textarea id="TermsAndConditions" name="TermsAndConditions" class="form-control" rows="10"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix" hidden>
+                                <div class="col-md-12  col-xl-12">
+                                    <div class="form-group">
+                                        @*<input type="text" id="DateFrom" name="DateFrom" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                            <input type="text" id="DateTo" name="DateTo" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>*@
+                                        <table id="GLTable" class="display table dt-responsive nowrap font-weight-bold" style="width: 100%; ">
+                                            <thead>
+                                                <tr>
+                                                    <th width="5%">#</th>@*0*@
+                                                    <th width="15%"></th>@*1*@
+                                                    <th width="10%"></th>@*2*@
+                                                    <th width="10%"></th>@*2*@
+                                                    <th width="10%">Id</th>@*3 Check Number*@
+                                                    <th width="10%">AccountId</th>@*4 Price*@
+
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th width="5%">#</th>@*0*@
+                                                    <th width="15%"></th>@*1*@
+                                                    <th width="10%"></th>@*2*@
+                                                    <th width="10%"></th>@*2*@
+                                                    <th width="10%">Id</th>@*3 Check Number*@
+                                                    <th width="10%">AccountId</th>@*4 Price*@
+
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                        <table id="GLTempTable" class="display table dt-responsive nowrap" style="width: 100%; ">
+                                            <thead>
+                                                <tr>
+                                                    <th width="5%">#</th>@*0*@
+                                                    <th width="15%"></th>@*1*@
+                                                    <th width="10%"></th>@*2*@
+                                                    <th width="10%"></th>@*2*@
+                                                    <th width="10%">Id</th>@*3 Check Number*@
+                                                    <th width="10%">AccountId</th>@*4 Price*@
+
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th width="5%">#</th>@*0*@
+                                                    <th width="15%"></th>@*1*@
+                                                    <th width="10%"></th>@*2*@
+                                                    <th width="10%"></th>@*2*@
+                                                    <th width="10%">Id</th>@*3 Check Number*@
+                                                    <th width="10%">AccountId</th>@*4 Price*@
+
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="PrintModal" tabindex="-1" role="dialog" aria-labelledby="PrintModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title text-success">
+                    <span>Print Details</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+
+                </div>
+                <div class="row">
+                    <div class="col-md-4  col-xl-4">
+                        <div class="form-group">
+                            <label>Prepared by:</label>
+                            <input id="SalesCoordinatorId" type="hidden" name="SalesCoordinatorId">
+                            <input id="SalesCoordinatorEmail" type="hidden" name="SalesCoordinatorEmail">
+                            <input id="SalesCoordinatorContactNum" type="hidden" name="SalesCoordinatorContactNum">
+                            <input id="SalesCoordinator" class="form-control" type="text" name="SalesCoordinator" placeholder="Type name here">
+                        </div>
+                    </div>
+                    <div class="col-md-4  col-xl-4">
+                        <div class="form-group">
+                            <label for="Product">Checked by:</label>
+                            <input id="IDGId" type="hidden" name="IDGId">
+                            <input id="IDGEmail" type="hidden" name="IDGEmail">
+                            <input id="IDGContactNum" type="hidden" name="IDGContactNum">
+                            <input id="IDG" class="form-control" type="text" name="IDG" placeholder="Type name here">
+                        </div>
+                    </div>
+                    <div class="col-md-4  col-xl-4">
+                        <div class="form-group">
+                            <label for="Product">Approved by:</label>
+                            <input id="SCManagerId" type="hidden" name="SCManagerId">
+                            <input id="SCManagerEmail" type="hidden" name="SCManagerEmail">
+                            <input id="SCManagerContactNum" type="hidden" name="SCManagerContactNum">
+                            <input id="SCManager" class="form-control" type="text" name="SCManager" placeholder="Type name here">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" id="PrintButton">Generate</button>
+            </div>
+        </div>
+    </div>
+</div>

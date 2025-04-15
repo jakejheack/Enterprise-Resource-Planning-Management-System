@@ -1,0 +1,119 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+
+@{
+    ViewBag.CurrentPageName = PageNames.Accounts_Receivable;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/AccountsReceivable/Index.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Accounts Receivable</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                        <button id="ExportToExcelButton" class="btn btn-outline-success btn-sm"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        <div class="card" id="accordion">
+                            <div class="card-header">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                    Filter
+                                </a>
+                            </div>
+                            <div id="collapseThree" class="panel-collapse collapse in">
+                                <div class="card-body">
+                                    <div class="row align-items-center m--margin-bottom-10">
+                                        <div class="col-md-3 col-xl-3">
+                                            <div class="form-group">
+                                                <input type="text" id="DateFrom" name="DateFrom" class="input-sm form-control-sm form-control date-picker" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-xl-3">
+                                            <div class="form-group">
+                                                <input type="text" id="DateTo" name="DateTo" class="input-sm form-control-sm form-control date-picker" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-xl-3">
+                                            <div class="form-group">
+                                                <input type="text" id="Client" class="form-control m-input input-sm form-control-sm" placeholder="Client" value="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-xl-3">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input type="text" id="SearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Sales Invoice" value="">
+                                                    <span class="input-group-btn">
+                                                        <button id="SearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="ListTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>@*0*@
+                                            <th width="15%">Id</th>@*1*@
+                                            <th width="15%">Date</th>@*2*@
+                                            <th width="30%">Client</th>@*3*@
+                                            <th width="10%">Total</th>@*4*@
+                                            <th width="10%">Paid</th>@*5*@
+                                            <th width="10%">Credit</th>@*6*@
+                                            <th width="10%">Balance</th>@*7*@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-xl-12" hidden>
+                                <table id="ListTable2" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>@*0*@
+                                            <th width="15%">Id</th>@*1*@
+                                            <th width="15%">Date</th>@*2*@
+                                            <th width="30%">Client</th>@*3*@
+                                            <th width="10%">Total</th>@*4*@
+                                            <th width="10%">Paid</th>@*5*@
+                                            <th width="10%">Credit</th>@*6*@
+                                            <th width="10%">Balance</th>@*7*@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

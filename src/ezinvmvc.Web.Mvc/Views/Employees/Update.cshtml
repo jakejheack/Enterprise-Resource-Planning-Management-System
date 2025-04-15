@@ -1,0 +1,836 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Web.Models.Employees
+
+@model EmployeeCreateModel
+@{
+    ViewBag.CurrentPageName = PageNames.Employees_Edit;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Employees/Update.js" asp-append-version="true"></script>
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Edit Employee</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="Back" onclick="location.href='@Url.Action("Index", "Employees")'" target="_blank" class="btn btn-outline-success btn-sm"><i class="fa fa-backward"></i>&nbsp; Back</button>
+                    <button id="SaveEmployeeButton" class="btn btn-outline-primary btn-sm"><i class="fa fa-save"></i>&nbsp; Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="custom-tab">
+                            <nav>
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                    <a class="nav-item nav-link active" id="custom-nav-home-tab" data-toggle="tab" href="#custom-nav-home" role="tab" aria-controls="custom-nav-home" aria-selected="true">Employees Profile</a>
+                                    <a class="nav-item nav-link" id="custom-nav-profile-tab" data-toggle="tab" href="#custom-nav-profile" role="tab" aria-controls="custom-nav-profile" aria-selected="false">Employee Details</a>
+                                    <a class="nav-item nav-link" id="custom-nav-contact-tab" data-toggle="tab" href="#custom-nav-contact" role="tab" aria-controls="custom-nav-contact" aria-selected="false">Educational Attainment</a>
+                                </div>
+                            </nav>
+                            <form id="EmployeeForm" name="EmployeeForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+
+                                <div class="tab-content pl-3 pt-2" id="nav-tabContent">
+                                    <div class="tab-pane fade show active" id="custom-nav-home" role="tabpanel" aria-labelledby="custom-nav-home-tab">
+                                        <div class="row">
+                                            <div class="col-md-12 col-xl-12"><br /></div>
+                                            @*EmployeeCode*@
+                                            <input id="Id" class="form-control" type="hidden" name="Id" value="@Model.Employee.Id">
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="EmployeeCode">Employee Code</label>
+                                                <input id="EmployeeCode" class="form-control" type="text" name="EmployeeCode" value="@Model.Employee.EmployeeCode">
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="Quota">Employee Quota</label>
+                                                <input id="Quota" class="form-control" type="text" name="Quota" value="@Model.Employee.Quota">
+                                            </div>
+                                            <div class="col-md-6 col-xl-6 "></div>
+                                            @*FirstName*@
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="FirstName">FirstName</label>
+                                                <input id="FirstName" class="form-control" type="text" name="FirstName" value="@Model.Employee.FirstName" required maxlength="128">
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="MiddleName">Middle Name</label>
+                                                <input id="MiddleName" class="form-control" type="text" name="MiddleName" value="@Model.Employee.MiddleName">
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="LastName">Last Name</label>
+                                                <input id="LastName" class="form-control" type="text" name="LastName" value="@Model.Employee.LastName" required maxlength="128">
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="Gender">Gender</label>
+                                                <select name="Gender" id="lbGender" class="selectpicker form-control">
+                                                    @if (Model.Employee.Gender == "Male")
+                                                    {
+                                                        <option selected>Male</option>
+                                                        <option> Female </option>
+                                                    }
+                                                    else if (Model.Employee.Gender == "Female")
+                                                    {
+                                                        <option>Male</option>
+                                                        <option selected>Female</option>
+                                                    }
+                                                    else if (Model.Employee.Gender == "")
+                                                    {
+                                                        <option></option>
+                                                        <option>Male</option>
+                                                        <option>Female</option>
+                                                    }
+                                                    else if (Model.Employee.Gender is null)
+                                                    {
+                                                        <option></option>
+                                                        <option>Male</option>
+                                                        <option>Female</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            @*Department*@
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="Department">Department</label>
+                                                <div class="input-group">
+                                                    <select name="DepartmentId" id="DepartmentId" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+
+                                                        @foreach (var item in Model.Departments)
+                                                        {
+                                                            if (item.Id == Model.Employee.DepartmentId)
+                                                            {
+                                                                <option value="@item.Id" name="@Html.NameFor(c => c.Employee.DepartmentId)" selected>@item.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.Id" name="@Html.NameFor(c => c.Employee.DepartmentId)">@item.Name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <span class="input-group-btn">
+                                                        <button id="CreateDepartmentButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#DepartmentCreateModal">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="Division">Division</label>
+                                                @*<input id="DivisionId" class="form-control" type="text" name="DivisionId" value="@Model.Employee.DivisionId">*@
+                                                <div class="input-group">
+                                                    <select name="DivisionId" id="DivisionId" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                        @foreach (var item in Model.DivEmployee)
+                                                        {
+                                                            if (item.Id == Model.Employee.DivisionId)
+                                                            {
+                                                                <option value="@item.Id" name="@Html.NameFor(c => c.Employee.DivisionId)" selected>@item.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.Id" name="@Html.NameFor(c => c.Employee.DivisionId)">@item.Name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <span class="input-group-btn">
+                                                        <button id="CreateDivisionButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#DivisionCreateModal">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="Position">Position</label>
+                                                @*<input id="PositionId" class="form-control" type="text" name="PositionId" value="@Model.Employee.PositionId">*@
+                                                <div class="input-group">
+                                                    <select name="PositionId" id="PositionId" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                        @foreach (var item in Model.Positions)
+                                                        {
+                                                            if (item.Id == Model.Employee.PositionId)
+                                                            {
+                                                                <option value="@item.Id" name="@Html.NameFor(c => c.Employee.PositionId)" selected>@item.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.Id" name="@Html.NameFor(c => c.Employee.PositionId)">@item.Name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <span class="input-group-btn">
+                                                        <button id="CreatePositionButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#PositionCreateModal">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="Sector">Company</label>
+                                                @*<input id="SectorsId" class="form-control" type="text" name="SectorsId" value="@Model.Employee.SectorsId">*@
+                                                <div class="input-group">
+                                                    <select name="SectorsId" id="SectorsId" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                        @foreach (var item in Model.Sertors)
+                                                        {
+                                                            if (item.Id == Model.Employee.SectorsId)
+                                                            {
+                                                                <option value="@item.Id" name="@Html.NameFor(c => c.Employee.SectorsId)" selected>@item.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.Id" name="@Html.NameFor(c => c.Employee.SectorsId)">@item.Name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <span class="input-group-btn">
+                                                        <button id="CreateSectorButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#SectorCreateModal">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            @*Details*@
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="HireDate">Hire Date</label>
+                                                @{
+                                                    string sDateHire = Model.Employee.HireDate != null ? Model.Employee.HireDate.Value.ToString("MM/dd/yyyy") : "";
+                                                }
+                                                <input type="text" id="HireDate" name="HireDate" class="input-md form-control-md form-control date-picker" value="@sDateHire">
+                                                @*<input id="HireDate" class="form-control date-picker" type="date" name="HireDate" value="@Model.Employee.HireDate" placeholder="01/01/1999">*@
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="StartDate">Rehire Date</label>
+                                                @{
+                                                    string sStartDate = Model.Employee.StartDate != null ? Model.Employee.StartDate.Value.ToString("MM/dd/yyyy") : "";
+                                                }
+                                                <input type="text" id="StartDate" name="StartDate" class="input-md form-control-md form-control date-picker" value="@sStartDate">
+                                                @*<input id="StartDate" class="form-control date-picker" type="date" name="StartDate" value="@Model.Employee.StartDate" placeholder="01/01/1999">*@
+                                            </div>
+                                            <div class="col-md-3 col-xl-3" hidden>
+                                                <label for="EndDate">End Date</label>
+                                                @{
+                                                    string sEndDate = Model.Employee.EndDate != null ? Model.Employee.EndDate.Value.ToString("MM/dd/yyyy") : "";
+                                                }
+                                                <input type="text" id="EndDate" name="EndDate" class="input-md form-control-md form-control date-picker" value="@sEndDate">
+                                                @*<input id="EndDate" class="form-control date-picker" type="date" name="EndDate" value="@sEndDate">*@
+                                            </div>
+
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="Emptype">Employee Type</label>
+                                                <div class="input-group">
+                                                    <select name="EmptypeId" id="EmptypeId" class="selectpicker form-control">
+                                                        @if (Model.Employee.EmptypeId == 0)
+                                                        {
+                                                            <option value="0" selected>Nothing Selected</option>
+                                                            <option value="1">Regular</option>
+                                                            <option value="2">Probationary</option>
+                                                            <option value="3">Project Base</option>
+                                                        }
+                                                        else if (Model.Employee.EmptypeId == 1)
+                                                        {
+
+                                                            <option value="0">Nothing Selected</option>
+                                                            <option value="1" selected>Regular</option>
+                                                            <option value="2">Probationary</option>
+                                                            <option value="3">Project Base</option>
+                                                        }
+                                                        else if (Model.Employee.EmptypeId == 2)
+                                                        {
+                                                            <option value="0">Nothing Selected</option>
+                                                            <option value="1">Regular</option>
+                                                            <option value="2" selected>Probationary</option>
+                                                            <option value="3">Project Base</option>
+                                                        }
+                                                        else if (Model.Employee.EmptypeId == 3)
+                                                        {
+                                                            <option value="0">Nothing Selected</option>
+                                                            <option value="1">Regular</option>
+                                                            <option value="2">Probationary</option>
+                                                            <option value="3" selected>Project Base</option>
+                                                        }
+                                                    </select>
+                                                    @*<span class="input-group-btn">
+                                                        <button id="CreateEmptypeId" type="button" class="btn btn-default" data-toggle="modal" data-target="#EmptypeIdCreateModal">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                    </span>*@
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="Emptype">Salary Type</label>
+                                                <div class="input-group">
+                                                    <select name="EmpSalarytypeId" id="EmpSalarytypeId" class="selectpicker form-control">
+                                                        @if (Model.Employee.EmpSalarytypeId == 0)
+                                                        {
+                                                            <option value="0" selected>Nothing Selected</option>
+                                                            <option value="1">Cash</option>
+                                                            <option value="2">Card</option>
+                                                            <option value="3">Gcash</option>
+                                                            <option value="4">Cheque</option>
+                                                        }
+                                                        else if (Model.Employee.EmpSalarytypeId == 1)
+                                                        {
+                                                            <option value="0">Nothing Selected</option>
+                                                            <option value="1" selected>Cash</option>
+                                                            <option value="2">Card</option>
+                                                            <option value="3">Gcash</option>
+                                                            <option value="4">Cheque</option>
+                                                        }
+                                                        else if (Model.Employee.EmpSalarytypeId == 2)
+                                                        {
+                                                            <option value="0">Nothing Selected</option>
+                                                            <option value="1">Cash</option>
+                                                            <option value="2" selected>Card</option>
+                                                            <option value="3">Gcash</option>
+                                                            <option value="4">Cheque</option>
+                                                        }
+                                                        else if (Model.Employee.EmpSalarytypeId == 3)
+                                                        {
+                                                            <option value="0">Nothing Selected</option>
+                                                            <option value="1">Cash</option>
+                                                            <option value="2">Card</option>
+                                                            <option value="3" selected>Gcash</option>
+                                                            <option value="4">Cheque</option>
+                                                        }
+                                                        else if (Model.Employee.EmpSalarytypeId == 4)
+                                                        {
+                                                            <option value="0">Nothing Selected</option>
+                                                            <option value="1">Cash</option>
+                                                            <option value="2">Card</option>
+                                                            <option value="3">Gcash</option>
+                                                            <option value="4" selected>Cheque</option>
+                                                        }
+                                                    </select>
+                                                    <span class="input-group-btn">
+                                                        <button id="CreateEmpSalarytypeId" type="button" class="btn btn-default" data-toggle="modal" data-target="#EmpSalarytypeIdCreateModal">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 " hidden>
+                                                <label for="ReleasedDate">Released Date</label>
+                                                @{
+                                                    string sReleasedDate = Model.Employee.ReleasedDate != null ? Model.Employee.EndDate.Value.ToString("MM/dd/yyyy") : "";
+                                                }
+                                                <input type="text" id="ReleasedDate" name="ReleasedDate" class="input-md form-control-md form-control date-picker" value="@sReleasedDate">
+                                                @*<input id="ReleasedDate" class="form-control date-picker" type="date" name="ReleasedDate" value="@Model.Employee.ReleasedDate" placeholder="01/01/1999">*@
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="DateRegular">Regular Date</label>
+                                                @{
+                                                    string sDateRegular = Model.Employee.DateRegular != null ? Model.Employee.DateRegular.Value.ToString("MM/dd/yyyy") : "";
+                                                }
+                                                <input type="text" id="DateRegular" name="DateRegular" class="input-md form-control-md form-control date-picker" value="@sDateRegular">
+                                                @*<input id="DateRegular" class="form-control date-picker" type="date" name="DateRegular" value="@Model.Employee.DateRegular" placeholder="01/01/1999">*@
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="DateResigned">Resigned Date</label>
+                                                @{
+                                                    string sDateResigned = Model.Employee.DateResigned != null ? Model.Employee.DateResigned.Value.ToString("MM/dd/yyyy") : "";
+                                                }
+                                                <input type="text" id="DateResigned" name="DateResigned" class="input-md form-control-md form-control date-picker" value="@sDateResigned">
+                                                @*<input id="DateResigned" class="form-control date-picker" type="date" name="DateResigned" value="@Model.Employee.DateResigned" placeholder="01/01/1999">*@
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="DateTerminated">Terminated Date</label>
+                                                @{
+                                                    string sDateTerminated = Model.Employee.DateTerminated != null ? Model.Employee.DateTerminated.Value.ToString("MM/dd/yyyy") : "";
+                                                }
+                                                <input type="text" id="DateTerminated" name="DateTerminated" class="input-md form-control-md form-control date-picker" value="@sDateTerminated">
+                                                @*<input id="DateTerminated" class="form-control date-picker" type="date" name="DateTerminated" value="@Model.Employee.DateTerminated" placeholder="01/01/1999">*@
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="Status">Status</label>
+                                                <select name="StatusId" id="lbStatus" class="selectpicker form-control">
+                                                    @if (Model.Employee.StatusId == 1)
+                                                    {
+                                                        <option value="1" selected>Hired</option>
+                                                        <option value="2">Resigned</option>
+                                                        <option value="3">Terminated</option>
+                                                        <option value="4">Rehired</option>
+                                                    }
+                                                    else if (Model.Employee.StatusId == 2)
+                                                    {
+                                                        <option value="1">Hired</option>
+                                                        <option value="2" selected>Resigned</option>
+                                                        <option value="4">Rehired</option>
+                                                    }
+                                                    else if (Model.Employee.StatusId == 3)
+                                                    {
+                                                        <option value="1">Hired</option>
+                                                        <option value="2">Resigned</option>
+                                                        <option value="3" selected>Terminated</option>
+                                                        <option value="4">Rehired</option>
+                                                    }
+                                                    else if (Model.Employee.StatusId == 4)
+                                                    {
+                                                        <option value="1">Hired</option>
+                                                        <option value="2">Resigned</option>
+                                                        <option value="3">Terminated</option>
+                                                        <option value="4" selected>Rehired</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="1" selected>Hired</option>
+                                                        <option value="2">Resigned</option>
+                                                        <option value="3">Terminated</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="BirthDate">Birth Date</label>
+                                                @{
+                                                    string sBirthDate = Model.Employee.BirthDate != null ? Model.Employee.BirthDate.Value.ToString("MM/dd/yyyy") : "";
+                                                }
+                                                <input type="text" id="BirthDate" name="BirthDate" class="input-md form-control-md form-control date-picker" value="@sBirthDate">
+                                                @*<input id="BirthDate" class="form-control date-picker" type="date" name="BirthDate" value="@Model.Employee.BirthDate" placeholder="01/01/1999">*@
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="CivilStatus">Civil Status</label>
+                                                <select name="CivilStatus" id="lbCivilStatus" class="selectpicker form-control">
+
+                                                    @if (@Model.Employee.CivilStatus == "S")
+                                                    {
+                                                        <option selected>S</option>
+                                                        <option>S1</option>
+                                                        <option>S2</option>
+                                                        <option>S3</option>
+                                                        <option>S4</option>
+                                                        <option>ME1</option>
+                                                        <option>ME2</option>
+                                                        <option>ME3</option>
+                                                        <option>ME4</option>
+                                                    }
+                                                    else if (@Model.Employee.CivilStatus == "S1")
+                                                    {
+                                                        <option>S</option>
+                                                        <options elected>S1</options>
+                                                        <option>S2</option>
+                                                        <option>S3</option>
+                                                        <option>S4</option>
+                                                        <option>ME1</option>
+                                                        <option>ME2</option>
+                                                        <option>ME3</option>
+                                                        <option>ME4</option>
+                                                    }
+                                                    else if (@Model.Employee.CivilStatus == "S2")
+                                                    {
+                                                        <option>S</option>
+                                                        <options>S1</options>
+                                                        <option selected>S2</option>
+                                                        <option>S3</option>
+                                                        <option>S4</option>
+                                                        <option>ME1</option>
+                                                        <option>ME2</option>
+                                                        <option>ME3</option>
+                                                        <option>ME4</option>
+                                                    }
+                                                    else if (@Model.Employee.CivilStatus == "S3")
+                                                    {
+                                                        <option>S</option>
+                                                        <options>S1</options>
+                                                        <option>S2</option>
+                                                        <option selected>S3</option>
+                                                        <option>S4</option>
+                                                        <option>ME1</option>
+                                                        <option>ME2</option>
+                                                        <option>ME3</option>
+                                                        <option>ME4</option>
+                                                    }
+                                                    else if (@Model.Employee.CivilStatus == "S4")
+                                                    {
+                                                        <option>S</option>
+                                                        <options>S1</options>
+                                                        <option>S2</option>
+                                                        <option>S3</option>
+                                                        <option selected>S4</option>
+                                                        <option>ME1</option>
+                                                        <option>ME2</option>
+                                                        <option>ME3</option>
+                                                        <option>ME4</option>
+                                                    }
+                                                    else if (@Model.Employee.CivilStatus == "ME1")
+                                                    {
+                                                        <option>S</option>
+                                                        <options>S1</options>
+                                                        <option>S2</option>
+                                                        <option>S3</option>
+                                                        <option>S4</option>
+                                                        <option selected>ME1</option>
+                                                        <option>ME2</option>
+                                                        <option>ME3</option>
+                                                        <option>ME4</option>
+                                                    }
+                                                    else if (@Model.Employee.CivilStatus == "ME2")
+                                                    {
+                                                        <option>S</option>
+                                                        <options>S1</options>
+                                                        <option>S2</option>
+                                                        <option>S3</option>
+                                                        <option>S4</option>
+                                                        <option>ME1</option>
+                                                        <option selected>ME2</option>
+                                                        <option>ME3</option>
+                                                        <option>ME4</option>
+                                                    }
+                                                    else if (@Model.Employee.CivilStatus == "ME3")
+                                                    {
+                                                        <option>S</option>
+                                                        <options>S1</options>
+                                                        <option>S2</option>
+                                                        <option>S3</option>
+                                                        <option>S4</option>
+                                                        <option>ME1</option>
+                                                        <option>ME2</option>
+                                                        <option selected>ME3</option>
+                                                        <option>ME4</option>
+                                                    }
+                                                    else if (@Model.Employee.CivilStatus == "ME4")
+                                                    {
+                                                        <option>S</option>
+                                                        <options>S1</options>
+                                                        <option>S2</option>
+                                                        <option>S3</option>
+                                                        <option>S4</option>
+                                                        <option>ME1</option>
+                                                        <option>ME2</option>
+                                                        <option>ME3</option>
+                                                        <option selected>ME4</option>
+                                                    }
+                                                    else if (@Model.Employee.CivilStatus is null)
+                                                    {
+                                                        <option></option>
+                                                        <option>S</option>
+                                                        <option>S1</option>
+                                                        <option>S2</option>
+                                                        <option>S3</option>
+                                                        <option>S4</option>
+                                                        <option>ME1</option>
+                                                        <option>ME2</option>
+                                                        <option>ME3</option>
+                                                        <option>ME4</option>
+                                                    }
+                                                    else if (@Model.Employee.CivilStatus == "")
+                                                    {
+                                                        <option></option>
+                                                        <option>S</option>
+                                                        <option>S1</option>
+                                                        <option>S2</option>
+                                                        <option>S3</option>
+                                                        <option>S4</option>
+                                                        <option>ME1</option>
+                                                        <option>ME2</option>
+                                                        <option>ME3</option>
+                                                        <option>ME4</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="TelNo">Tel No.</label>
+                                                <input id="TelNo" class="form-control" type="tel" name="TelNo" value="@Model.Employee.TelNo">
+                                            </div>
+                                            @*Requirement*@
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="TIN">TIN No</label>
+                                                <input id="TIN" class="form-control" type="text" name="TIN" value="@Model.Employee.TIN">
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="SSS">SSS No</label>
+                                                <input id="SSS" class="form-control" type="text" name="SSS" value="@Model.Employee.SSS">
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="PhilHealthNo">Phil-Health No</label>
+                                                <input id="PhilHealthNo" class="form-control" type="text" name="PhilHealthNo" value="@Model.Employee.PhilHealthNo">
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="PagIbigNo">Pag-Ibig No</label>
+                                                <input id="PagIbigNo" class="form-control" type="text" name="PagIbigNo" value="@Model.Employee.PagIbigNo">
+                                            </div>
+                                            <div class="col-md-3 col-xl-3 ">
+                                                <label for="CellNo">Cell No</label>
+                                                <input id="CellNo" class="form-control" type="text" name="CellNo" value="@Model.Employee.CellNo">
+                                            </div>
+                                            <div class="col-md-12 col-xl-12 ">
+                                                <label for="Address">Address</label>
+                                                <input id="Address" class="form-control" type="text" name="Address" value="@Model.Employee.Address" required>
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <label for="Email">Email</label>
+                                                <input id="Email" class="form-control" type="email" name="Email" value="@Model.Employee.Email" required>
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <label for="Bank">Bank</label>
+                                                <input id="Bank" class="form-control" type="text" name="Bank" value="@Model.Employee.Bank">
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <label for="BankNo">Bank No</label>
+                                                <input id="BankNo" class="form-control" type="text" name="BankNo" value="@Model.Employee.BankNo">
+                                            </div>
+
+                                            @*Address*@
+
+                                            <div class="col-md-4 col-xl-4 ">
+                                                <label for="lbAgent">Agent</label>
+                                                @*<textarea asp-for="@Model.Employee.Address" id="Address" name="Address" class="form-control"></textarea>*@
+                                                <select name="IsAgent" id="lbAgent" class="selectpicker form-control">
+
+                                                    @if (Model.Employee.IsAgent == false)
+                                                    {
+                                                        <option></option>
+                                                        <option value="true">Yes</option>
+                                                        <option value="false" selected>No</option>
+                                                    }
+                                                    else if (Model.Employee.IsAgent == true)
+                                                    {
+                                                        <option></option>
+                                                        <option value="true" selected>Yes</option>
+                                                        <option value="false">No</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4 col-xl-4 ">
+                                                <label for="ManagerId">Manager</label>
+                                                <select name="ManagerId" id="ManagerId" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                    <option value="0"></option>
+                                                    @foreach (var item in Model.Manager)
+                                                    {
+                                                        if (item.Id != Model.Employee.Id)
+                                                        {
+                                                            if (item.Id == Model.Employee.ManagerId)
+                                                            {
+                                                                <option value="@item.Id" name="@Html.NameFor(c => c.Employee.ManagerId)" selected>@item.UserFullName</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.Id" name="@Html.NameFor(c => c.Employee.ManagerId)">@item.UserFullName</option>
+                                                            }
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 col-xl-4 ">
+                                                <label for="UserId">User</label>
+                                                <select name="UserId" id="UserId" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                    <option value="0">Nothing selected</option>
+                                                    @foreach (var item in Model.Users)
+                                                    {
+
+                                                        if (item.UserUserId == Model.Employee.UserId)
+                                                        {
+                                                            <option value="@item.UserUserId" selected>@item.UserName</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.UserUserId">@item.UserName</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="custom-nav-profile" role="tabpanel" aria-labelledby="custom-nav-profile-tab">
+                                        <div class="row">
+                                            <div class="col-md-12 col-xl-12 card-header">
+                                                <h4>Contact Incase of Emergency</h4>
+                                            </div>
+                                            <div class="col-md-12 col-xl-12"><br /></div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <label for="Name">Name</label>
+                                                <input id="Name" class="form-control" type="text" name="Name" value="@Model.Employee.Name">
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <label for="ContactNum">Contact Num</label>
+                                                <input id="ContactNum" class="form-control" type="text" name="ContactNum" value="@Model.Employee.ContactNum">
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <label for="Relation">Relation</label>
+                                                <input id="Relation" class="form-control" type="text" name="Relation" value="@Model.Employee.Relation">
+                                            </div>
+                                            <div class="col-md-12 col-xl-12 ">
+                                                <label for="Address2">Address</label>
+                                                <textarea asp-for="@Model.Employee.Address2" id="Address2" name="Address2" class="form-control"></textarea>
+                                            </div>
+
+                                            <div class="col-md-12 col-xl-12 card-header">
+                                                <h4>Father</h4>
+                                            </div>
+                                            <div class="col-md-4 col-xl-8">
+                                                <label for="FathersName">Fathers Name</label>
+                                                <input id="FathersName" class="form-control" type="text" name="FathersName" value="@Model.Employee.FathersName">
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <label for="FathersContactNum">ContactNum</label>
+                                                <input id="FathersContactNum" class="form-control" type="text" name="FathersContactNum" value="@Model.Employee.FathersContactNum">
+                                            </div>
+                                            <div class="col-md-4 col-xl-12">
+                                                <label for="FathersAddress">Address</label>
+                                                <textarea asp-for="@Model.Employee.FathersAddress" id="Address2" name="FathersAddress" class="form-control"></textarea>
+                                            </div>
+
+                                            <div class="col-md-12 col-xl-12 card-header">
+                                                <h4>Mother</h4>
+                                            </div>
+                                            <div class="col-md-4 col-xl-8">
+                                                <label for="MothersName">Mothers Name</label>
+                                                <input id="MothersName" class="form-control" type="text" name="MothersName" value="@Model.Employee.MothersName">
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <label for="MothersContactNum">ContactNum</label>
+                                                <input id="MothersContactNum" class="form-control" type="text" name="MothersContactNum" value="@Model.Employee.MothersContactNum">
+                                            </div>
+                                            <div class="col-md-4 col-xl-12">
+                                                <label for="EmployeeMothersAddress">Address</label>
+                                                <textarea asp-for="@Model.Employee.MothersAddress" id="EmployeeMothersAddress" name="EmployeeMothersAddress" class="form-control"></textarea>
+                                            </div>
+
+                                            <div class="col-md-12 col-xl-12 card-header">
+                                                <h4>Spouse</h4>
+                                            </div>
+                                            <div class="col-md-4 col-xl-8">
+                                                <label for="SpouseName">Spouse Name</label>
+                                                <input id="SpouseName" class="form-control" type="text" name="SpouseName" value="@Model.Employee.SpouseName">
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <label for="SpouseContactNum">ContactNum</label>
+                                                <input id="MothersContactNum" class="form-control" type="text" name="SpouseContactNum" value="@Model.Employee.SpouseContactNum">
+                                            </div>
+                                            <div class="col-md-4 col-xl-12">
+                                                <label for="SpouseAddress">Address</label>
+                                                <textarea asp-for="@Model.Employee.SpouseAddress" id="SpouseAddress" name="SpouseAddress" class="form-control"></textarea>
+                                            </div>
+
+                                            <div class="col-md-12 col-xl-12 card-header">
+                                                <h4>Dependents</h4>
+                                            </div>
+                                            <div class="col-md-4 col-xl-3">
+                                                <label for="D1Name">Name</label>
+                                                <input id="D1Name" class="form-control" type="text" name="D1Name" value="@Model.Employee.D1Name">
+                                            </div>
+                                            <div class="col-md-4 col-xl-3">
+                                                <label for="D1Status">ContactNum</label>
+                                                <input id="D1Status" class="form-control" type="text" name="D1Status" value="@Model.Employee.D1Status">
+                                            </div>
+                                            <div class="col-md-4 col-xl-6">
+                                                <label for="D1Address">Relation</label>
+                                                <input id="D1Address" class="form-control" type="text" name="D1Address" value="@Model.Employee.D1Address">
+                                            </div>
+                                            <div class="col-md-4 col-xl-3">
+                                                <label for="D2Name">Name</label>
+                                                <input id="D2Name" class="form-control" type="text" name="D2Name" value="@Model.Employee.D2Name">
+                                            </div>
+                                            <div class="col-md-4 col-xl-3">
+                                                <label for="D2Status">ContactNum</label>
+                                                <input id="D2Status" class="form-control" type="text" name="D2Status" value="@Model.Employee.D2Status">
+                                            </div>
+                                            <div class="col-md-4 col-xl-6">
+                                                <label for="D2Address">Relation</label>
+                                                <input id="D2Address" class="form-control" type="text" name="D2Address" value="@Model.Employee.D2Address">
+                                            </div>
+                                            <div class="col-md-4 col-xl-3">
+                                                <label for="D3Name">Name</label>
+                                                <input id="D3Name" class="form-control" type="text" name="D3Name" value="@Model.Employee.D3Name">
+                                            </div>
+                                            <div class="col-md-4 col-xl-3">
+                                                <label for="D3Status">ContactNum</label>
+                                                <input id="D3Status" class="form-control" type="text" name="D3Status" value="@Model.Employee.D3Status">
+                                            </div>
+                                            <div class="col-md-4 col-xl-6">
+                                                <label for="D3Address">Relation</label>
+                                                <input id="D3Address" class="form-control" type="text" name="D3Address" value="@Model.Employee.D3Address">
+                                            </div>
+                                            <div class="col-md-4 col-xl-3">
+                                                <label for="D4Name">Name</label>
+                                                <input id="D4Name" class="form-control" type="text" name="D4Name" value="@Model.Employee.D4Name">
+                                            </div>
+                                            <div class="col-md-4 col-xl-3">
+                                                <label for="D4Status">ContactNum</label>
+                                                <input id="D4Status" class="form-control" type="text" name="D4Status" value="@Model.Employee.D4Status">
+                                            </div>
+                                            <div class="col-md-4 col-xl-6">
+                                                <label for="D4Address">Relation</label>
+                                                <input id="D4Address" class="form-control" type="text" name="D4Address" value="@Model.Employee.D4Address">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="custom-nav-contact" role="tabpanel" aria-labelledby="custom-nav-contact-tab">
+                                        <div class="row">
+                                            <div class="col-md-8 col-xl-8">
+                                                <label for="Primary">Primary</label>
+                                                <input id="Primary" class="form-control" type="text" name="Primary" value="@Model.Employee.Primary">
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <label for="PrimaryDateGrad">Date Graduated</label>
+                                                @{
+                                                    string sPrimaryDateGrad = Model.Employee.PrimaryDateGrad != null ? Model.Employee.PrimaryDateGrad.Value.ToString("MM/dd/yyyy") : "";
+                                                }
+                                                <input type="text" id="PrimaryDateGrad" name="PrimaryDateGrad" class="input-md form-control-md form-control date-picker" value="@sPrimaryDateGrad">
+                                            </div>
+                                            <div class="col-md-8 col-xl-8">
+                                                <label for="Secondary">Secondary</label>
+                                                <input id="Secondary" class="form-control" type="text" name="Secondary" value="@Model.Employee.Secondary">
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <label for="SecondaryDateGrad">Date Graduated</label>
+                                                @{
+                                                    string sSecondaryDateGrad = Model.Employee.SecondaryDateGrad != null ? Model.Employee.SecondaryDateGrad.Value.ToString("MM/dd/yyyy") : "";
+                                                }
+                                                <input type="text" id="SecondaryDateGrad" name="SecondaryDateGrad" class="input-md form-control-md form-control date-picker" value="@sSecondaryDateGrad">
+                                            </div>
+                                            <div class="col-md-8 col-xl-8">
+                                                <label for="Course">Tertiary</label>
+                                                <input id="Course" class="form-control" type="text" name="Course" value="@Model.Employee.Course">
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <label for="SecondaryDateGrad">Date Graduated</label>
+                                                @{
+                                                    string sCourseDateGrad = Model.Employee.CourseDateGrad != null ? Model.Employee.CourseDateGrad.Value.ToString("MM/dd/yyyy") : "";
+                                                }
+                                                <input type="text" id="CourseDateGrad" name="CourseDateGrad" class="input-md form-control-md form-control date-picker" value="@sCourseDateGrad">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="DepartmentCreateModal" tabindex="-1" role="dialog" aria-labelledby="DepartmentCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="DivisionCreateModal" tabindex="-1" role="dialog" aria-labelledby="DivisonCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="SectorCreateModal" tabindex="-1" role="dialog" aria-labelledby="SectorCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="PositionCreateModal" tabindex="-1" role="dialog" aria-labelledby="PositionCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>

@@ -1,0 +1,440 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Leads
+@using ezinvmvc.App.Leads
+
+@model LeadCreateModel
+@{
+    ViewBag.CurrentPageName = PageNames.Leads_Create;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Leads/Create.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <input type="text" id="h1" value="@Model.EmpId" hidden>
+                    <div class="page-title">
+                        <h1>Create Lead</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="SaveLeadButton" class="btn btn-outline-primary btn-sm"><i class="fa fa-save"></i>&nbsp; Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body card-block">
+                        <form id="LeadForm" name="LeadForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+                            <div class="row">
+                                <div class="col-md-4  col-xl-4" style="display:none">
+                                    <div class="form-group">
+                                        <label for="Lead">Company</label>
+                                        <div class="input-group">
+                                            <select name="CompanyId" id="CompanyId" class="selectpicker validate form-control" tabindex="-1" data-live-search="true"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-6">
+                                    <div class="form-group">
+                                        <input type="hidden" value="104" id="hTransactionCode" />
+                                        <input type="hidden" id="Prefix" name="Prefix" value="-" />
+                                        <label for="Lead">Series</label>
+                                        <div class="input-group">
+                                            <select name="SeriesTypeId" id="SeriesTypeId" class="selectpicker required form-control" tabindex="-1" data-live-search="true"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4" style="display:none">
+                                    <div class="form-group">
+                                        <label for="Lead">Ref. No</label>
+                                        <input id="Code" class="form-control" type="text" name="Code" value="0" maxlength="128">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-6">
+                                    <div class="form-group" disabled>
+                                        <label>Date</label>
+                                        <div class="input-group date" id="datetimepicker2" data-target-input="nearest" disabled> 
+                                            <input id="LeadDate" class="form-control datetimepicker-input" placeholder="mm/dd/yyyy" type="text" name="LeadDate" data-target="#datetimepicker2" value='@System.DateTime.Now.ToString("MM/dd/yyyy")' disabled>
+                                            <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                        <span id="errDate" class="error" style="display:none">This field is required.</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4">&nbsp;</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 col-xl-4 " style="display:none">
+                                    <div class="form-group">
+                                        <label for="Lead">Type</label>
+                                        <select id="LeadType" name="LeadType" class="selectpicker form-control">
+                                            @*if (Model.Lead.LeadType == null)
+                                                {
+                                                    <option selected>New</option>
+                                                    <option>Client</option>
+                                                }
+                                                else if (Model.Lead.LeadType.ToUpper() == "NEW".ToUpper())
+                                                {
+                                                    <option selected>New</option>
+                                                    <option>Client</option>
+                                                }
+                                                else if (Model.Lead.LeadType.ToUpper() == "CLIENT".ToUpper())
+                                                {
+                                                    <option>New</option>
+                                                    <option selected>Client</option>
+                                                }*@
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-7 col-xl-7 ">
+                                    <div class="form-group">
+                                        <label for="Lead">Client</label>
+                                        <input id="ClientId" type="hidden" name="ClientId" value="@Model.Lead.ClientId" />
+                                        <div class="input-group">
+                                            <input id="ClientName" class="validate form-control" type="text" name="Name" placeholder="Type name to search" value="@Model.Lead.Name" maxlength="256">
+                                            <span class="input-group-btn">
+                                                <button id="CreateClientButton" type="button" class="btn btn-default">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <span id="errClient" class="error" style="display:none">This field is required.</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-xl-5 ">
+                                    <div class="form-group">
+                                        <label for="Lead">Contact Person</label>
+                                        <input id="ContactPersonType" type="hidden" name="ContactPersonType" value="Client" />
+                                        <input id="ContactPersonId" type="hidden" name="ContactPersonId" value="@Model.Lead.ContactPersonId" />
+                                        <div class="input-group">
+                                            <input id="ContactPerson" class="validate form-control" type="text" name="ContactPerson" placeholder="Type name to search" value="@Model.Lead.ContactPerson" maxlength="256">
+                                            <span class="input-group-btn">
+                                                <button id="CreateContactPersonButton" type="button" class="btn btn-default">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <span id="errCPerson" class="error" style="display:none">This field is required.</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="Lead">Tel. No</label>
+                                    <input id="TelNo" class="form-control" type="text" name="TelNo" readonly value="@Model.Lead.TelNo">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="Lead">Fax No.</label>
+                                    <input id="FaxNo" class="form-control" type="text" name="FaxNo" readonly value="@Model.Lead.FaxNo">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="Lead">Mobile No.</label>
+                                    <input id="MobileNo" class="form-control" type="text" name="MobileNo" readonly value="@Model.Lead.MobileNo">
+                                </div>
+                                <div class="col-md-6 col-xl-6">
+                                    <label for="Lead">Email</label>
+                                    <input id="Email" class="form-control" type="email" name="Email" readonly value="@Model.Lead.Email">
+                                </div>
+                                <div class="col-md-6 col-xl-6 ">
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 col-xl-12 ">
+                                    <div class="form-group">
+                                        <label for="Lead">Address</label>
+                                        <textarea id="Address" name="Address" maxlength="328" class="form-control" readonly></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-8 col-xl-8 ">
+                                    <div class="form-group">
+                                        <label for="Lead">Project</label>
+                                        <input id="Project" class="validate form-control" type="text" name="Project" value="@Model.Lead.Project" required maxlength="128">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4 ">
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-xl-6">
+                                    <label for="Lead">Source</label>
+                                    <select id="LeadSourceId" name="LeadSourceId" class="selectpicker form-control">
+                                        <option selected value=0>-- Select --</option>
+                                        @foreach (var item in Model.Sources)
+                                        {
+                                            if (item.Id == Model.Lead.LeadSourceId)
+                                            {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row" style="display:none">
+                                <div class="col-md-4 col-xl-4 ">
+                                    <div class="form-group">
+                                        <label for="Lead">Country</label>
+                                        <div class="input-group">
+                                            <select name="CountryId" id="lbCountries" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                <option value=0>-- Select --</option>
+                                                @*@foreach (var item in Model.Countries)
+                                                    {
+                                                        if (item.Id == Model.Lead.CountryId)
+                                                        {
+                                                            <option selected value="@item.Id">@item.Name</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.Id">@item.Name</option>
+                                                        }
+                                                    }*@
+                                            </select>
+                                            <span class="input-group-btn">
+                                                <button id="CreateCountryButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#CountryCreateModal">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4 ">
+                                    <div class="form-group">
+                                        <label for="Lead">Province</label><div class="input-group">
+                                            <select name="ProvinceId" id="lbProvinces" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                <option value=0>-- Select Country --</option>
+                                            </select>
+                                            <span class="input-group-btn">
+                                                <button id="CreateProvinceButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#ProvinceCreateModal">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4 ">
+                                    <div class="form-group">
+                                        <label for="Lead">City</label>
+                                        <div class="input-group">
+                                            <select name="CityId" id="lbCities" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                <option value=0>-- Select Province --</option>
+                                            </select>
+                                            <span class="input-group-btn">
+                                                <button id="CreateCityButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#CityCreateModal">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" style="display:none">
+                                <div class="col-md-6 col-xl-6">
+                                    <label for="Lead">Market Segmentation</label>
+                                    <select id="IndustryId" name="IndustryId" class="selectpicker form-control">
+                                        <option value=0>-- Select --</option>
+                                        @*@foreach (var item in Model.Industries)
+                                            {
+                                                if (item.Id == Model.Lead.IndustryId)
+                                                {
+                                                    <option selected value="@item.Id">@item.Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.Id">@item.Name</option>
+                                                }
+                                            }*@
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-xl-6">
+                                    <label for="Lead">Task</label>
+                                    <select id="LeadTaskId" name="LeadTaskId" class="selectpicker form-control">
+                                        <option selected value=0>-- Select --</option>
+                                        @foreach (var item in Model.Tasks)
+                                        {
+                                            if (item.Id == Model.Lead.LeadTaskId)
+                                            {
+                                                <option  value="@item.Id">@item.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 col-xl-12 ">
+                                    <div class="form-group">
+                                        <label for="Lead">Notes</label>
+                                        <textarea id="Notes" name="Notes" maxlength="328" class="validate form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-xl-6">
+                                    <div class="form-group">
+                                        <label for="Lead">Assigned To</label>
+                                        <input id="AssignedToId" type="hidden" name="AssignedToId" value="@Model.Lead.AssignedToId" />
+                                        <input type="text" id="AssignedTo" name="AssignedTo" placeholder="Type name to search" class="validate form-control" value="@Model.Lead.AssignedTo" required maxlength="128">
+                                    </div>
+                                </div>
+                                <div style="display:none">
+                                    @*<select id="AssignedToId" name="AssignedToId" class="selectpicker form-control">
+                                            <option value=0>-- Select --</option>
+                                            @foreach (var item in Model.Users)
+                                            {
+                                                if (item.Id == Model.Lead.AssignedToId)
+                                                {
+                                                    <option selected value="@item.Id">@item.Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.Id">@item.Name</option>
+                                                }
+                                            }
+                                        </select>*@
+                                    @*<select id="AssignedToIdEmail" name="AssignedToIdEmail" style="display:none">
+                                            <option value=0>-- Select --</option>
+                                            @foreach (var item in Model.Users)
+                                            {
+                                                if (item.Id == Model.Lead.AssignedToId)
+                                                {
+                                                    <option selected value="@item.Id">@item.Email</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.Id">@item.Email</option>
+                                                }
+                                            }
+                                        </select>*@
+                                </div>
+                                <div class="col-md-6 col-xl-6">
+                                    <div class="form-group">
+                                        <label for="Lead">Assigned Email</label>
+                                        <input type="text" id="AssignedToEmail" name="AssignedToEmail" class="validate form-control" value="@Model.Lead.AssignedToEmail" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-6">
+                                    <div class="form-group">
+                                        <label for="Lead">Next Contact Date</label>
+                                        <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                                            <input id="NextContactDateTime" class="form-control datetimepicker-input" placeholder="mm/dd/yyyy hh:mm tt" type="text" name="NextContactDateTime" value="@System.DateTime.Now.AddDays(1).ToString("MM/dd/yyyy hh:mm tt")" data-toggle="datetimepicker" data-target="#datetimepicker1">
+                                            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                        <span id="errNDate" class="error" style="display:none">This field is required.</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-6">
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="row" style="display:none">
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="Lead">Status</label>
+                                    <select id="StatusId" name="StatusId" class="selectpicker form-control">
+                                        <option value="1">Open</option>
+                                        <option value="2">Lead</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="modal fade" id="CategoryCreateModal" tabindex="-1" role="dialog" aria-labelledby="CategoryCreateModalLabel" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>Create Category</span>
+                    </h4>
+                </div>
+                <form name="categoryCreateForm" role="form" novalidate class="form-validation">
+                <div class="modal-body">
+                    <div class="row clearfix" style="margin-top:10px;">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label class="form-label">Category</label>
+                                    <input class="form-control" type="text" id="Category" name="Name" required maxlength="64" minlength="2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">@L("Cancel")</button>
+                    <button id="SaveCategoryButton" class="btn btn-primary waves-effect"><i class="fa fa-save"></i>&nbsp; Save</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>*@
+
+<div class="modal fade" id="ContactPersonCreateModal" tabindex="-1" role="dialog" aria-labelledby="ContactPersonCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ClientCreateModal" tabindex="-1" role="dialog" aria-labelledby="ClientCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ProvinceCreateModal" tabindex="-1" role="dialog" aria-labelledby="ProvinceCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="CityCreateModal" tabindex="-1" role="dialog" aria-labelledby="CityCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>

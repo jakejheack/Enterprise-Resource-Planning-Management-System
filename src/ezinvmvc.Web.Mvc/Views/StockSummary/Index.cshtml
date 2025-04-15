@@ -1,0 +1,136 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+
+@{
+    ViewBag.CurrentPageName = PageNames.Stock_Summary;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/StockSummary/Index.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Stock Summary</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="ExportToExcelButton" class="btn btn-outline-success btn-sm"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        <div class="card" id="accordion">
+                            <div class="card-header">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                    Filter
+                                </a>
+                            </div>
+                            <div id="collapseThree" class="panel-collapse collapse in">
+                                <div class="card-body">
+                                    <div class="row align-items-center m--margin-bottom-10">
+                                        <div class="col-md-4 col-xl-4">
+                                            <div class="form-group">
+                                                <label style="margin-bottom:0px;">Category</label>
+                                                <select id="Categories" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-xl-4">
+                                            <div class="form-group">
+                                                <label style="margin-bottom:0px;">Brand</label>
+                                                <select id="Brands" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-xl-4">
+                                            <div class="form-group">
+                                                <label style="margin-bottom:0px;">Warehouse</label>
+                                                <select id="Warehouses" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="row align-items-center m--margin-bottom-10">
+                                        <div class="col-md-4 col-xl-4">
+                                            <div class="form-group">
+                                                <label style="margin-bottom:0px;">Product Code</label>
+                                                <input id="ProductId" type="hidden">
+                                                <input id="ProductCode" type="text" class="form-control form-control-sm" placeholder="Product Code">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-xl-4">
+                                            <div class="form-group">
+                                                <label style="margin-bottom:0px;">Product Name</label>
+                                                <input type="text" id="ProductName" class="form-control m-input input-sm form-control-sm" placeholder="Product Name" value="" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-xl-4">
+                                            <div class="form-group" style="padding-top:20px;">
+                                                <button id="SearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i>&nbsp;Search</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12 overflow-auto">
+                                <table id="ListTable" class="display table  table-striped table-bordered table-hover dt-responsive" cellspacing="0" style="width:100%; white-space:normal;">
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th> @* 0 *@
+                                            <th>Brand</th> @* 1 *@
+                                            <th>Code</th> @* 2 *@
+                                            <th>Name</th> @* 3 *@
+                                            <th>Warehouse</th> @* 4 *@
+                                            <th>Unit</th> @* 5 *@
+                                            <th>Qty</th> @* 6 *@
+                                            <th></th> @* 7 *@
+                                            <th></th> @* 8 *@
+                                            <th></th> @* 9 *@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-xl-12 overflow-auto" hidden>
+                                <table id="ListTable2" class="display table  table-striped table-bordered table-hover dt-responsive" cellspacing="0" style="width:100%; white-space:normal;">
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th> @* 0 *@
+                                            <th>Brand</th> @* 1 *@
+                                            <th>Code</th> @* 2 *@
+                                            <th>Name</th> @* 3 *@
+                                            <th>Warehouse</th> @* 4 *@
+                                            <th>Unit</th> @* 5 *@
+                                            <th>Qty</th> @* 6 *@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

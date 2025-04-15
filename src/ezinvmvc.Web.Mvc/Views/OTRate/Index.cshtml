@@ -1,0 +1,280 @@
+﻿@using ezinvmvc.Web.Startup
+@{
+    ViewBag.CurrentPageName = PageNames.Overtime_Rates;
+}
+@section scripts
+    {
+
+    <script src="~/view-resources/Views/OTRate/IndexOTRate.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-10 col-xl-10">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Overtime Rate Table</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-xl-2">
+                <div class="text-right" style="padding-top:10px">
+                    <button id="OTTableList" data-toggle="modal" data-target="#OTTableListModal" style="width:100%" class="btn btn-outline-primary btn-sm"><i class="fa fa-list-ol"></i>&nbsp;Table&nbsp;List</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-10 col-xl-10">
+                                <form name="TableNameId" role="form" novalidate class="form-validation">
+                                    <input id="TableName" name="TableName" type="text" class="form-control" required maxlength="128" placeholder="Table Name">
+                                </form>
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <button id="ShowStandardRateButton" style="width:100%" class="btn btn-outline-primary">Standard&nbsp;Rate</button>
+                            </div>
+                            <div class="col-md-12 col-xl-12 m--margin-top-10">
+                                <div id="accordion">
+                                    <div id="collapseTwo" class="panel-collapse collapse out collapse show">
+                                        <form name="OvertimeRateSettings" role="form" novalidate class="form-validation">
+                                            <div class="text-right" style="padding-top:29px">
+                                            </div>
+                                            <div class="row">
+                                                @*Header*@
+                                                <div class="col-md-3 col-xl-3">
+                                                    <label for="Description">Description</label>
+                                                </div>
+                                                <div class="col-md-1 col-xl-1">
+                                                    <label for="Description">Hours</label>
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="Reg Hour">Reg Hour</label>
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="OT">OT</label>
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="ND">ND</label>
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="NDOT">NDOT</label>
+                                                </div>
+                                                @*Collunm1 Regular*@
+                                                <div class="col-md-3 col-xl-3">
+                                                    <input id="RegularDayDescription" name="RegularDayDescription" type="text" class="form-control" value="Regular" maxlength="128">
+                                                </div>
+                                                <div class="col-md-1 col-xl-1">
+                                                    <input id="RegularDayHours" name="RegularDayHours" type="text" class="form-control" value="1" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="RegularDay" name="RegularDay" type="text" class="form-control" placeholder="" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="RegularDayOT" name="RegularDayOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="RegularDayND" name="RegularDayND" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="RegularDayNDOT" name="RegularDayNDOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="padding-top:20px">
+                                                </div>
+                                                @*Collunm2 RestDay*@
+                                                <div class="col-md-4 col-xl-4">
+                                                    <input id="RestDayDescription" name="RestDayDescription" type="text" class="form-control" value="Rest Day" maxlength="128">
+                                                    <input id="RestDayHour" name="RestDayHour" type="hidden" class="form-control" value="1" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="RestDay" name="RestDay" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="RestDayOT" name="RestDayOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="RestDayND" name="RestDayND" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="RestDayNDOT" name="RestDayNDOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="padding-top:20px">
+                                                </div>
+                                                @*Collunm3 SpecialHoliday*@
+                                                <div class="col-md-4 col-xl-4">
+                                                    <input id="SpecialHolidayDescription" name="SpecialHolidayDescription" type="text" class="form-control" value="Special Holiday" maxlength="128">
+                                                    <input id="SpecialHolidayHour" name="SpecialHolidayHour" type="hidden" class="form-control" value="1" maxlength="128">
+                                                </div>
+
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="SpecialHoliday" name="SpecialHoliday" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="SpecialHolidayOT" name="SpecialHolidayOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="SpecialHolidayND" name="SpecialHolidayND" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="SpecialHolidayNDOT" name="SpecialHolidayNDOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="padding-top:20px">
+                                                </div>
+                                                @*Collunm4 LegalHoliday*@
+                                                <div class="col-md-4 col-xl-4">
+                                                    <input id="LegalHolidayDescription" name="LegalHolidayDescription" type="text" class="form-control" value="Legal Holiday" maxlength="128">
+                                                    <input id="LegalHolidayHour" name="LegalHolidayHour" type="hidden" class="form-control" value="1" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="LegalHoliday" name="LegalHoliday" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="LegalHolidayOT" name="LegalHolidayOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="LegalHolidayND" name="LegalHolidayND" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="LegalHolidayNDOT" name="LegalHolidayNDOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="padding-top:20px">
+                                                </div>
+                                                @*Collunm5 SpecialHolidayRD*@
+                                                <div class="col-md-4 col-xl-4">
+                                                    <input id="SpecialHolidayRDDescription" name="SpecialHolidayRDDescription" type="text" class="form-control" value="Special Holiday Rest Day" maxlength="128">
+                                                    <input id="SpecialHolidayRDHour" name="SpecialHolidayRDHour" type="hidden" class="form-control" value="1" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="SpecialHolidayRD" name="SpecialHolidayRD" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="SpecialHolidayRDOT" name="SpecialHolidayRDOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="SpecialHolidayRDND" name="SpecialHolidayRDND" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="SpecialHolidayRDNDOT" name="SpecialHolidayRDNDOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="padding-top:20px">
+                                                </div>
+                                                @*Collunm5 LegalHolidayRD*@
+                                                <div class="col-md-4 col-xl-4">
+                                                    <input id="LegalHolidayRDDescription" name="LegalHolidayRDDescription" type="text" class="form-control" value="Legal Holiday Rest Day" maxlength="128">
+                                                    <input id="LegalHolidayRDHour" name="LegalHolidayRDHour" type="hidden" class="form-control" value="1" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="LegalHolidayRD" name="LegalHolidayRD" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="LegalHolidayRDOT" name="LegalHolidayRDOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="LegalHolidayRDND" name="LegalHolidayRDND" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="LegalHolidayRDNDOT" name="LegalHolidayRDNDOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="padding-top:20px">
+                                                </div>
+                                                @*Collunm6 DoubleHoliday*@
+                                                <div class="col-md-4 col-xl-4">
+                                                    <input id="DoubleHolidayDescription" name="DoubleHolidayDescription" type="text" class="form-control" value="Double Holiday" maxlength="128">
+                                                    <input id="DoubleHolidayHour" name="DoubleHolidayHour" type="hidden" class="form-control" value="1" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="DoubleHoliday" name="DoubleHoliday" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="DoubleHolidayDOT" name="DoubleHolidayDOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="DoubleHolidayDND" name="DoubleHolidayDND" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="DoubleHolidayNDOT" name="DoubleHolidayNDOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="padding-top:20px">
+                                                </div>
+                                                @*Collunm7 DoubleHolidayRD*@
+                                                <div class="col-md-4 col-xl-4">
+                                                    <input id="DoubleHolidayRDDescription" name="DoubleHolidayRDDescription" type="text" class="form-control" value="Double Holiday Rest Day" maxlength="128">
+                                                    <input id="DoubleHolidayRDHour" name="DoubleHolidayRDHour" type="hidden" class="form-control" value="1" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="DoubleHolidayRD" name="DoubleHolidayRD" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="DoubleHolidayRDOT" name="DoubleHolidayRDOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="DoubleHolidayRDND" name="DoubleHolidayRDND" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <input id="DoubleHolidayRDNDOT" name="DoubleHolidayRDNDOT" type="text" class="form-control" value="" maxlength="128">
+                                                </div>
+
+                                                <div class="col-md-8 col-xl-8"></div>
+
+                                                <div class="col-md-4 col-xl-4">
+                                                    <div class="text-right" style="padding-top:30px">
+                                                        <div class="btn-group" role="group" style="width:100%">
+                                                            <button id="RateNewbutton" style="width:100%" class="btn btn-outline-success"><i class="fa fa-eraser"></i>&nbsp; New</button>
+                                                            @*<button id="AllowanceCancelbutton" style="width:100%" class="btn btn-outline-danger"><i class="fa fa-edit"></i>&nbsp; Cancel</button>*@
+                                                            <button id="RateSavebutton" style="width:100%" class="btn btn-outline-primary"><i class="fa fa-save"></i>&nbsp; Save</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="OTTableListModal" tabindex="-1" role="dialog" aria-labelledby="OTTableListLabel" data-backdrop="static">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Table List</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row align-items-center m--margin-bottom-10">
+                    @* List *@
+                    <div class="col-md-12 col-xl-12">
+                        <input id="TableId" name="TableId" type="hidden" class="form-control" required maxlength="128">
+                        <table id="RatesTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>TABLE NAME</th>
+                                    <th>@L("Actions")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+            </div>
+        </div>
+    </div>
+</div>

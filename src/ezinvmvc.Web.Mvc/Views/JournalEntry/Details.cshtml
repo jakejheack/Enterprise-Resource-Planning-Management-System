@@ -1,0 +1,182 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.JournalEntry
+
+@{
+    //ViewData["Title"] = "JournalEntry";
+
+    ViewBag.CurrentPageName = PageNames.Journal_Entry_Details;
+
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/JournalEntry/Details.js" asp-append-version="true"></script>
+}
+
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>
+                            <input id="Id" class="form-control font-weight-bold" disabled type="hidden" name="Id" value="@ViewBag.Id" required>
+                            Journal Entry Details
+                            <span id="StatusBadge"></span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body card-block">
+                        <form id="JournalEntryForm" name="JournalEntryForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+                            <div class="row clearfix">
+                                <div class="col-md-12  col-xl-12">
+                                    <div class="card">
+                                        <div class="card-body card-block">
+                                            <div class="row">
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="form-group">
+                                                        <label for="JournalEntry">Company</label>
+                                                        <div class="input-group">
+                                                            <select name="CompanyId" id="Companies" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="form-group">
+                                                        <label for="JournalEntry">Series</label>
+                                                        <div class="input-group">
+                                                            @*<select name="SeriesTypeId" id="SeriesTypeId" class="selectpicker form-control" required></select>*@
+                                                            <input type="text" id="SeriesTypeId" name="SeriesTypeId" disabled class="form-control" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-md-6 col-xl-6 ">
+                                                    <div class="form-group">
+                                                        <label for="txtEType">Entry Type</label>
+                                                        @*<select id="EntryType" name="EntryType" class="selectpicker form-control">
+                    <option>Journal Entry</option>
+                </select>*@
+                                                        <input type="text" id="EntryType" name="EntryType" disabled class="form-control" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <div class="form-group">
+                                                        <label>Date</label>
+                                                        <div class="input-group date" data-provide="datepicker" disabled>
+                                                            <input type="text" id="TransactionTime" name="TransactionTime" class="form-control date-picker" value='@System.DateTime.Now.ToString("MM/dd/yyyy")' required disabled>
+                                                            <div class="input-group-addon">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 col-xl-6" hidden>
+                                                    <div class="form-group">
+                                                        <label for="JournalEntry">Finance Book</label>
+                                                        <input type="hidden" id="LeadId" name="LeadId" required>
+                                                        <input type="hidden" id="LeadCode" name="LeadCode" required>
+                                                        <input type="text" id="Lead" name="Lead" placeholder="Finance book to search" class="form-control" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6" hidden>
+                                                    <div class="form-group">
+                                                        <label for="txtClient">Company Name</label>
+                                                        <input type="hidden" id="ClientId" name="ClientId" required>
+                                                        <input type="text" id="ClientName" name="Client" disabled class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 col-xl-6 ">
+                                                    <div class="form-group">
+                                                        <label for="txtNotes">Notes</label>
+                                                        <textarea id="Notes" name="Notes" class="form-control" rows="4" maxlength="328" disabled></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-md-12  col-xl-12">
+                                    <div class="card">
+                                        <div class="card-body card-block">
+                                            <div class="row">
+                                                <div class="col-md-12  col-xl-12">
+                                                    <div class="form-group">
+                                                        <table id="ItemsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th width="5%">#</th>@*0*@
+                                                                    <th width="30%">Acount</th>@*1*@
+                                                                    <th width="30%">Party</th>@*2*@
+                                                                    <th width="15%">Debit</th>@*3*@
+                                                                    <th width="15%">Credit</th>@*4*@
+
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 col-xl-12">
+                                                <div class="row">
+                                                    <div class="col-md-6  col-xl-6">
+
+                                                    </div>
+                                                    <div class="col-md-6  col-xl-6">
+                                                        <div class="row form-group">
+                                                            <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                                <label for="email-input" class=" form-control-label"><strong>Debit Total</strong></label>
+                                                            </div>
+                                                            <div class="col-md-6 col-xl-6">
+                                                                <input type="text" id="DebitTotal" disabled name="DebitTotal" class="form-control text-right font-weight-bold" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6  col-xl-6">
+
+                                                    </div>
+                                                    <div class="col-md-6  col-xl-6">
+                                                        <div class="row form-group">
+                                                            <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                                <label for="email-input" class=" form-control-label"><strong>Credit Total</strong></label>
+                                                            </div>
+                                                            <div class="col-md-6 col-xl-6">
+                                                                <input type="text" id="CreditTotal" disabled name="CreditTotal" class="form-control text-right font-weight-bold" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,207 @@
+﻿@using ezinvmvc.Web.Models.Common.Modals
+@model ezinvmvc.Web.Models.Leads.LeadUpdateCreateModel
+@{
+    Layout = null;
+}
+<style type="text/css">
+    .ui-autocomplete {
+        z-index: 2147483647;
+    }
+</style>
+<script src="~/view-resources/Views/Leads/_CreateLeadUpdateModal.js" asp-append-version="true"></script>
+@Html.Partial("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel("Create Lead Update"))
+<div class="modal-body">
+    <form name="LeadUpdateCreateForm" role="form" novalidate class="form-validation">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">Ref. No</label>
+                        <input type="hidden" id="LeadId" name="LeadId" value="@Model.Lead.Id" />
+                        <input type="text" name="LeadCode" id="LeadCode" class="form-control" tabindex="-1" value="@Model.Lead.Code" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">Name</label>
+                        <input class="form-control" type="text" id="LeadName" name="LeadName" tabindex="-1" value="@Model.Lead.ClientName" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">Project</label>
+                        <input class="form-control" type="text" id="LeadProject" name="LeadProject" tabindex="-1" value="@Model.Lead.Project" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-xl-12">
+                <div class="card" id="accordion">
+                    <div class="card-header" style="background-color:#d6d6d6">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                            <span class="glyphicon glyphicon-file" style="font-weight:300">
+                            </span>Add Update
+                        </a>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group form-float">
+                                        <div class="form-line">
+                                            <label class="form-label">Date</label>
+                                            <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                                                <input class="form-control datetimepicker-input" type="text" id="LeadUpdateDate" name="LeadUpdateDate" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker1">
+                                                <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                            <span id="errDate" class="error" style="display:none">This field is required.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="Lead">Task</label>
+                                    <select id="LeadTaskId" name="LeadTaskId" class="selectpicker form-control">
+                                        <option value=0>-- Select --</option>
+                                        @foreach (var item in Model.Tasks)
+                                        {
+                                            if (item.Id == Model.LeadUpdate.LeadTaskId)
+                                            {
+                                                <option selected value="@item.Id">@item.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="Lead">Notes</label>
+                                        <textarea id="Notes" name="Notes" maxlength="328" class="validate form-control" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="Lead">Assigned To</label>
+                                        <input id="AssignedToId" type="hidden" name="AssignedToId" value="@Model.LeadUpdate.AssignedToId" />
+                                        <input id="AssignedTo" class="validate form-control" type="text" name="AssignedTo" value="@Model.LeadUpdate.AssignedTo" required maxlength="128">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6" style="display:none">
+                                    <div class="form-group">
+                                        <label for="Lead">Assigned To</label>
+                                        @*<select id="AssignedToId" name="AssignedToId" class="selectpicker form-control">
+                        <option value=0>-- Select --</option>
+                        @foreach (var item in Model.Users)
+                        {
+                            if (item.Id == Model.Lead.AssignedToId)
+                            {
+                                <option selected value="@item.Id">@item.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        }
+                    </select>
+                    <select id="AssignedToIdEmail" name="AssignedToIdEmail" style="display:none">
+                        <option value=0>-- Select --</option>
+                        @foreach (var item in Model.Users)
+                        {
+                            if (item.Id == Model.Lead.AssignedToId)
+                            {
+                                <option selected value="@item.Id">@item.Email</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id">@item.Email</option>
+                            }
+                        }
+                    </select>*@
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="Lead">Assigned Email</label>
+                                        <input id="AssignedToEmail" class="validate form-control" type="text" name="AssignedToEmail" value="@Model.LeadUpdate.AssignedToEmail">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="Lead">Next Contact Date</label>
+                                        <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                                            <input id="NextContactDateTime" class="form-control datetimepicker-input" placeholder="mm/dd/yyyy hh:mm tt" type="text" name="NextContactDateTime" data-toggle="datetimepicker" data-target="#datetimepicker2" value='@Model.LeadUpdate.NextContactDateTime.AddDays(1).ToString("MM/dd/yyyy hh:mm tt")'>
+                                            <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                        <span id="errNDate" class="error" style="display:none">This field is required.</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    &nbsp;
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    &nbsp;
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <div class="form-group">
+                                        <button id="AddLeadUpdateButton" class="btn btn-outline-primary btn-sm"><i class="fa fa-save"></i>&nbsp; Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="animated fadeIn">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            @* List *@
+                            <div class="row align-items-center">
+                                <div class="col-xl-12">
+                                    <table id="LeadUpdatesTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th width="10%">Date</th>
+                                                <th width="25%">Task</th>
+                                                <th width="40%">Notes</th>
+                                                <th width="15%">Assigned To</th>
+                                                <th width="10%">Next Contact Date</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default close-button waves-effect" data-dismiss="modal">@L("Close")</button>
+</div>

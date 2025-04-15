@@ -1,0 +1,139 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Sales
+
+@model QuotationListViewModel
+
+@{
+    ViewBag.CurrentPageName = PageNames.Quotations;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Quotations/Index.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Quotations</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    @if (IsGranted(PermissionNames.Pages_Quotations_Export))
+                    {
+                        <button id="ExportToExcelButton" class="btn btn-outline-success btn-sm"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                        @*<button id="ExportProductToExcelButton" class="btn btn-outline-success btn-sm"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>*@
+                    }
+                    @if (IsGranted(PermissionNames.Pages_Quotations_Create))
+                    {
+                        <button id="CreateNewButton" onclick="window.open('@Url.Action("Create", "Quotations")')" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        <div class="row align-items-center m--margin-bottom-10">
+                            <input type="text" id="h1" value="@Model.EmpId" hidden>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <input type="text" id="DateFrom" name="DateFrom" class="input-sm form-control-sm form-control date-picker" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <input type="text" id="DateTo" name="DateTo" class="input-sm form-control-sm form-control date-picker" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <select id="StatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                        <option value="" selected disabled>Status</option>
+                                        <option value="1" selected>Draft</option>
+                                        <option value="2" selected>Submitted</option>
+                                        <option value="3" selected>For Revision</option>
+                                        <option value="6" selected>For Order</option>
+                                        <option value="4" selected>Completed</option>
+                                        <option value="9" selected>With PDF</option>
+                                        <option value="5">Revised</option>
+                                        <option value="7">Out Bid</option>
+                                        <option value="8">Cancelled</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <select id="AEs" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" id="SearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Id" value="">
+                                        <span class="input-group-btn">
+                                            <button id="SearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="QuotationsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="15%">Id</th>@*Id*@
+                                            <th width="45%">Client</th>
+                                            <th width="15%">Date</th>@*Date*@
+                                            <th width="25%">Agent</th>@*Date*@
+                                            <th width="10%">Status</th>
+                                            <th width="15%">Total</th>
+                                            <th width="4%">@L("Actions")</th>
+                                            <th></th>@*Code Code*@
+                                            <th></th>@*StatusId*@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-xl-12" hidden>
+                                <table id="QuotationsTable2" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="15%">Id</th>@*Id*@
+                                            <th width="45%">Client</th>
+                                            <th width="15%">Date</th>@*Date*@
+                                            <th width="25%">Agent</th>@*Date*@
+                                            <th width="10%">Status</th>
+                                            <th width="15%">Total</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

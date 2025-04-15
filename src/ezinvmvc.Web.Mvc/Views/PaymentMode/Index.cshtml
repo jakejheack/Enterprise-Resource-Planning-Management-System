@@ -1,0 +1,175 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+
+@{
+    ViewBag.CurrentPageName = PageNames.PaymentMode;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/PaymentMode/Index.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Payment Mode</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="text-right" style="padding-top:10px">
+                    @if (IsGranted(PermissionNames.Pages_PaymentMode_Create))
+                    {
+                        <button id="CreateButton" data-toggle="modal" data-target="#PaymentModeCreateModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create New</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">                       
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="PaymentModeTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="35%">Name</th>
+                                            <th width="35%">Default Account</th>
+                                            <th width="20%">IsTax</th>
+                                            <th width="3%">@L("Actions")</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="PaymentModeCreateModal" tabindex="-1" role="dialog" aria-labelledby="PaymentModeCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>New Payment Mode</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="PaymentModeCreateForm" role="form" novalidate class="form-validation">
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input id="name" type="text" name="Name" required class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Default Account</label>
+                                    <input type="hidden" id="DefaultAccountId" name="DefaultAccountId" required>
+                                    <input type="text" id="DefaultAccount" name="DefaultAccount" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="IsMain">Is Tax</label>
+                                    <input type="checkbox" name="IsTax" class="filled-in" id="IsTax" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+                        <button id="submit" class="btn btn-outline-success btn-sm" type="submit"><i class="fa fa-save" aria-label="@L("Save")"></i>&nbsp;Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="PaymentModeEditModal" tabindex="-1" role="dialog" aria-labelledby="PaymentModeEditModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Edit Payment Mode</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="PaymentModeEditForm" role="form" novalidate class="form-validation">
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="NameE" class="form-label">Name</label>
+                                    <input id="Id" type="hidden" name="Id" required>
+                                    <input id="NameE" type="text" name="NameE" required class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Default Account</label>
+                                    <input type="hidden" id="DefaultAccountIdE" name="DefaultAccountIdE" required>
+                                    <input type="text" id="DefaultAccountE" name="DefaultAccountE" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="IsTaxE">Is Tax</label>
+                                    <input type="checkbox" name="IsTaxE" class="filled-in" id="IsTaxE" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+                        <button id="update" class="btn btn-outline-success btn-sm" type="submit"><i class="fa fa-save" aria-label="@L("Save")"></i>&nbsp;Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

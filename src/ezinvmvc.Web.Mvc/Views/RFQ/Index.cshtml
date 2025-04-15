@@ -1,0 +1,253 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Rfq
+
+@model RfqListViewModel
+@{
+    //ViewData["Title"] = "RFQ";
+
+    ViewBag.CurrentPageName = PageNames.RFQ;
+
+}
+<style type="text/css">
+    .ui-autocomplete {
+        z-index: 2147483647;
+    }
+</style>
+@section scripts
+    {
+    <script src="~/view-resources/Views/RFQ/Index.js" asp-append-version="true"></script>
+}
+
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>RFQ</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="text-right" style="padding-top:10px">
+                    @if (IsGranted(PermissionNames.Pages_Rfq_Export))
+                    {
+                        <button id="ExportToExcelButton" class="btn btn-outline-success btn-sm"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                        @*<button id="ExportButton" class="btn btn-outline-success btn-sm" hidden>Export</button>
+                        <div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Menu
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                <a id="ExportToExcelButton" class="dropdown-item" href="#"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Export</a>
+                                <a id="ExportToPDFButton" class="dropdown-item" href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</a>
+
+                            </div>
+                        </div>*@
+                    }
+
+                    @if (IsGranted(PermissionNames.Pages_Rfq_Create))
+                    {
+                        <button id="CreateNewRfqButton" onclick="location.href='@Url.Action("Create", "RFQ")'" target="_blank" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        <div class="row align-items-center m--margin-bottom-10">
+                            <input type="text" id="h1" value="@Model.EmpId" hidden>
+                            <input type="text" id="hassignid" hidden>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <input type="text" id="DateFrom" name="DateFrom" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <input type="text" id="DateTo" name="DateTo" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <select id="StatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                        <option value="" selected disabled>Status</option>
+                                        <option value="1">Draft</option>
+                                        <option value="2">Submitted</option>
+                                        <option value="3">For Revision</option>
+                                        <option value="4">Closed</option>
+                                        <option value="5">Revised</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <select id="AEs" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" id="SearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Search...">
+                                        @*<span class="input-group-btn">*@
+                                            @*<button id="SearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>*@
+                                            @*<button id="SearchButton" class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>*@
+                                        @*</span>*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <button id="SearchButton" class="btn btn-primary btn-block btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i>&nbsp;Search</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="RfqTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="20%">Code</th>
+                                            <th width="20%">Company Name</th>
+                                            <th width="20%">Project Name</th>
+                                            <th width="10%">Date</th>
+                                            <th width="20%">Contact Person</th>
+                                            <th width="20%">AE</th>
+                                            @*<th width="20%">Assigned Person</th>*@
+                                            <th width="15%">Status</th>
+                                            <th width="5%">@L("Actions")</th>
+                                            <th></th>@*Code Code*@
+                                            <th></th>@*StatusId*@
+                                            <th></th>@*AssignedId*@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-xl-12" hidden>
+                                <table id="RfqTable2" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="20%">Code</th>
+                                            <th width="20%">Company Name</th>
+                                            <th width="20%">Project Name</th>
+                                            <th width="10%">Date</th>
+                                            <th width="20%">Contact Person</th>
+                                            <th width="20%">AE</th>
+                                            @*<th width="20%">Assigned Person</th>*@
+                                            <th width="15%">Status</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AssignedCreateModal" tabindex="-1" role="dialog" aria-labelledby="AssignedCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Assigned</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="RfqForm" id="RfqForm" role="form" enctype="multipart/form-data" novalidate class="form-validation">
+                    <div class="row clearfix" id="div1">
+                        <div class="col-md-12  col-xl-12">
+                            <div class="card">
+                                <div class="card-body card-block">
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12 ">
+                                            <div class="form-group">
+                                                <table id="AssignedTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="5%">#</th>@*0*@
+                                                            <th width="35%">Assigned Person</th>@*1*@
+                                                            <th width="15%">Email</th>@*2*@
+                                                            <th width="5%"></th>@*3 Action*@
+                                                            <th width="5%"></th>@*Employeeid*@
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="div2">
+                        <div class="col-md-12 col-xl-12">
+                            <div class="form-group">
+                                <label for="Lead">Assigned To</label>
+                                <input id="AssignedToId" type="hidden" name="AssignedToId" />
+                                <input type="text" id="AssignedTo" name="AssignedTo" placeholder="Type name to search" class="validate form-control" required maxlength="128">
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-6" hidden>
+                            <div class="form-group">
+                                <input id="Id" type="hidden" name="Id">
+                                <input id="Code" type="hidden" name="Code">
+                                <label for="Lead">Assigned Email</label>
+                                <input type="text" id="AssignedToEmail" name="AssignedToEmail" class="validate form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="btncancel" class="btn btn-default waves-effect" data-dismiss="modal">@L("Cancel")</button>
+                <button id="btnassign" class="btn btn-outline-success">Save</button>
+                <button id="btnupdate" class="btn btn-outline-success">Update</button>
+                @*<button id="UpdatetemButton" class="btn btn-outline-success btn-sm">Update</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<form id="RfqForm" name="RfqForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+        <input id="Id" type="hidden" name="Id">
+        <input id="Series" type="hidden" name="SeriesTypeId">
+        <input id="Prefix" type="hidden" name="Prefix">
+        <input id="Code" type="hidden" name="Code" />
+        <input id="CompanyId" type="hidden" name="CompanyId">
+        <input id="Type" type="hidden" name="Type">
+        <input id="LeadId" type="hidden" name="LeadId" />
+        <input id="LeadCode" type="hidden" name="LeadCode">
+        <input id="Lead" type="hidden" name="Lead">
+        <input id="ClientId" type="hidden" name="ClientId" />
+        <input id="ClientName" type="hidden" name="ClientName">
+        <input id="ProjectName" type="hidden" name="ProjectName" />
+        <input id="ContactPersonId" type="hidden" name="ContactPersonId">
+        <input id="ContactPerson" type="hidden" name="ContactPerson" />
+        <input id="Telno" type="hidden" name="Telno">
+        <input id="Phone" type="hidden" name="Phone" />
+        <input id="Email" type="hidden" name="Email">
+        <input id="Address" type="hidden" name="Address" />
+        <input id="DeliveryAddress" type="hidden" name="DeliveryAddress" />
+        <input id="Discount" type="hidden" name="Discount">
+        <input id="Vat" type="hidden" name="Vat" />
+
+    </form>*@

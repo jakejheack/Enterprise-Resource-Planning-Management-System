@@ -1,0 +1,394 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@*@using ezinvmvc.Web.Models.CV*@
+
+@{
+
+    ViewBag.CurrentPageName = PageNames.Company;
+
+}
+<style type="text/css">
+    .ui-autocomplete {
+        z-index: 2147483647;
+    }
+</style>
+
+@section scripts
+    {
+    <script src="~/view-resources/Views/Company/Index.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Company</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="text-right" style="padding-top:10px">
+                    @if (IsGranted(PermissionNames.Pages_Company_Create))
+                    {
+                        @*<button id="CreateNewButton" onclick="location.href='@Url.Action("Create", "Company")'" target="_blank" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create</button>*@
+                        <button id="CreateButton" data-toggle="modal" data-target="#CompanyCreateModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create Company</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        @*<div class="row align-items-center m--margin-bottom-10">
+                                <input type="text" id="h1" value="@Model.EmpId" hidden>
+                                <input type="text" id="hassignid" hidden>
+                                <div class="col-md-3 col-xl-3">
+                                    <div class="form-group">
+                                        <input type="text" id="DateFrom" name="DateFrom" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-xl-3">
+                                    <div class="form-group">
+                                        <input type="text" id="DateTo" name="DateTo" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-xl-3" hidden>
+                                    <div class="form-group">
+                                        <select id="StatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                            <option value="1">Draft</option>
+                                            <option value="2">Submitted</option>
+                                            <option value="3">For Revision</option>
+                                            <option value="4">Closed</option>
+                                            <option value="5">Revised</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" id="SearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Type Code and Client to search">
+                                            <span class="input-group-btn">
+                                                <button id="SearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="CompanyTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="10%">Abbr</th>
+                                            <th width="20%">Name</th>
+                                            <th width="10%">Default</th>
+                                            <th width="3%">@L("Actions")</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CompanyCreateModal" tabindex="-1" role="dialog" aria-labelledby="EmployeeCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Create New Company</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="CompanyCreateForm" role="form" novalidate class="form-validation">
+                    <div class="row clearfix">
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="abbr" class="form-label">Abbr</label>
+                                    <input id="abbr" type="text" name="Abbr" required maxlength="32" minlength="2" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input id="name" type="text" name="Name" required maxlength="32" minlength="2" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea id="description" name="Description" class="validate form-control"></textarea>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="companyAddress" class="form-label">Company Address</label>
+                                    <textarea id="CompanyAddress" name="CompanyAddress" class="validate form-control"></textarea>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-2">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="IsMain">Is Default</label>
+                                    <input type="checkbox" name="IsMain" class="filled-in" id="IsMain" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="email-input" class=" form-control-label">Tax Type</label>
+                                    <select name="TaxAccountId" id="TaxAccountId" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="email-input" class=" form-control-label">Currency</label>
+                                    <select name="CurrencyId" id="CurrencyId" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                        <option value="1">PHP</option>
+                                        <option value="2">USD</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Deposit Account</label>
+                                    <input type="hidden" id="DepositAccountId" name="DepositAccountId" required>
+                                    <input type="text" id="DepositAccount" name="DepositAccount" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Cash Account</label>
+                                    <input type="hidden" id="CashAccountId" name="CashAccountId" required>
+                                    <input type="text" id="CashAccount" name="CashAccount" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Bank Account</label>
+                                    <input type="hidden" id="BankAccountId" name="BankAccountId" required>
+                                    <input type="text" id="BankAccount" name="BankAccount" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Payable Account</label>
+                                    <input type="hidden" id="PayableAccountId" name="PayableAccountId" required>
+                                    <input type="text" id="PayableAccount" name="PayableAccount" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Receivable Account</label>
+                                    <input type="hidden" id="ReceivableAccountId" name="ReceivableAccountId" required>
+                                    <input type="text" id="ReceivableAccount" name="ReceivableAccount" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+                        <button id="submit" class="btn btn-outline-success btn-sm" type="submit"><i class="fa fa-save" aria-label="@L("Save")"></i>&nbsp;Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CompanyEditModal" tabindex="-1" role="dialog" aria-labelledby="CompanyEditModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Edit Company</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="CompanyEditForm" role="form" novalidate class="form-validation">
+                    <div class="row clearfix">
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input id="Id" type="text" name="Id" required hidden>
+                                    <label for="abbrE" class="form-label">Abbr</label>
+                                    <input id="abbrE" type="text" name="AbbrE" required maxlength="32" minlength="2" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input id="nameE" type="text" name="NameE" required maxlength="32" minlength="2" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="Edescription" class="form-label">Description</label>
+                                    <textarea id="descriptionE" name="DescriptionE" class="validate form-control"></textarea>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="ECompanyAddress" class="form-label">Company Address</label>
+                                    <textarea id="CompanyAddressE" name="CompanyAddressE" class="validate form-control"></textarea>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-2">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="IsMain">Is Default</label>
+                                    <input type="checkbox" name="IsMainE" class="filled-in" id="IsMainE" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="email-input" class=" form-control-label">Tax Type</label>
+                                    <select name="TaxAccountIdE" id="TaxAccountIdE" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="email-input" class=" form-control-label">Currency</label>
+                                    <select name="CurrencyIdE" id="CurrencyIdE" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                        <option value="1">PHP</option>
+                                        <option value="2">USD</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Deposit Account</label>
+                                    <input type="hidden" id="DepositAccountIdE" name="DepositAccountIdE" required>
+                                    <input type="text" id="DepositAccountE" name="DepositAccountE" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Cash Account</label>
+                                    <input type="hidden" id="CashAccountIdE" name="CashAccountIdE" required>
+                                    <input type="text" id="CashAccountE" name="CashAccountE" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Bank Account</label>
+                                    <input type="hidden" id="BankAccountIdE" name="BankAccountIdE" required>
+                                    <input type="text" id="BankAccountE" name="BankAccountE" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Payable Account</label>
+                                    <input type="hidden" id="PayableAccountIdE" name="PayableAccountIdE" required>
+                                    <input type="text" id="PayableAccountE" name="PayableAccountE" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Receivable Account</label>
+                                    <input type="hidden" id="ReceivableAccountIdE" name="ReceivableAccountIdE" required>
+                                    <input type="text" id="ReceivableAccountE" name="ReceivableAccountE" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+                        <button id="update" class="btn btn-outline-success btn-sm" type="submit"><i class="fa fa-save" aria-label="@L("Save")"></i>&nbsp;Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

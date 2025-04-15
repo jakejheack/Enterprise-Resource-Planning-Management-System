@@ -1,0 +1,267 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Web.Models.EmployeeSalaryRate
+
+@model EmployeeSalaryRateViewModel
+@{
+    ViewBag.CurrentPageName = PageNames.Employee_Salary_Rates;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/EmployeeSalaryRates/IndexSal.js" asp-append-version="true"></script>
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Employee Payroll Rate</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="text-right" style="padding-top:10px">
+                    <button id="EmployeeList" data-toggle="modal" data-target="#EmployeeListModal" class="btn btn-outline-primary btn-lg"><i class="fa fa-list-ol"></i>&nbsp;Employees</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-10 col-xl-10">
+                                <form name="EmployeeId" role="form" novalidate class="form-validation">
+                                    <input id="completeName" name="completeName" type="text" class="form-control" readonly required maxlength="128" placeholder="Select Employee">
+                                    <input id="EmpId" name="EmpId" type="hidden" class="form-control" required maxlength="128">
+                                </form>
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <button id="CompressButton" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" style="width:100%" class="btn btn-outline-primary btn-lg"><i class="fa fa-compress"></i>&nbsp;Compress</button>
+                                <button id="ExpandButton" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" style="width:100%" class="btn btn-outline-primary btn-lg"><i class="fa fa-expand"></i>&nbsp;Expand</button>
+                            </div>
+                            <div class="col-md-12 col-xl-12 m--margin-top-10">
+                                <div id="accordion">
+                                    <div id="collapseTwo" class="panel-collapse collapse out">
+                                        <form name="EmployeeRateSettings" role="form" novalidate class="form-validation">
+                                            <div class="text-right" style="padding-top:20px">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 col-xl-4 ">
+                                                    <label for="EmployeeCode">Start Date</label>
+                                                    <input id="StartDate" type="text" name="StartDate" class="form-control date-picker" required maxlength="128" placeholder="Salary Start date">
+                                                </div>
+                                                <div class="col-md-4 col-xl-4 ">
+                                                    <label for="EmployeeCode">End Date</label>
+                                                    <input id="EndDate" type="text" name="EndDate" class="form-control date-picker" required maxlength="128" placeholder="Salary End date">
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="PayrollPeriod">Payroll Period <i>(Tax)</i></label>
+                                                    <select id="PayrollPeriod" name="PayrollPeriod" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="PayrollRate">Payroll Rate</label>
+                                                    <select id="PayrollRate" name="PayrollRate" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="PayrollRatePerMonth">Payroll Rate Per Month</label>
+                                                    <input id="PayrollRatePerMonth" name="PayrollRatePerMonth" type="text" class="form-control" maxlength="128">
+                                                </div>
+                                                <div class="col-md-1 col-xl-4">
+                                                    <label for="MonthCount"># Of Day a month</label>
+                                                    <input id="MonthCount" name="MonthCount" type="text" class="form-control" maxlength="128" value="24">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="TimeIn">TimeIn</label>
+                                                    <input id="TimeIn" name="TimeIn" type="text" class="form-control" maxlength="128" placeholder="08:00" value="08:00">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="TimeIOut">TimeOut</label>
+                                                    <input id="TimeIOut" name="TimeIOut" type="text" class="form-control" maxlength="128" placeholder="17:00" value="17:00">
+                                                </div>
+                                                
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="PayrollRatePerPiece">Payroll Rate Semi-Monthly</label>
+                                                    <input id="PayrollRatePerPiece" name="PayrollRatePerPiece" type="text" class="form-control" maxlength="128">
+                                                </div>
+                                                <div class="col-md-1 col-xl-4">
+                                                    <label for="PieceCount"># Of days half-month</label>
+                                                    <input id="PieceCount" name="PieceCount" type="text" class="form-control" maxlength="128" value="12">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="MinLate">MinLate</label>
+                                                    <input id="MinLate" name="MinLate" type="text" class="form-control" maxlength="128" placeholder="00:15" value="08:15">
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="DeductionLate">Deduction Late</label>
+                                                    <input id="DeductionLate" name="DeductionLate" type="text" class="form-control" maxlength="128" placeholder="0.00" value="0.00">
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="PayrollRatePerWeek">Payroll Rate Per Week</label>
+                                                    <input id="PayrollRatePerWeek" name="PayrollRatePerWeek" type="text" class="form-control" maxlength="128">
+                                                </div>
+                                                <div class="col-md-1 col-xl-4">
+                                                    <label for="WeekCount"># Of days a Week</label>
+                                                    <input id="WeekCount" name="WeekCount" type="text" class="form-control" maxlength="128" value="6">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="FlexiTime">Flexi Time</label>
+                                                    <select id="FlexiTime" name="FlexiTime" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                        <option></option>
+                                                        <option value="true">Yes</option>
+                                                        <option value="false" selected>No</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="Overtime">W/Overtime</label>
+                                                    <select id="StrickOvertime" name="StrickOvertime" class="selectpicker form-control" tabindex="-1">
+                                                        <option></option>
+                                                        <option value="true" selected>Yes</option>
+                                                        <option value="false">No</option>
+                                                    </select>
+
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="PayrollRatePerDay">Payroll Rate Per Day</label>
+                                                    <input id="PayrollRatePerDay" name="PayrollRatePerDay" type="text" class="form-control" maxlength="128">
+                                                </div>
+                                                <div class="col-md-1 col-xl-4">
+                                                    <label for="DayCount"># Of Hour a Day</label>
+                                                    <input id="DayCount" name="DayCount" type="text" class="form-control" maxlength="128" value="9">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="Status">Status</label>
+                                                    <select id="Status" name="Status" class="selectpicker form-control">
+                                                        <option value='Active' selected>Active</option>
+                                                        <option value='InActive'>InActive</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="PayrollRatePerHour">Rate Per Hour</label>
+                                                    <input id="PayrollRatePerHour" name="PayrollRatePerHour" type="text" class="form-control" maxlength="128">
+                                                </div>
+                                                <div class="col-md-1 col-xl-4">
+                                                    <label for="HourCount">Number Of Hour</label>
+                                                    <input id="HourCount" name="HourCount" type="text" class="form-control" maxlength="128" value="1">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-8 col-xl-8">
+                                                    
+                                                </div>
+                                                <div class="col-md-1 col-xl-4">
+                                                    <div class="text-right" style="padding-top:30px">
+                                                        <div class="btn-group" role="group" style="width:100%">
+                                                            <button id="AllowanceNewbutton" style="width:100%" class="btn btn-outline-success"><i class="fa fa-eraser"></i>&nbsp; New</button>
+                                                            <button id="AllowanceCancelbutton" style="width:100%" class="btn btn-outline-danger"><i class="fa fa-edit"></i>&nbsp; Cancel</button>
+                                                            <button id="AllowanceSavebutton" style="width:100%" class="btn btn-outline-primary"><i class="fa fa-save"></i>&nbsp; Save</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="text-right" style="padding-top:20px">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <table id="EmployeeRates" class="display table table-striped table-bordered table-hover dt-responsive">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>FullName</th>
+                                    <th>Period</th>
+                                    <th>Rate</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>@L("Actions")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="EmployeeListModal" tabindex="-1" role="dialog" aria-labelledby="EmployeeListModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Employee List</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row align-items-center m--margin-bottom-10">
+                    <div class="col-md-4 col-xl-4">
+                    </div>
+                    <div class="col-md-4 col-xl-4">
+                        <div class="form-group">
+                            <select name="SearchBy" id="SearchBy" class="selectpicker form-control">
+                                <option value=0>-- Search By --</option>
+                                <option value="CompleteName">Full Name</option>
+                                <option value="Department">Department</option>
+                                <option value="Division">Division</option>
+                                <option value="Sectors">Sectors</option>
+                                <option value="Position">Position</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-xl-4">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" id="EmployeeTableFilter" class="form-control m-input" placeholder="Search...">
+                                <span class="input-group-btn">
+                                    <button id="GetEmployeeButton" class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    @* List *@
+                    <div class="col-md-12 col-xl-12">
+                        <table id="EmployeesTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Employee ID</th>
+                                    <th>Full Name</th>
+                                    <th>Cell No</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Status</th>
+                                    <th>@L("Actions")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+

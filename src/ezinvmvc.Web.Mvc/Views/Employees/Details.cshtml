@@ -1,0 +1,64 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Web.Models.Employees
+
+@model EmployeesDetailsModel
+@{
+    ViewBag.CurrentPageName = PageNames.Employees_Details;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Employees/Details.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Employee Details</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="Back" onclick="location.href='@Url.Action("Index", "Employees")'" target="_blank" class="btn btn-outline-success btn-sm"><i class="fa fa-backward"></i>&nbsp; Back</button>
+                    <button id="SaveEmployeeButton" class="btn btn-outline-primary btn-sm"><i class="fa fa-save"></i>&nbsp; Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body card-block">
+                        <form id="EmployeeDetailsForm" name="EmployeeDetailsForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+                            <div class="row">
+                                <input id="EmployeeId" class="form-control" type="text" name="EmployeeId" value="@Model.EmpOutput.EmployeeId">
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="Name">Name</label>
+                                    <input id="Name" class="form-control" type="text" name="Name" value="@Model.EmpOutput.FathersName" required maxlength="128">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="ContactNum">Contact Num</label>
+                                    <input id="ContactNum" class="form-control" type="text" name="ContactNum" value="@Model.EmpOutput.ContactNum" required maxlength="128">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="Relation">Relation</label>
+                                    <input id="Relation" class="form-control" type="text" name="Relation" value="@Model.EmpOutput.Relation" required maxlength="128">
+                                </div>
+                                <div class="col-md-12 col-xl-12 ">
+                                    <label for="Address">Address</label>
+                                    <input id="Address" class="form-control" type="text" name="Address" value="@Model.EmpOutput.Address" required maxlength="128">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

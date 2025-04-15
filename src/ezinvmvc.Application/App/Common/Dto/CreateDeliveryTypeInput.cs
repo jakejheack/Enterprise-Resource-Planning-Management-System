@@ -1,0 +1,18 @@
+﻿using Abp.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
+
+namespace ezinvmvc.App.Common.Dto
+{
+    public class CreateDeliveryTypeInput : Entity<int>
+    {
+        [Required]
+        public int Code { get; set; }
+
+        [Required]
+        [StringLength(ezinvmvcConsts.MaxLenght128, ErrorMessage = ezinvmvcConsts.ErrorMessage128)]
+        public string Name { get; set; }
+
+        [Required]
+        public int NoOfDays { get; set; }
+    }
+}

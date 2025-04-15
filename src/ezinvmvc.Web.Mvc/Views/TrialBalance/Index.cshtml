@@ -1,0 +1,151 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+
+@{
+    ViewBag.CurrentPageName = PageNames.Trial_Balance;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/TrialBalance/Index.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Trial Balance</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="ExportToExcelButton" class="btn btn-outline-success btn-sm"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card" id="accordion">
+                            @*<div class="card-header">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                    Filter
+                                </a>
+                            </div>*@
+                            @*<div id="collapseThree" class="panel-collapse collapse in show">*@
+                                <div class="card-body">
+                                    <div class="row align-items-center m--margin-bottom-10">
+                                        <div class="col-md-3 col-xl-3" hidden>
+                                            <div class="form-group">
+                                                <label style="margin-bottom:0px;">Company</label>
+                                                <div class="input-group">
+                                                    <select name="CompanyId" id="Companies" class="selectpicker form-control input-sm form-control-sm" tabindex="-1" data-live-search="true" required></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-xl-3">
+                                            <div class="form-group">
+                                                <label>From</label>
+                                                <input type="text" id="DateFrom" name="DateFrom" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 col-xl-3">
+                                            <div class="form-group">
+                                                <label>To</label>
+                                                <input type="text" id="DateTo" name="DateTo" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-xl-3">
+                                            <div class="form-group">
+                                                <span class="input-group-btn">
+                                                    <button id="SearchButton" class="btn btn-primary btn-sm" type="submit" style="margin-top:25px">Generate</button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-xl-3" hidden>
+                                            <div class="form-group">
+                                                <label style="margin-bottom:0px;">Account</label>
+                                                <input type="hidden" id="AccountId" name="AccountId" required>
+                                                <input type="text" id="Account" name="Account" placeholder="Type Name to search" class="input-sm form-control-sm form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-center m--margin-bottom-10" hidden>
+                                        <div class="col-md-3 col-xl-3">
+                                            <div class="form-group">
+                                                <label style="margin-bottom:0px;">Voucher</label>
+                                                <input type="text" id="SearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Transaction Code" value="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-xl-3">
+                                            <div class="form-group">
+                                                <label style="margin-bottom:0px;">Party Type</label>
+                                                <select id="Type" name="Type" class="selectpicker form-control input-sm form-control-sm">
+                                                    <option value="105">Client</option>
+                                                    <option value="108">Employee</option>
+                                                    <option value="200">Vendor</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <div class="form-group">
+                                                <label style="margin-bottom:0px;">Party</label>
+                                                <div class="input-group">
+                                                    <input type="hidden" id="PartyId" name="PartyId">
+                                                    <input type="hidden" id="PartyCode" name="PartyCode">
+                                                    <input type="text" id="PartyClient" name="PartyClient" placeholder="Type Client to search" class="form-control m-input input-sm form-control-sm">
+                                                    <input type="text" id="PartyEmployee" name="PartyEmployee" placeholder="Type Employee to search" class="form-control m-input input-sm form-control-sm">
+                                                    <input type="text" id="PartyVendor" name="PartyVendor" placeholder="Type Vendor to search" class="form-control m-input input-sm form-control-sm">
+                                                    <span class="input-group-btn">
+                                                        
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @*</div>*@
+                        </div>
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12 overflow-auto">
+                                <table id="ListTable" class="display table table-striped table-bordered table-hover dt-responsive" cellspacing="0" style="width:100%; white-space:normal;">
+                                    <thead>
+                                        <tr>
+                                            <th></th> @*0*@
+                                            <th width="15%">Account</th> @* 1 *@
+                                            <th width="10%">Debit</th> @* 2 *@
+                                            <th width="10%">Credit</th> @* 3 *@
+                                            <th></th> @* 4 AccountId*@
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th></th> @*0*@
+                                            <th width="15%"></th> @* 1 *@
+                                            <th width="10%">Debit</th> @* 2 *@
+                                            <th width="10%">Credit</th> @* 3 *@
+                                            <th></th> @* 4 AccountId*@
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

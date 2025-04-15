@@ -1,0 +1,241 @@
+﻿@using ezinvmvc.Web.Models.Common.Modals;
+@model ezinvmvc.Web.Models.Clients.ClientCreateModel
+@{
+    Layout = null;
+}
+<script src="~/view-resources/Views/Clients/_CreateModal.js" asp-append-version="true"></script>
+@Html.Partial("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel("Create Client"))
+<div class="modal-body">
+    <form id="ClientForm" name="ClientForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+
+        <div class="row">
+            <div class="col-md-4  col-xl-4" style="display:none">
+                <div class="form-group">
+                    <label for="Client">Company</label>
+                    <div class="input-group">
+                        @*<select name="CompanyId" id="CompanyId" class="selectpicker validate form-control" tabindex="-1" data-live-search="true"></select>*@
+                        <input type="hidden" id="CCompanyId" name="CompanyId" />
+                        <input type="text" id="CCompanyName" name="CompanyName" class="form-control" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-4" style="display:none">
+                <div class="form-group">
+                    <label for="Client">Ref. No</label>
+                    <input id="CCode" name="Code" class="form-control" type="text" value="0" maxlength="128">
+                </div>
+            </div>
+            <div class="col-md-4  col-xl-4" style="display:none">
+                <div class="form-group">
+                    <label>Date</label>
+                    <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                        <input id="LeadDate" class="form-control datetimepicker-input" placeholder="mm/dd/yyyy" type="text" name="LeadDate" data-target="#datetimepicker2" value='@System.DateTime.Now.ToString("MM/dd/yyyy")'>
+                        <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-4">&nbsp;</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4  col-xl-4">
+                <div class="form-group">
+                    <input type="hidden" value="105" id="hCTransactionCode" />
+                    <input type="hidden" id="Prefix" name="Prefix" value="-" />
+                    <label for="Client">Series</label>
+                    <div class="input-group">
+                        <select id="CSeriesTypeId" name="SeriesTypeId" class="selectpicker required form-control" tabindex="-1" data-live-search="true"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-xl-8 ">
+                <div class="form-group">
+                    <label for="Client">Name</label>
+                    <input id="CName" name="Name" class="validate form-control" type="text"  value="@Model.Client.Name" required maxlength="256" >
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-4 " hidden>
+                &nbsp;
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 col-xl-4" hidden>
+                <div class="form-group">
+                    <label for="Client">Type</label>
+                    <select id="CType" name="Type" class="selectpicker form-control">
+                        <option>Corporate</option>
+                        <option>Individual</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 col-xl-3 " style="display:none">
+                <div class="form-group">
+                    <label for="Client">Reseller</label>
+                    <select id="CIsReseller" name="IsReseller" class="selectpicker form-control">
+                        @if (Model.Client.IsReseller)
+                        {
+                            <option value=false>No</option>
+                            <option value=true selected>Yes</option>
+                        }
+                        else
+                        {
+                            <option value=false selected>No</option>
+                            <option value=true>Yes</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-4">
+                <div class="form-group">
+                    <label for="Client">TIN</label>
+                    <input id="CTaxNo" name="TaxNo" class="validate form-control" type="text" value="@Model.Client.TaxNo" maxlength="31">
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-4">
+                <div class="form-group">
+                    <label for="Client">VAT Type</label>
+                    <select id="CVATTypeId" name="VATTypeId" class="selectpicker form-control">
+                        <option value="0">-- Select --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-4">
+                <div class="form-group">
+                    <label for="Client">Email</label>
+                    <input type="email" id="CEmail" name="Email" class="validate form-control" value="@Model.Client.Email" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 col-xl-4">
+                <label for="Client">Tel. No</label>
+                <input type="text" id="CTelNo" name="TelNo" class="validate form-control" value="@Model.Client.TelNo">
+            </div>
+            <div class="col-md-4 col-xl-4">
+                <label for="Client">Fax No.</label>
+                <input type="text" id="CFaxNo" name="FaxNo" class="validate form-control" value="@Model.Client.FaxNo">
+            </div>
+            <div class="col-md-4 col-xl-4">
+                <label for="Client">Mobile No.</label>
+                <input type="text" id="CMobileNo" name="MobileNo" class="validate form-control" value="@Model.Client.MobileNo">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-xl-6">
+                <label for="Client">Market Segmentation</label>
+                <select id="CIndustryId" name="IndustryId" class="selectpicker form-control">
+                    <option value=0>-- Select --</option>
+                    @foreach (var item in Model.Industries)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                </select>
+                <span id="errCInds" class="error" style="display:none">This field is required.</span>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <label for="Client">Business Style</label>
+                <input id="BusinessStyle" class="validate form-control" type="text" name="BusinessStyle" value="@Model.Client.BusinessStyle">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 col-xl-4 ">
+                <div class="form-group">
+                    <label for="Client">Country</label>
+                    @*<div class="input-group">*@
+                    <select id="clbCountries" name="CountryId" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                        <option value=0>-- Select --</option>
+                        @foreach (var item in Model.Countries)
+                        {
+                            if (item.IsDefault)
+                            {
+                                <option value="@item.Id" name="@Html.NameFor(c => c.Client.CountryId)" selected>@item.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id" name="@Html.NameFor(c => c.Client.CountryId)">@item.Name</option>
+                            }
+                        }
+                    </select>
+                    <span id="errCCoun" class="error" style="display:none">This field is required.</span>
+                    @*<span class="input-group-btn">
+                <button id="CreateCountryButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#CountryCreateModal">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </span>
+        </div>*@
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-4 ">
+                <div class="form-group">
+                    <label for="Client">Province</label>
+                    @*<div class="input-group">*@
+                    <select id="clbProvinces" name="ProvinceId" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                        <option value=0>-- Select Country --</option>
+                    </select>
+                    <span id="errCProv" class="error" style="display:none">This field is required.</span>
+                    @*<span class="input-group-btn">
+                <button id="CreateProvinceButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#ProvinceCreateModal">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </span>
+        </div>*@
+                </div>
+            </div>
+            <div class="col-md-4 col-xl-4 ">
+                <div class="form-group">
+                    <label for="Client">City</label>
+                    @*<div class="input-group">*@
+                    <select id="clbCities" name="CityId" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                        <option value=0>-- Select Province --</option>
+                    </select>
+                    <span id="errCCity" class="error" style="display:none">This field is required.</span>
+                    @*<span class="input-group-btn">
+                <button id="CreateCityButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#CityCreateModal">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </span>
+        </div>*@
+                </div>
+            </div>
+            <div class="col-md-12 col-xl-12 ">
+                <div class="form-group">
+                    <label for="Client">Address</label>
+                    <textarea id="address" name="Address" maxlength="328" class="validate form-control" required></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-xl-6">
+                <div class="form-group">
+                    <label for="Client">Assigned To</label>
+                    <input id="CAssignedToId" type="hidden" name="AssignedToId" value="@Model.Client.AssignedToId" />
+                    <input type="text" id="CAssignedTo" name="AssignedTo" placeholder="Type name to search" class="validate form-control" value="@Model.Client.AssignedTo" required maxlength="128">
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="form-group">
+                    <label for="Client">Assigned Email</label>
+                    <input type="text" id="CAssignedToEmail" name="AssignedToEmail" class="validate form-control" value="@Model.Client.AssignedToEmail" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="display:none">
+            <div class="col-md-4 col-xl-4">
+                <label for="Client">Status</label>
+                <select id="CStatusId" name="StatusId" class="selectpicker form-control">
+                    <option value="1" selected>Lead</option>
+                    <option value="2">Client</option>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+@Html.Partial("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")

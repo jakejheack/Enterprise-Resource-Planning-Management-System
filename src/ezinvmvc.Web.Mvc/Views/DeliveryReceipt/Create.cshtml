@@ -1,0 +1,647 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+
+@{
+    ViewBag.CurrentPageName = PageNames.Delivery_Recepit_Create;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/DeliveryReceipt/Create.js" asp-append-version="true"></script>
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Create Delivery Receipt</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="SaveButton" class="btn btn-outline-primary btn-sm"><i class="fa fa-save"></i>&nbsp; Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <form id="SalesOrderForm" name="DeliveryReceiptForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+            <div class="row clearfix">
+                <div class="col-md-12  col-xl-12">
+                    <div class="card">
+                        <div class="card-body card-block">
+                            <div class="row" hidden>
+                                <select name="CompanyId" id="Companies" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label for="txtClient">Sales Order</label>
+                                        <input id="SalesOrderId" type="hidden" name="SalesOrderId" required>
+                                        <input id="SalesOrderCode" class="form-control" type="text" name="SalesOrderCode" placeholder="Type here" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label>Date</label>
+                                        <div class="input-group date" data-provide="datepicker">
+                                            <input type="text" name="TransactionTime" class="form-control date-picker" disabled required>
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3  col-xl-3">
+                                    <div class="form-group">
+                                        <label for="Product">Series</label>
+                                        <div class="input-group">
+                                            <select name="SeriesTypeId" id="Series" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3  col-xl-3">
+                                    <div class="form-group">
+                                        <label for="Product">Code</label>
+                                        <input id="SeriesCode" class="form-control" type="text" name="SeriesCode" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label for="ddPriceType">Price Type</label>
+                                        <select name="PricingTypeId" id="PricingTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true" required disabled></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label for="txtClient">Client Name</label>
+                                        <input id="IsMoveOrderStatus" type="hidden" name="IsMoveOrderStatus" value="1" required>
+                                        <input id="ClientId" type="hidden" name="ClientId" required>
+                                        <input id="ClientName" class="form-control" type="text" name="Client" placeholder="Type here" required readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label for="ddOrderType">Target Warehouse</label>
+                                        @*<select name="DefaultSourceId" id="DefaultSources" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>*@
+                                        <select id="DefaultSources" class="form-control" tabindex="-1" hidden></select>
+                                        <input type="hidden" id="DefaultSourceId" name="DefaultSourceId" />
+                                        <input type="text" id="TargetWarehouse" class="form-control" tabindex="-1" readonly/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label for="txtClient">Account Executive</label>
+                                        <input id="SalesAgentId" type="hidden" name="SalesAgentId" required>
+                                        <input id="SalesAgent" class="form-control" type="text" name="SalesAgent" placeholder="Type here" required readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label>Delivery Date</label>
+                                        <div class="input-group">
+                                            <input type="text" id="DeliveryTime" name="DeliveryTime" class="form-control date-picker" required>
+                                            <span class="input-group-btn">
+                                                <button id="DeliveryStatusDate" type="button" class="btn btn-default btn-lg">
+                                                    <i id="DeliveryStatusDateIcon" class="fa fa-check-square fa-lg"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix" hidden>
+                <div class="col-md-12 col-xl-12">
+                    <div class="card" id="accordion">
+                        <div class="card-header">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                <span class="glyphicon glyphicon-file">
+                                </span>Transport Details
+                            </a>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in show">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6  col-xl-6">
+                                        @*<input id="ClientEmail" type="text" name="ClientEmail" class="form-control" readonly hidden>*@
+                                        <div class="form-group">
+                                            <label>Transporter</label>
+                                            <select name="TransporterId" id="Transporter" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6  col-xl-6">
+                                        <div class="form-group">
+                                            <label>Transport Mode</label>
+                                            <select name="TransportModeId" id="TransportMode" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6  col-xl-6">
+                                        <input id="ClientEmail" type="text" name="ClientEmail" class="form-control" readonly hidden>
+                                        <div class="form-group">
+                                            <label>Transport Receipt No</label>
+                                            <input id="TransportReceiptNo" type="text" name="TransportReceiptNo" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6  col-xl-6">
+                                        <div class="form-group">
+                                            <label>Transport Receipt Date</label>
+                                            <div class="input-group date" data-provide="datepicker">
+                                                <input type="text" name="TransportReceiptTime" class="form-control date-picker">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6  col-xl-6">
+                                        <div class="form-group">
+                                            <label>Vehicle No</label>
+                                            <input id="VehicleNo" type="text" name="VehicleNo" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6  col-xl-6">
+                                        <div class="form-group">
+                                            <label>Vehicle Type</label>
+                                            <select name="VehicleTypeId" id="VehicleType" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6  col-xl-6">
+                                        <div class="form-group">
+                                            <label>Driver Name</label>
+                                            <input id="DriverName" type="text" name="DriverName" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6  col-xl-6">
+                                        <div class="form-group">
+                                            <label>Distance (km)</label>
+                                            <input id="Distance" type="number" name="Distance" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-md-12 col-xl-12">
+                    <div class="card" id="accordion">
+                        <div class="card-header">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                <span class="glyphicon glyphicon-file">
+                                </span>Address and Contact
+                            </a>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse in show">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6  col-xl-6">
+                                        <div class="form-group">
+                                            <label>Contact Person</label>
+                                            <input id="ContactPersonId" type="hidden" name="ContactPersonId" class="form-control" >
+                                            <input id="ContactPerson" type="text" name="ContactPerson" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6  col-xl-6">
+                                        <div class="form-group">
+                                            <label>Contact No.</label>
+                                            <input id="ContactNo" type="text" name="ContactNo" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6  col-xl-6">
+                                        <input id="ClientEmail" type="text" name="ClientEmail" class="form-control" readonly hidden>
+                                        <div class="form-group">
+                                            <label>Delivery Address</label>
+                                            <textarea id="DeliveryAddress" name="DeliveryAddress" rows="4" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6  col-xl-6">
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-md-12 col-xl-12">
+                    <div class="card" id="accordion">
+                        <div class="card-header">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                <span class="glyphicon glyphicon-file">
+                                </span>Notes
+                            </a>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in show">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12  col-xl-12">
+                                        <div class="form-group">
+                                            <textarea id="Notes" name="Notes" class="form-control" rows="5" placeholder="Notes" maxlength="328"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-md-12  col-xl-12">
+                    <div class="card">
+                        <div class="card-body card-block">
+                            <div class="row">
+                                <div class="col-md-12  col-xl-12">
+                                    <div class="form-group">
+                                        <table id="ItemsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th width="5%">#</th>@*0*@
+                                                    <th width="35%">Item</th>@*1*@
+                                                    <th width="15%">Quantity</th>@*2*@
+                                                    <th width="15%">Price</th>@*3 Price*@
+                                                    <th width="10%">Less</th>@*4 DiscTotal*@
+                                                    <th width="15%">Total</th>@*5 Total*@
+                                                    <th width="5%"></th>@*6 Total*@
+                                                    <th>7</th>@*7 ProductId*@
+                                                    <th>8</th>@*8 Description*@
+                                                    <th>9</th>@*9 OrderQty*@
+                                                    <th>10</th>@*10 UnitId*@
+                                                    <th>11</th>@*11 Disc1*@
+                                                    <th>12</th>@*12 DiscType1*@
+                                                    <th>13</th>@*13 Disc2*@
+                                                    <th>14</th>@*14 DiscType2*@
+                                                    <th>15</th>@*15 Disc3*@
+                                                    <th>16</th>@*16 DiscType3*@
+                                                    <th>17</th>@*17 ProductCode*@
+                                                    <th>18</th>@*18 SOI Id*@
+                                                    <th>19</th>@*19 OrderQty*@
+                                                    <th>20</th>@*20 DeliveryQty*@
+                                                    <th>21</th>@*21 Color*@
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row clearfix">
+                <div class="col-md-12  col-xl-12">
+                    <div class="card">
+                        <div class="card-body card-block">
+                            <div class="row">
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="row form-group" hidden>
+                                        <div class="col-md-3 col-xl-3 text-left" style="padding-top:5px">
+                                            <label for="email-input" class=" form-control-label">Tax Type</label>
+                                        </div>
+                                        <div class="col-md-8 col-xl-8">
+                                            <select name="TaxTypeId" id="TaxTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true" disabled></select>
+                                        </div>
+                                        <div class="col-md-1 col-xl-1 text-left">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="row form-group">
+                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                            <label for="email-input" class=" form-control-label"><strong>Total Qty</strong></label>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <input type="text" id="QuantityTotal" disabled name="QuantityTotal" class="form-control text-right text-danger" required>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group" hidden>
+                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                            <label for="email-input" class=" form-control-label"><strong>Discount</strong></label>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <input type="text" id="DiscountTotal" disabled name="DiscountTotal" class="form-control text-right text-danger" required>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group" hidden>
+                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                            <label for="email-input" class=" form-control-label"><strong>Net Total</strong></label>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <input type="text" id="NetTotal" disabled name="NetTotal" class="form-control text-right" required>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group" hidden>
+                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                            <label for="email-input" class=" form-control-label"><strong>Tax</strong></label>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <input type="text" id="Tax" disabled name="Tax" class="form-control text-right" required>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group" hidden>
+                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                            <label for="email-input" class=" form-control-label"><strong>Total</strong></label>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <input type="text" id="Total" disabled name="Total" class="form-control text-right" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix" hidden>
+                <div class="col-md-12 col-xl-12">
+                    <div class="card" id="accordion">
+                        <div class="card-header">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                <span class="glyphicon glyphicon-file">
+                                </span>Other Charges
+                            </a>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in show">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12  col-xl-12">
+                                        <div class="form-group">
+                                            <table id="ChargesTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="5%">#</th>@*0*@
+                                                        <th width="45%">Type</th>@*1*@
+                                                        <th width="20%">Rate</th>@*2*@
+                                                        <th width="20%">Amount</th>@*3 Price*@
+                                                        <th width="20%">Total</th>@*4 Total*@
+                                                        <th width="5%"></th>@*5 Total*@
+                                                        <th></th>@*6 ChargeTypeId*@
+                                                        <th></th>@*7 Id*@
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                            <table id="ChargesTableDeleted" class="display table table-striped table-bordered table-hover dt-responsive nowrap" hidden>
+                                                <thead>
+                                                    <tr>
+                                                        <th width="5%">#</th>@*0*@
+                                                        <th width="50%">Type</th>@*1*@
+                                                        <th width="20%">Rate</th>@*2*@
+                                                        <th width="20%">Amount</th>@*3 Price*@
+                                                        <th width="20%">Total</th>@*4 Total*@
+                                                        <th width="5%"></th>@*5 Total*@
+                                                        <th></th>@*6 ChargeTypeId*@
+                                                        <th></th>@*7 Id*@
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row clearfix" hidden>
+                <div class="col-md-12  col-xl-12">
+                    <div class="card">
+                        <div class="card-body card-block">
+                            <div class="row">
+                                <div class="col-md-6  col-xl-6">
+
+                                </div>
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="row form-group">
+                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                            <label for="email-input" class=" form-control-label"><strong>Other Charges</strong></label>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <input type="text" id="ChargesTotal" disabled name="ChargesTotal" class="form-control text-right font-weight-bold" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6  col-xl-6">
+
+                                </div>
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="row form-group">
+                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                            <label for="email-input" class=" form-control-label"><strong>Grand Total</strong></label>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <input type="text" id="GrandTotal" disabled name="GrandTotal" class="form-control text-right font-weight-bold" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="ItemEditModal" tabindex="-1" role="dialog" aria-labelledby="ItemEditModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title text-success">
+                    <span>Edit Item # </span><label id="EIndexNo">0</label>
+                </h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-6  col-xl-6">
+                    </div>
+                    <div class="col-md-6  col-xl-6">
+                        <div class="form-group">
+                            <label>Color</label>
+                            <input id="Color" name="Color" type="text" class="form-control" placeholder="Color">
+                            <input id="ESoid" name="ESoid" type="hidden" class="form-control" placeholder="Color">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6  col-xl-6">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input id="EProductId" type="hidden">
+                            <input id="EProductName" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6  col-xl-6">
+                        <div class="form-group">
+                            <label>Code</label>
+                            <input id="EProductCode" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6  col-xl-6">
+                        <div class="row">
+                            <div class="col-md-6  col-xl-6">
+                                <div class="form-group">
+                                    <label>Order</label>
+                                    <input id="EOrderQuantity" type="text" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6  col-xl-6">
+                                <div class="form-group">
+                                    <label>Delivered</label>
+                                    <input id="EDeliverQuantity" type="text" class="form-control" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6  col-xl-6">
+                        <div class="row">
+                            <div class="col-md-6  col-xl-6">
+                                <div class="form-group">
+                                    <label>Unit</label>
+                                    <select id="EUnits" class="selectpicker form-control" tabindex="-1" data-live-search="true" disabled></select>
+                                </div>
+                            </div>
+                            <div class="col-md-6  col-xl-6">
+                                <div class="form-group" hidden>
+                                    <label>Price</label>
+                                    <input id="EPrice" type="text" class="form-control" onkeypress="return decimalOnly(this.id);" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6  col-xl-6">
+                        <div class="row">
+                            <div class="col-md-6  col-xl-6">
+                                <div class="form-group">
+                                    <label>Quantity</label>
+                                    <input id="EQuantity" type="text" name="Quantity" class="form-control" onkeypress="return decimalOnly(this.id);">
+                                </div>
+                            </div>
+                            <div class="col-md-6  col-xl-6">
+                                <div class="form-group">
+                                    <label>Stocks</label>
+                                    <input id="EStocks" type="text" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-12  col-xl-12">
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea id="EPerDescription" class="form-control" rows="3" maxlength="2000"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12  col-xl-12" hidden>
+                                <div class="card" id="accordioneditdiscount">
+                                    <div class="card-header">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                            Add Discount
+                                        </a>
+                                    </div>
+                                    <div id="collapseThree" class="panel-collapse collapse in">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="form-group">
+                                                        <label>Discount</label>
+                                                        <input id="EDiscount1" type="text" class="form-control" onkeypress="return decimalOnly(this.id);" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="form-group">
+                                                        <label>Type</label>
+                                                        <select id="EDiscountType1" class="selectpicker form-control" tabindex="-1" data-live-search="true" disabled>
+                                                            <option value=2>Percent</option>
+                                                            <option value=1>Value</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="form-group">
+                                                        <label>Discount</label>
+                                                        <input id="EDiscount2" type="text" class="form-control" onkeypress="return decimalOnly(this.id);" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="form-group">
+                                                        <label>Type</label>
+                                                        <select id="EDiscountType2" class="selectpicker form-control" tabindex="-1" data-live-search="true" disabled>
+                                                            <option value=2>Percent</option>
+                                                            <option value=1>Value</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="form-group">
+                                                        <label>Discount</label>
+                                                        <input id="EDiscount3" type="text" class="form-control" onkeypress="return decimalOnly(this.id);" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6  col-xl-6">
+                                                    <div class="form-group">
+                                                        <label>Type</label>
+                                                        <select id="EDiscountType3" class="selectpicker form-control" tabindex="-1" data-live-search="true" disabled>
+                                                            <option value=2>Percent</option>
+                                                            <option value=1>Value</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6  col-xl-6">
+                        <div class="form-group">
+                            <img id="EProductImage" src="" class="img-fluid img-thumbnail" style="margin-top:25px" alt="your image" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-sm waves-effect" data-dismiss="modal">@L("Cancel")</button>
+                <button id="UpdatetemButton" class="btn btn-outline-success btn-sm">Update</button>
+            </div>
+        </div>
+    </div>
+</div>

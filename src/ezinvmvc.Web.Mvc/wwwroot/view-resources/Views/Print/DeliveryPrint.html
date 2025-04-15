@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+
+        html, body, div, h1, h2, h3, p, blockquote, ul, ol, li, pre {
+            margin: 0;
+            padding: 0
+        }
+
+        li {
+            margin-left: 1.5em
+        }
+
+        @page {
+            size: a4;
+            margin: 40mm 15mm 20mm 15mm
+        }
+
+        @media screen {
+            body {
+                margin: 5em
+            }
+        }
+
+        body {
+            font: italic 14pt Verdana, serif
+        }
+
+        q::before {
+            content: "\201C";
+        }
+
+        q::after {
+            content: "\201D";
+        }
+
+        q {
+            font-style: italic
+        }
+
+        h1 {
+            font-size: 3em;
+            font-family: "Ubuntu Condensed";
+            padding: 0 0 3em
+        }
+
+        h2, h3 {
+            font-size: 1.1em;
+            margin: 0.8em 0 0.4em
+        }
+
+        p, li {
+            margin: 0.2em 0 0.4em
+        }
+
+        ul, ol {
+            margin: 0.2em 0 0.4em 1.5em
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit
+        }
+
+        table {
+            width: 100%;
+            margin: 0.5em 0;
+            padding: 0;
+            border: none;
+            border-collapse: collapse
+        }
+
+        tr, td, th {
+            padding: 0;
+            text-align: left;
+            border: none;
+            vertical-align: top;
+        }
+
+            tr.total td {
+                background: #ddd;
+                padding: 0.2em 0
+            }
+
+            tr.item td {
+                background: #eee;
+                padding: 0.2em 0
+            }
+
+            tr.head td {
+                font-weight: bold;
+                padding: 1.5em 0 0.2em 0;
+                border-bottom: thin solid black
+            }
+
+            tr.instruction td {
+                padding: 3em 0 1em
+            }
+
+        table .amount {
+            text-align: right
+        }
+
+        /*#ItemsTablePrintActual {
+            font-size : 13px;
+        }*/
+    </style>
+
+    <script type="text/javascript">
+        var newDiv;
+        function init() {
+            document.body.innerHTML = newDiv;
+            //window.print();
+            //window.close();
+        }
+</script>
+
+    <title>Print</title>
+</head>
+<body onload="init()">
+
+</body>
+</html>

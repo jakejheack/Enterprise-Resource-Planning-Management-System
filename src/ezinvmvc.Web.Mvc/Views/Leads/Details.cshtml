@@ -1,0 +1,1450 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Leads
+@using ezinvmvc.App.Leads
+
+@model LeadEditModel
+@{
+    ViewBag.CurrentPageName = PageNames.Leads_Details;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Leads/Details.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Lead Details</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12 col-xl-12">
+                <div class="card">
+                    <div class="card-body card-block">
+                        <div class="row clearfix">
+                            <div class="col-md-12 col-xl-12">
+                                <h4 class="font-weight-bold" style="font-size:1.5rem">
+                                    Ref. No. : @Model.Lead.Code
+                                    &nbsp;&nbsp;&nbsp;
+                                    Project : @Model.Lead.Project
+                                </h4>
+                                <input type="hidden" id="LeadId" value="@Model.Lead.Id" />
+                                <input type="hidden" id="LeadUpdateId" value="@Model.Lead.ULeadUpdateId" />
+                                <input type="hidden" id="h1" value="@Model.EmpId" />
+                                <input type="hidden" id="ProjectName" value="@Model.Lead.Project" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row clearfix">
+                            <div class="col-md-12 col-xl-12">
+                                <div class="custom-tab">
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <a data-toggle="tab" href="#generalinfo" class="nav-item nav-link active show" role="tab" aria-controls="custom-nav-home" aria-selected="true">General Info</a>
+                                            <a data-toggle="tab" href="#updates" class="nav-item nav-link" role="tab" aria-controls="custom-nav-home" aria-selected="false">Updates</a>
+                                            @if (IsGranted(PermissionNames.Pages_Rfq))
+                                            {
+                                                <a id="liRFQ" class="nav-item nav-link" data-toggle="tab" role="tab" aria-controls="custom-nav-home" aria-selected="false" href="#rfq">RFQ</a>
+                                            }
+                                            @if (IsGranted(PermissionNames.Pages_Quotations))
+                                            {
+                                                <a id="liQuotation" class="nav-item nav-link" data-toggle="tab" role="tab" aria-controls="custom-nav-home" aria-selected="false" href="#quotation">Quotation</a>
+                                            }
+                                            @if (IsGranted(PermissionNames.Pages_Sales_Orders))
+                                            {
+                                                <a id="liSalesOrder" class="nav-item nav-link" data-toggle="tab" role="tab" aria-controls="custom-nav-home" aria-selected="false" href="#order">Sales Order</a>
+                                            }
+                                                <a hidden data-toggle="tab" href="#invoice">Sales Invoice</a>
+                                                <a hidden data-toggle="tab" href="#documents">File Attachments</a>
+                                            </div>
+                                    </nav>
+                                    <div class="tab-content pl-3 pt-2">
+                                        <div class="tab-pane fade in active show" id="generalinfo">
+                                            <div class="row">
+                                                <div class="col-md-4 col-xl-4" hidden>
+                                                    <div class="form-group">
+                                                        <label for="Lead">Ref. No.</label>
+                                                        <input id="Id" type="hidden" name="Id" value="@Model.Lead.Id">
+                                                        <input type="hidden" id="CompanyId" name="CompanyId" value="@Model.Lead.CompanyId" />
+                                                        <input type="hidden" id="SeriesTypeId" name="SeriesTypeId" value="@Model.Lead.SeriesTypeId" />
+                                                        <input type="hidden" id="Prefix" name="Prefix" value="@Model.Lead.Prefix" />
+                                                        <input type="hidden" id="Code" name="Code" value="@Model.Lead.Code" />
+                                                        <input id="iCode" class="form-control" type="text" name="iCode" value="@Model.Lead.Code" readonly maxlength="128">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4  col-xl-4">
+                                                    <div class="form-group">
+                                                        <label>Date</label>
+                                                        <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                                                            <input id="LeadDate" class="form-control datetimepicker-input" placeholder="mm/dd/yyyy" type="text" name="LeadDate" data-target="#datetimepicker2" value='@System.DateTime.Now.ToString("MM/dd/yyyy")'>
+                                                            <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                            </div>
+                                                        </div>
+                                                        <span id="errDate" class="error" style="display:none">This field is required.</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4" style="display:none">&nbsp;</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4 col-xl-4 " style="display:none">
+                                                    <div class="form-group">
+                                                        <label for="Lead">Type</label>
+                                                        <select id="LeadType" name="LeadType" class="selectpicker form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-7 col-xl-7 ">
+                                                    <div class="form-group">
+                                                        <label for="Lead">Client</label>
+                                                        <input id="ClientId" type="hidden" name="ClientId" value="@Model.Lead.ClientId" />
+                                                        <input id="Name" class="validate form-control" type="text" name="Name" value="@Model.Lead.ClientName" required maxlength="256">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5 col-xl-5 ">
+                                                    <div class="form-group">
+                                                        <label for="Lead">Contact Person</label>
+                                                        <input id="ContactPersonId" type="hidden" name="ContactPersonId" value="@Model.Lead.ContactPersonId" />
+                                                        <input id="ContactPerson" class="validate form-control" type="text" name="ContactPerson" value="@Model.Lead.ContactPerson" required maxlength="256">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="Lead">Tel. No</label>
+                                                    <input id="TelNo" class="form-control" type="text" name="TelNo" value="@Model.Lead.TelNo" readonly>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="Lead">Fax No.</label>
+                                                    <input id="FaxNo" class="form-control" type="text" name="FaxNo" value="@Model.Lead.FaxNo" readonly>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="Lead">Mobile No.</label>
+                                                    <input id="MobileNo" class="form-control" type="text" name="MobileNo" value="@Model.Lead.MobileNo" readonly>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <label for="Lead">Email</label>
+                                                    <input id="Email" class="form-control" type="email" name="Email" value="@Model.Lead.Email" readonly>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6 ">
+                                                    &nbsp;
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12 col-xl-12 ">
+                                                    <div class="form-group">
+                                                        <label for="Lead">Address</label>
+                                                        <textarea id="Address" name="Address" maxlength="328" class="form-control" asp-for="@Model.Lead.Address" readonly></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" hidden>
+                                                <div class="col-md-8 col-xl-8 ">
+                                                    <div class="form-group">
+                                                        <label for="Lead">Project</label>
+                                                        <input id="Project" class="validate form-control" type="text" name="Project" value="@Model.Lead.Project" required maxlength="128">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4 ">
+                                                    &nbsp;
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 col-xl-6">
+                                                    <label for="Lead">Source</label>
+                                                    <select id="LeadSourceId" name="LeadSourceId" class="selectpicker form-control">
+                                                        <option value=0>-- Select --</option>
+                                                        @foreach (var item in Model.Sources)
+                                                        {
+                                                            if (item.Id == Model.Lead.LeadSourceId)
+                                                            {
+                                                                <option selected value="@item.Id">@item.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.Id">@item.Name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" hidden>
+                                                <div class="col-md-4 col-xl-4 ">
+                                                    <div class="form-group">
+                                                        <label for="Lead">Country</label>
+                                                        <div class="input-group">
+                                                            <select name="CountryId" id="lbCountries" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                                <option value=0>-- Select --</option>
+                                                            </select>
+                                                            <span class="input-group-btn">
+                                                                <button id="CreateCountryButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#CountryCreateModal">
+                                                                    <i class="fa fa-plus"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4 ">
+                                                    <div class="form-group">
+                                                        <label for="Lead">Province</label><div class="input-group">
+                                                            <select name="ProvinceId" id="lbProvinces" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                                <option value=0>-- Select Country --</option>
+                                                            </select>
+                                                            <span class="input-group-btn">
+                                                                <button id="CreateProvinceButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#ProvinceCreateModal">
+                                                                    <i class="fa fa-plus"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4 ">
+                                                    <div class="form-group">
+                                                        <label for="Lead">City</label>
+                                                        <div class="input-group">
+                                                            <select name="CityId" id="lbCities" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                                <option value=0>-- Select Province --</option>
+                                                            </select>
+                                                            <span class="input-group-btn">
+                                                                <button id="CreateCityButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#CityCreateModal">
+                                                                    <i class="fa fa-plus"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" hidden>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <label for="Lead">Market Segmentation</label>
+                                                    <select id="LDIndustryId" name="IndustryId" class="selectpicker form-control">
+                                                        <option value=0>-- Select --</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" hidden>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <label for="Lead">Task</label>
+                                                    <select id="LDLeadTaskId" name="LeadTaskId" class="selectpicker form-control">
+                                                        <option value=0>-- Select --</option>
+                                                        @foreach (var item in Model.Tasks)
+                                                        {
+                                                            if (item.Id == Model.Lead.LeadTaskId)
+                                                            {
+                                                                <option selected value="@item.Id">@item.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@item.Id">@item.Name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" hidden>
+                                                <div class="col-md-12 col-xl-12 ">
+                                                    <div class="form-group">
+                                                        <label for="Lead">Notes</label>
+                                                        <textarea id="LDNotes" name="Notes" maxlength="328" class="validate form-control" asp-for="@Model.Lead.Notes"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" hidden>
+                                                <div class="col-md-6 col-xl-6" style="display:none">
+                                                    <div class="form-group">
+                                                        <label for="Lead">Assigned To</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <div class="form-group">
+                                                        <label for="Lead">Assigned To</label>
+                                                        <input id="LDAssignedToId" type="hidden" name="AssignedToId" value="@Model.Lead.AssignedToId" />
+                                                        <input id="LDAssignedTo" class="validate form-control" type="text" name="AssignedTo" value="@Model.Lead.AssignedTo" required maxlength="128">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <div class="form-group">
+                                                        <label for="Lead">Assigned Email</label>
+                                                        <input id="LDAssignedToEmail" class="validate form-control" type="text" name="AssignedToEmail" value="@Model.Lead.AssignedToEmail">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <div class="form-group">
+                                                        <label for="Lead">Next Contact Date</label>
+                                                        <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                                                            <input id="LDNextContactDateTime" class="form-control datetimepicker-input" placeholder="mm/dd/yyyy hh:mm tt" type="text" name="NextContactDateTime" data-toggle="datetimepicker" data-target="#datetimepicker1" value="@Convert.ToDateTime(Model.Lead.NextContactDateTime).ToString("MM/dd/yyyy hh:mm tt")">
+                                                            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    &nbsp;
+                                                </div>
+                                            </div>
+
+                                            <div class="row" hidden>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="Lead">Status</label>
+                                                    <select id="LDStatusId" name="StatusId" class="selectpicker form-control">
+                                                        <option value="1">Open</option>
+                                                        <option value="2">Lead</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-pane fade " id="updates">
+                                            <div class="col-md-12 col-xl-12">
+                                                <div class="col-md-12 col-xl-12">
+                                                    <h5 style="display: none">Updates</h5>
+                                                    <div class="text-right" style="padding-top:10px">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="display: none">
+                                                    <div class="row align-items-center m--margin-bottom-10">
+                                                        @if (Model.Lead.StatusId == 2)
+                                                        {
+                                                            if (IsGranted(PermissionNames.CRM_Leads_Updates))
+                                                            {
+                                                                <div class="col-md-12 col-xl-12" style="display: none">
+                                                                    <div class="pull-right">
+                                                                        <a id="openCP" onclick="toggleCP()" class="btn btn-sm btn-success">
+                                                                            <span class="fa fa-sm fa-plus"></span>&nbsp;Add
+                                                                        </a>
+                                                                        <a id="closeCP" onclick="reToggleCP()" class="btn btn-sm btn-danger" style="display: none">
+                                                                            <span class="fa fa-sm fa-close"></span>&nbsp;Cancel
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        }
+                                                    </div>
+
+                                                    <div id="divCP" class="col-md-12 col-xl-12" style="display: none">
+                                                        <div class="col-md-4 col-xl-4">
+                                                            <label>First Name: &nbsp;<span id="errcpfname" style="color: red;"></span></label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon" style="padding: 0 0 0 0 !important; border: 0 !important;">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 col-xl-12">
+                                                                <label>Last Name: &nbsp;<span id="errcplname" style="color: red;"></span></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label>Position: &nbsp;<span id="errcppos" style="color: red;"></span></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label>Birthday: &nbsp;<span id="errcpbday" style="color: red;"></span></label>
+                                                                <div class="form-group">
+                                                                    <div class='input-group date datepicker'>
+                                                                        <input type="text" id="txtBirthDate" class="form-control" name="date" />
+                                                                        <span class="input-group-addon">
+                                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <label>Tel. No.: &nbsp;<span id="errcptel" style="color: red;"></span></label>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <label>Mobile No.: &nbsp;<span id="errcpmob" style="color: red;"></span></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label>Email: &nbsp;<span id="errcpemail" style="color: red;"></span></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label>Status:</label>
+                                                            </div>
+                                                            <div class="col-sm-12" id="divSaveCP" style="text-align: right">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                @* Filter *@
+                                                <div class="row align-items-center m--margin-bottom-10">
+                                                    <div class="col-md-4 col-xl-4">
+                                                        <button id="CreateUpdatesButton" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create</button>
+                                                    </div>
+                                                    <div class="col-md-4 col-xl-4">
+
+                                                    </div>
+                                                    <div class="col-md-4 col-xl-4">
+                                                        <div class="input-group">
+                                                            <input type="text" id="UpdatesSearchFilter" class="form-control m-input" placeholder="Search...">
+                                                            <span class="input-group-btn">
+                                                                <button id="UpdatesSearchButton" class="btn btn-default" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                @* List *@
+                                                <div class="row align-items-center">
+                                                    <div class="col-xl-12">
+                                                        <table id="UpdatesTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th></th>
+                                                                    <th width="10%">Date</th>
+                                                                    <th width="25%">Task</th>
+                                                                    <th width="40%">Notes</th>
+                                                                    <th width="15%">Assigned To</th>
+                                                                    <th width="10%">Next Contact Date</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @if (IsGranted(PermissionNames.Pages_Rfq))
+                                        {
+                                            <div class="tab-pane fade" id="rfq">
+                                                <div class="col-md-12 col-xl-12">
+                                                    <div class="col-sm-12" style="display:none">
+                                                        <h5>RFQs</h5>
+                                                    </div>
+                                                    <div class="col-sm-12" style="display:none">
+                                                        <div class="col-sm-12 hidden">
+                                                            <div class="pull-right">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <div class="height-fluid" style="overflow: hidden">
+                                                                <div class="gridview-container">
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row align-items-center m--margin-bottom-10">
+                                                        <div class="col-md-4 col-xl-4">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="RfqDateFrom" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker3">
+                                                                    <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-4 col-xl-4">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker4" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="RfqDateTo" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker4">
+                                                                    <div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-xl-4">
+                                                            <div class="form-group">
+                                                                <select id="RfqStatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                                                    <option value="" selected disabled>Status</option>
+                                                                    <option value="1">Draft</option>
+                                                                    <option value="2">Submitted</option>
+                                                                    <option value="3">For Revision</option>
+                                                                    <option value="4">Completed</option>
+                                                                    <option value="5">Revised</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-xl-4">
+                                                            <div class="form-group">
+                                                                <select id="AEs1" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-xl-4">
+                                                            <div class="form-group">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="RfqSearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Search...">
+                                                                    <span class="input-group-btn">
+                                                                        <button id="RfqSearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                                                        @*<button id="SearchButton" class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>*@
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    @* List *@
+                                                    <div class="row align-items-center">
+                                                        <div class="col-xl-12">
+                                                            <table id="RfqTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th></th>
+                                                                        <th width="20%">Code</th>
+                                                                        <th width="20%">Project Name</th>
+                                                                        <th width="20%">Date</th>
+                                                                        <th width="20%">Contact Person</th>
+                                                                        <th width="20%">Email</th>
+                                                                        <th width="15%">Status</th>
+                                                                        <th width="5%">@L("Actions")</th>
+                                                                        <th></th>@*Code Code*@
+                                                                        <th></th>@*StatusId*@
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        @if (IsGranted(PermissionNames.Pages_Quotations))
+                                        {
+                                            <div class="tab-pane fade " id="quotation">
+                                                <div class="col-md-12 col-xl-12">
+                                                    <div class="col-sm-12" style="display:none">
+                                                        <div class="col-sm-12">
+                                                            <h5>Quotations</h5>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <div class="col-sm-12" id="divAddUpdate" runat="server" visible="false">
+                                                                <div class="pull-right">
+                                                                    <a id="uopen" onclick="toggleUpdate()" class="btn btn-sm btn-success">
+                                                                        <span class="fa fa-sm fa-plus"></span>&nbsp;Add
+                                                                    </a>
+                                                                    <a id="uclose" onclick="reToggleUpdate()" class="btn btn-sm btn-danger" style="display: none">
+                                                                        <span class="fa fa-sm fa-close"></span>&nbsp;Cancel
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+
+                                                            <div id="divUpdate" class="col-sm-12" style="display: none">
+                                                                <div class="col-md-6">
+                                                                    <div class="editor-label">Action: &nbsp;<span id="erruaction" style="color: red;"></span></div>
+                                                                    <div class="editor-field">
+                                                                        <div class="input-group" id="divAction" style="display: none">
+                                                                            <span class="input-group-addon">
+                                                                                <a id="btnAction" title="Close" data-toggle="tooltip" onclick="btnAction_Click()"><span class="fa fa-lg fa-close"></span></a>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-6">
+                                                                    <div class="editor-label">Date: &nbsp;<span id="errudate" style="color: red;"></span></div>
+                                                                    <div class="editor-field">
+                                                                        <div class='input-group date datepicker'>
+                                                                            <input type="text" id="txtDateUpdate" class="form-control" name="date" />
+                                                                            <span class="input-group-addon">
+                                                                                <span class="glyphicon glyphicon-calendar"></span>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-6">
+                                                                    <div class="editor-label">Notes: &nbsp;<span id="errunote" style="color: red;"></span></div>
+                                                                    <div class="editor-field">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-6 hidden">
+                                                                    <div class="editor-label">Status:</div>
+                                                                    <div class="editor-field">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-12">
+                                                                    <div class="pull-right">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-12">
+                                                                <div class="height-fluid" style="overflow: hidden">
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @* Filter *@
+                                                    <div class="row align-items-center m--margin-bottom-10">
+                                                        <div class="col-md-4 col-xl-4">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker5" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="QTDateFrom" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker5">
+                                                                    <div class="input-group-append" data-target="#datetimepicker5" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-4 col-xl-4">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker6" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="QTDateTo" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker6">
+                                                                    <div class="input-group-append" data-target="#datetimepicker6" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-xl-4">
+                                                            <div class="form-group">
+                                                                <select id="QTStatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                                                    <option value="" selected disabled>Status</option>
+                                                                    <option value="1">Draft</option>
+                                                                    <option value="2">Submitted</option>
+                                                                    <option value="3">For Revision</option>
+                                                                    <option value="4">Completed</option>
+                                                                    <option value="5">Revised</option>
+                                                                    <option value="6">For Order</option>
+                                                                    <option value="7">Out Bid</option>
+                                                                    <option value="8">Cancelled</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-xl-4">
+                                                            <div class="form-group">
+                                                                <select id="AEs2" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-xl-4">
+                                                            <div class="form-group">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="QTSearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Id" value="">
+                                                                    <span class="input-group-btn">
+                                                                        <button id="QTSearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    @* List *@
+                                                    <div class="row align-items-center">
+                                                        <div class="col-xl-12">
+                                                            <table id="QuotationsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th></th>
+                                                                        <th width="15%">Id</th>@*Id*@
+                                                                        <th width="15%">Date</th>@*Date*@
+                                                                        <th width="25%">Agent</th>@*Date*@
+                                                                        <th width="15%">Total</th>
+                                                                        <th width="10%">Status</th>
+                                                                        <th width="4%">@L("Actions")</th>
+                                                                        <th></th>@*Code Code*@
+                                                                        <th></th>@*StatusId*@
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        @if (IsGranted(PermissionNames.Pages_Sales_Orders))
+                                        {
+                                            <div class="tab-pane fade" id="order">
+                                                <div class="col-md-12 col-xl-12">
+                                                    <div class="col-sm-12" hidden>
+                                                        <h5>Sales Orders</h5>
+                                                    </div>
+                                                    <div class="col-sm-12" hidden>
+                                                        <div class="col-sm-12 hidden">
+                                                            <div class="pull-right">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <div class="height-fluid" style="overflow: hidden">
+                                                                <div class="gridview-container">
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @* Filter *@
+                                                    <div class="row align-items-center m--margin-bottom-10">
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="SODateFrom" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker7">
+                                                                    <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="SODateTo" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker8">
+                                                                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <select id="SOStatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                                                    <option value="" selected disabled>Status</option>
+                                                                    <option value="1">Draft</option>
+                                                                    <option value="2">Submitted</option>
+                                                                    <option value="3">Completed</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <select id="AEs3" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="SOSearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Search..." value="">
+                                                                    <span class="input-group-btn">
+                                                                        <button id="SOSearchButton" class="btn btn-sm btn-default" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    @* List *@
+                                                    <div class="row align-items-center">
+                                                        <div class="col-xl-12">
+                                                            <table id="SalesOrdersTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th></th>
+                                                                        <th width="15%">Id</th>@*Id*@
+                                                                        <th width="45%">Client</th>
+                                                                        <th width="15%">Date</th>@*Date*@
+                                                                        <th width="15%">Delivery</th>@*Date*@
+                                                                        <th width="10%">Status</th>
+                                                                        <th width="15%">Total</th>
+                                                                        <th width="4%">@L("Actions")</th>
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        @*<div class="tab-pane fade " id="rfq">
+            <div class="col-md-12 col-xl-12">
+                <input type="hidden" id="RFQId" value="@Model.Lead.RFQId" />
+                <form id="RfqForm" name="RfqForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+                    <div class="row clearfix">
+                        <div class="col-md-12  col-xl-12">
+                            <div class="card">
+                                <div class="card-body card-block">
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="Product">Ref. No.</label>
+                                                <div class="input-group">
+                                                    <input id="RFQRefNo" class="form-control font-weight-bold" disabled type="text" required>
+                                                    <input id="RFQSeries" type="hidden">
+                                                    <input id="RFQPrefix" type="hidden">
+                                                    <input type="hidden" id="RFQCode" />
+                                                    <input type="hidden" id="RFQRevisionNo" />
+                                                    <input id="RFQStatusId" type="hidden" />
+                                                    <div class="input-group-addon" style="padding: 0 0 0 0 !important; border: 0 !important;width:90px">
+                                                        <input type="hidden" id="RFQRevisionNo" />
+                                                        <select id="sRFQRevisionNo" class="selectpicker form-control"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="RFQ">Company</label>
+                                                <div class="input-group">
+                                                    <select name="RFQCompanyId2" id="Companies" style="display:none"></select>
+                                                    <input type="hidden" id="RFQCompanyId" />
+                                                    <input type="text" id="RFQCompany" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label>Date</label>
+                                                <div class="input-group date" data-provide="datepicker">
+                                                    <input type="text" id="RFQTransactionTime" class="form-control date-picker" required>
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6 ">
+                                            <div class="form-group">
+                                                <label for="txtClient">From</label>
+                                                <select id="RFQType" class="selectpicker form-control">
+                                                    <option>Leads</option>
+                                                    <option>Client</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6" id="divLead">
+                                            <div class="form-group">
+                                                <label for="RFQ">Lead</label>
+                                                <input type="hidden" id="RFQLeadId" required>
+                                                <input type="hidden" id="RFQLeadCode" required>
+                                                <input type="text" id="RFQLead" placeholder="Type Ref. No./Name/Project to search" class="form-control" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-xl-6">
+                                            <div class="form-group">
+                                                <label for="txtClient">Client Name</label>
+                                                <input type="hidden" id="RFQClientId" required>
+                                                <input type="text" id="RFQClientName" placeholder="Type Name to search" class="form-control" readonly required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <label for="RFQ">Contact Person</label>
+                                            <div class="form-group">
+                                                <input type="hidden" id="RFQContactPersonId" required>
+                                                <input type="text" id="RFQContactPerson" placeholder="Type Name to search" class="form-control" readonly required>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-xl-6 ">
+                                            <div class="form-group">
+                                                <label for="RFQ">Project Name</label>
+                                                <input id="RFQProjectName" class="form-control" type="text" readonly required maxlength="128">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3 col-xl-3 ">
+                                            <div class="form-group">
+                                                <label for="RFQ">Tel no.</label>
+                                                <input id="RFQTelno" class="form-control" type="text" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 col-xl-3 ">
+                                            <div class="form-group">
+                                                <label for="RFQ">Phone Number</label>
+                                                <input id="RFQPhone" class="form-control" type="text" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 col-xl-3 " style="display:none">
+                                            <div class="form-group">
+                                                <label for="RFQ">Taxno</label>
+                                                <input id="RFQTaxno" class="form-control" type="text" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-xl-6 ">
+                                            <div class="form-group">
+                                                <label for="RFQ">Email</label>
+                                                <input id="RFQEmail" class="form-control" type="text" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 col-xl-12 ">
+                                            <div class="form-group">
+                                                <label for="RFQ">Address</label>
+                                                <textarea id="RFQAddress" class="form-control" rows="2" maxlength="328" readonly></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-md-12 col-xl-12 ">
+                                            <div class="form-group">
+                                                <label for="RFQ">Delivery Address</label>
+                                                <textarea id="RFQDeliveryAddress" class="form-control" rows="2" maxlength="328" required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="row">
+                                        <div class="col-md-3 col-xl-3 ">
+                                            <div class="form-group">
+                                                <label for="RFQ">Discount</label>
+                                                <input type="text" id="RFQDiscount" class="form-control" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 col-xl-3 ">
+                                            <div class="form-group">
+                                                <label for="RFQ">VAT Type</label>
+                                                <select id="RFQVat" class="selectpicker form-control" required>
+                                                    <option value="w/VAT">w/ VAT</option>
+                                                    <option value="w/oVAT">w/o VAT</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-md-12  col-xl-12">
+                            <div class="card">
+                                <div class="card-body card-block">
+                                    <div class="row">
+                                        <div class="col-md-12  col-xl-12">
+                                            <div class="form-group">
+                                                <table id="RFQItemsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="5%">#</th>@0@
+                                                            <th width="35%">Item</th>@1@
+                                                            <th width="15%">Quantity</th>@2@
+                                                            <th width="5%"></th>@3 Action@
+                                                            <th></th>@4 ProductId@
+                                                            <th></th>@5 Description@
+                                                            <th></th>@6 OrderQty@
+                                                            <th></th>@7 UnitId@
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>*@
+
+                                        @*<div class="tab-pane fade " id="quotation">
+            <div class="col-md-12 col-xl-12">
+                <input type="hidden" id="QuotationId" value="@Model.Lead.QuotationId" />
+                <form id="QuotationForm" name="QuotationForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+                    <div class="row clearfix">
+                        <div class="col-md-12  col-xl-12">
+                            <div class="card">
+                                <div class="card-body card-block">
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="Product">Series</label>
+                                                <div class="input-group">
+                                                    <input id="QTRefNo" class="form-control font-weight-bold" disabled type="text" required />
+                                                    <input id="QTCode" type="hidden" />
+                                                    <input id="QTSeries" type="hidden" />
+                                                    <input id="QTStatusId" type="hidden" />
+                                                    <input id="QuotationCode" type="hidden" />
+                                                    <input id="RevisionNo" type="hidden" />
+                                                    <input id="Prefix" type="hidden" />
+                                                    <div class="input-group-addon" style="padding: 0 0 0 0 !important; border: 0 !important;width:90px">
+                                                        <input type="hidden" id="QTRevisionNo" />
+                                                        <select id="sQTRevisionNo" class="selectpicker form-control"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="Product">Company</label>
+                                                <div class="input-group">
+                                                    <select id="QTCompanies" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                                                    <label id="CompanyAddress" style="display: none;" class="hidden">
+                                                        Office Address: G/F Warehouse C/M<br />
+                                                        Greenfield Industrial Complex, Km. 14 Merville Road,<br />
+                                                        Merville Industrial Complex, Paranaque City<br />
+                                                        Tel: +63(2)776-1684 Fax: +63(2)776-1684
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label>Date</label>
+                                                <div class="input-group date" data-provide="datepicker">
+                                                    <input type="text" id="QTTransactionTime" class="form-control date-picker" required>
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label>Request</label>
+                                                <input type="hidden" id="QTPrevRequestId" />
+                                                <input type="hidden" id="QTRequestId" />
+                                                <input type="hidden" id="QTRequestCode" />
+                                                <input type="text" id="QTRequest" class="form-control" placeholder="Type here">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="txtClient">Client</label>
+                                                <input id="QTClientId" type="hidden" required />
+                                                <input id="QTClientName" class="form-control" type="text" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="txtClient">Contact Person</label>
+                                                <input id="QTContactPersonId" type="hidden" required />
+                                                <input id="QTContactPerson" class="form-control" type="text" readonly />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="txtClient">Project</label>
+                                                <input id="QTProject" class="form-control" type="text" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="ddOrderType">Order Type</label>
+                                                <select id="QTOrderTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="txtClient">Sales Agent</label>
+                                                <input id="QTSalesAgentId" type="hidden" required />
+                                                <input id="QTSalesAgent" class="form-control" type="text" placeholder="Type here" required />
+                                                <input id="QTSalesAgentMobile" class="form-control" type="hidden" required />
+                                                <input id="QTSalesAgentEmail" class="form-control" type="hidden" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="ddPriceType">Price Type</label>
+                                                <select id="QTPricingTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-md-12 col-xl-12">
+                            <div class="card" id="accordion">
+                                <div class="card-header">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                        <span class="glyphicon glyphicon-file">
+                                        </span>Address and Contact
+                                    </a>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6  col-xl-6">
+                                                <div class="form-group">
+                                                    <label for="ddPriceType">Address</label>
+                                                    <textarea id="QTClientAddress" rows="5" class="form-control" readonly></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6  col-xl-6">
+                                                <div class="form-group">
+                                                    <label>Client Email</label>
+                                                    <input id="QTClientEmail" type="text" class="form-control" readonly />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6  col-xl-6">
+                                                <div class="form-group">
+                                                    <label>Project</label>
+                                                    <input id="QTProject" type="text" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6  col-xl-6">
+                                                <div class="form-group">
+                                                    <label>Client Telephone</label>
+                                                    <input id="QTClientTelephone" type="text" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-md-12  col-xl-12">
+                            <div class="card">
+                                <div class="card-body card-block">
+                                    <div class="row">
+                                        <div class="col-md-12  col-xl-12">
+                                            <div class="form-group">
+                                                <div id="html-table" style="display: none;"></div>
+                                                <table id="QTItemsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="5%">#</th>@0@
+                                                            <th width="35%">Item</th>@1@
+                                                            <th width="15%">Quantity</th>@2@
+                                                            <th width="15%">Price</th>@3 Price@
+                                                            <th width="10%">Less</th>@4 DiscTotal@
+                                                            <th width="15%">Total</th>@5 Total@
+                                                            <th width="5%"></th>@6 Action@
+                                                            <th></th>@7 ProductId@
+                                                            <th></th>@8 Description@
+                                                            <th></th>@9 OrderQty@
+                                                            <th></th>@10 UnitId@
+                                                            <th></th>@11 Disc1@
+                                                            <th></th>@12 DiscType1@
+                                                            <th></th>@13 Disc2@
+                                                            <th></th>@14 DiscType2@
+                                                            <th></th>@15 Disc3@
+                                                            <th></th>@16 DiscType3@
+                                                            <th></th>@17 Id@
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-md-12  col-xl-12">
+                            <div class="card">
+                                <div class="card-body card-block">
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <select id="QTTaxTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <textarea id="QTNotes" class="form-control" rows="3" placeholder="Notes" maxlength="328"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="row form-group">
+                                                <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                    <label for="email-input" class=" form-control-label"><strong>SUBTOTAL</strong></label>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <input type="text" id="QTSubTotal" disabled class="form-control text-right" required />
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                    <label for="email-input" class=" form-control-label"><strong>TAX</strong></label>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <input type="text" id="QTTax" disabled class="form-control text-right" required />
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                    <label for="email-input" class=" form-control-label"><strong>TOTAL</strong></label>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <input type="text" id="QTTotal" disabled class="form-control text-right" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>*@
+
+                                        @*<div class="tab-pane fade " id="order">
+            <div class="col-md-12 col-xl-12">
+                <input type="hidden" id="SalesOrderId" value="@Model.Lead.SalesOrderId" />
+                <form id="SalesOrderForm" name="SalesOrderForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+                    <div class="row clearfix">
+                        <div class="col-md-12  col-xl-12">
+                            <div class="card">
+                                <div class="card-body card-block">
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="Product">Series</label>
+                                                <div class="input-group">
+                                                    <input id="SalesOrderCode" class="form-control font-weight-bold" disabled type="text" name="Code" required>
+                                                    <input id="SOSeries" type="hidden" name="SeriesTypeId">
+                                                    <input id="SOPrefix" type="hidden" name="Prefix">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="Product">Company</label>
+                                                <div class="input-group">
+                                                    <select name="CompanyId" id="SOCompanies" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="txtClient">Client</label>
+                                                <input id="SOClientId" type="hidden" name="ClientId">
+                                                <input id="SOClientName" class="form-control" type="text" name="Client" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label>Date</label>
+                                                <div class="input-group date" data-provide="datepicker">
+                                                    <input type="text" id="SOTransactionTime" name="TransactionTime" class="form-control date-picker" required>
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="ddOrderType">Order Type</label>
+                                                <select name="OrderTypeId" id="SOOrderTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label>Delivery Date</label>
+                                                <div class="input-group date" data-provide="datepicker">
+                                                    <input type="text" id="SODeliveryTime" name="DeliveryTime" class="form-control date-picker" required>
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label for="ddPriceType">Price Type</label>
+                                                <select name="PricingTypeId" id="SOPricingTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label>Terms</label>
+                                                <select name="TermId" id="SOPaymentTerms" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label>Quotation</label>
+                                                <input id="SOSalesAgentId" type="hidden" value="1" name="SalesAgentId">
+                                                <input id="SOQuotationId" type="hidden" value="1" name="QuotationId">
+                                                <input type="text" id="SOQuotationCode" name="QuotationCode" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <label>Client's Purchase Order</label>
+                                                <input type="text" id="SOClientOrderNo" name="ClientOrderNo" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-md-12 col-xl-12">
+                            <div class="card" id="SOaccordion">
+                                <div class="card-header">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                        <span class="glyphicon glyphicon-file">
+                                        </span>Address and Contact
+                                    </a>
+                                </div>
+                                <div id="SOcollapseOne" class="panel-collapse collapse in">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6  col-xl-6">
+                                                <div class="form-group">
+                                                    <label for="ddPriceType">Address</label>
+                                                    <textarea id="SOClientAddress" name="ClientAddress" rows="2" class="form-control" readonly></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6  col-xl-6">
+                                                <div class="form-group">
+                                                    <label>Email</label>
+                                                    <input id="SOClientEmail" type="text" name="ClientEmail" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-md-12  col-xl-12">
+                            <div class="card">
+                                <div class="card-body card-block">
+                                    <div class="row">
+                                        <div class="col-md-12  col-xl-12">
+                                            <div class="form-group">
+                                                <table id="SOItemsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="5%">#</th>@0@
+                                                            <th width="35%">Item</th>@1@
+                                                            <th width="15%">Quantity</th>@2@
+                                                            <th width="15%">Price</th>@3 Price@
+                                                            <th width="10%">Less</th>@4 DiscTotal@
+                                                            <th width="15%">Total</th>@5 Total@
+                                                            <th width="5%"></th>@6 Action@
+                                                            <th></th>@7 ProductId@
+                                                            <th></th>@8 Description@
+                                                            <th></th>@9 OrderQty@
+                                                            <th></th>@10 UnitId@
+                                                            <th></th>@11 Disc1@
+                                                            <th></th>@12 DiscType1@
+                                                            <th></th>@13 Disc2@
+                                                            <th></th>@14 DiscType2@
+                                                            <th></th>@15 Disc3@
+                                                            <th></th>@16 DiscType3@
+                                                            <th></th>@17 Id@
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-md-12  col-xl-12">
+                            <div class="card">
+                                <div class="card-body card-block">
+                                    <div class="row">
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="form-group">
+                                                <select name="TaxTypeId" id="SOTaxTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <textarea id="SONotes" name="Notes" class="form-control" rows="3" placeholder="Notes" maxlength="328"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6  col-xl-6">
+                                            <div class="row form-group">
+                                                <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                    <label for="email-input" class=" form-control-label"><strong>SUBTOTAL</strong></label>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <input type="text" id="SOSubTotal" disabled name="SubTotal" class="form-control text-right" required>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                    <label for="email-input" class=" form-control-label"><strong>TAX</strong></label>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <input type="text" id="SOTax" disabled name="Tax" class="form-control text-right" required>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                                    <label for="email-input" class=" form-control-label"><strong>TOTAL</strong></label>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <input type="text" id="SOTotal" disabled name="Total" class="form-control text-right" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>*@
+
+                                        <div class="tab-pane fade " id="invoice">
+                                            <div class="col-md-12 col-xl-12">
+                                                <input type="hidden" id="SalesInvoiceId" value="@Model.Lead.SalesInvoiceId" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="LeadUpdateCreateModal" tabindex="-1" role="dialog" aria-labelledby="LeadUpdateCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>

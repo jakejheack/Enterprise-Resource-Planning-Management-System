@@ -1,0 +1,71 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.ExpenseItems
+@using ezinvmvc.App.ExpenseItems
+
+
+@model ExpenseItemCreateModel
+@{
+    ViewBag.CurrentPageName = PageNames.ExpenseItems_Edit;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/ExpenseItems/Edit.js" asp-append-version="true"></script>
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Edit Expense Item</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="SaveExpenseItemButton" class="btn btn-outline-primary btn-sm"><i class="fa fa-save"></i>&nbsp; Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body card-block">
+                        <form id="ExpenseItemForm" name="ExpenseItemForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+                            <div class="row">
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="form-group">
+                                        <label for="ExpenseItem">Code</label>
+                                        <input id="Id" type="hidden" name="Id" value="@Model.ExpenseItem.Id">
+                                        <input id="Code" class="form-control" type="text" name="Code" value="@Model.ExpenseItem.Code" required maxlength="64">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ExpenseItem">Name</label>
+                                        <input id="Name" class="form-control" type="text" name="Name" value="@Model.ExpenseItem.Name" required maxlength="128">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ExpenseItem">Description</label>
+                                        <textarea asp-for="@Model.ExpenseItem.Description" id="Description" rows="5" name="Description" class="form-control" maxlength="2000" onkeyup="countChar(this)"></textarea>
+                                        <div id="charNum" class="text-right"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Expense Account</label>
+                                        <input type="hidden" id="ExpenseAccountId" value="@Model.ExpenseItem.ExpenseAccountId" name="ExpenseAccountId" required>
+                                        <input type="text" id="ExpenseAccount" name="ExpenseAccount" placeholder="Type Name to search" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

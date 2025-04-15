@@ -1,0 +1,400 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<localizationDictionary culture="en">
+  <texts>
+    <text name="HomePage" value="Home page" />
+    <text name="About" value="About" />
+    <text name="Close">Close</text>
+    <text name="WelcomeMessage" value="Welcome to ezinvmvc!" />
+    <text name="FormIsNotValidMessage" value="Form is not valid. Please check and fix errors." />
+    <text name="TenantNameCanNotBeEmpty" value="Tenant name can not be empty" />
+    <text name="InvalidUserNameOrPassword" value="Invalid user name or password" />
+    <text name="ThereIsNoTenantDefinedWithName{0}" value="There is no tenant defined with name {0}" />
+    <text name="TenantIsNotActive" value="Tenant {0} is not active." />
+    <text name="UserIsNotActiveAndCanNotLogin" value="User {0} is not active and can not log in." />
+    <text name="UserEmailIsNotConfirmedAndCanNotLogin">Your email address is not confirmed. You can not login.</text>
+    <text name="UserLockedOutMessage">The user account has been locked out. Please try again later.</text>
+    <text name="PleaseEnterLoginInformation" value="Please enter login information" />
+    <text name="TenancyName" value="Tenancy name" />
+    <text name="UserNameOrEmail" value="User name or email" />
+    <text name="Password" value="Password" />
+    <text name="ResetPassword" value="Reset Password" />
+    <text name="UpdatePassword" value="Update Password" />
+    <text name="RememberMe" value="Remember me" />
+    <text name="LogIn" value="Log in" />
+    <text name="LoginFailed" value="Login failed!" />
+    <text name="NameSurname" value="Name surname" />
+    <text name="UserName" value="User name" />
+    <text name="Name" value="Name" />
+    <text name="Surname" value="Surname" />
+    <text name="EmailAddress" value="Email address" />
+    <text name="Tenants" value="Tenants" />
+    <text name="SavedSuccessfully" value="Saved successfully" />
+    <text name="CreateNewTenant" value="Create new tenant" />
+    <text name="AdminEmailAddress" value="Admin email address" />
+    <text name="AdminPassword" value="Admin password" />
+    <text name="Save" value="Save" />
+    <text name="Cancel" value="Cancel" />
+    <text name="TenantName_Regex_Description" value="Tenant name must be at least 2 chars, starts with a letter and continue with letter, number, dash or underscore." />
+    <text name="DefaultPasswordIs" value="Default password is {0}" />
+    <text name="CanBeEmptyToLoginAsHost" value="Can be empty to login as host." />
+    <text name="Register" value="Register" />
+    <text name="OrLoginWith" value="Or login with" />
+    <text name="WaitingForActivationMessage" value="Your account is waiting to be activated by system admin." />
+    <text name="TenantSelection" value="Tenant Selection" />
+    <text name="TenantSelection_Detail" value="Please select one of the following tenants." />
+    <text name="Logout" value="Logout" />
+    <text name="RegisterFormUserNameInvalidMessage">Please don't enter an email address for username.</text>
+    <text name="DatabaseConnectionString" value="Database connection string" />
+    <text name="Users" value="Users" />
+    <text name="UsersCreate" value="Users Create" />
+    <text name="UsersEdit" value="Users Edit" />
+    <text name="UsersDelete" value="Users Delete" />
+    <text name="IsActive" value="Is active" />
+    <text name="FullName" value="Full name" />
+    <text name="CreateNewUser" value="Create new user" />
+    <text name="Yes" value="Yes" />
+    <text name="No" value="No" />
+    <text name="Optional" value="Optional" />
+    <text name="LeaveEmptyToSwitchToHost">Leave empty to switch to the host</text>
+    <text name="CurrentTenant">Current tenant</text>
+    <text name="NotSelected">Not selected</text>
+    <text name="Change">Change</text>
+    <text name="ChangeTenant">Change tenant</text>
+    <text name="MultiLevelMenu">Multi Level Menu</text>
+    <text name="Back">Back</text>
+    <text name="SuccessfullyRegistered">Successfully registered</text>
+    <text name="WaitingForEmailActivation">Your email address should be activated</text>
+    <text name="Roles">Roles</text>
+    <text name="RolesCreate">Roles Create</text>
+    <text name="RolesEdit">Roles Edit</text>
+    <text name="RolesDelete">Roles Delete</text>
+    <text name="DisplayName">Display Name</text>
+    <text name="Edit">Edit</text>
+    <text name="Delete">Delete</text>
+    <text name="CreateNewRole">Create new role</text>
+    <text name="RoleName">Role Name</text>
+    <text name="Actions">Actions</text>
+    <text name="CouldNotCompleteLoginOperation">Could not complete login operation. Please try again later.</text>
+    <text name="CouldNotValidateExternalUser">Could not validate external user</text>
+    <text name="EditRole">Edit role</text>
+    <text name="EditTenant">Edit tenant</text>
+    <text name="EditUser">Edit user</text>
+    <text name="TenantIdIsNotActive{0}">TenantId {0} is not active</text>
+    <text name="UnknownTenantId{0}">Unknown tenantId {0}</text>
+    <text name="ThisFieldIsRequired">This field is required</text>
+    <text name="PleaseWait">Please wait...</text>
+    <text name="Administration">Administration</text>
+    <text name="ClearAll">Clear all</text>
+    <text name="ClearOthers">Clear others</text>
+    <text name="LabelOptions">Label options</text>
+    <text name="Permissions">Permissions</text>
+    <text name="RoleDescription">Role description</text>
+    <text name="Refresh">Refresh</text>
+    <text name="Create">Create</text>
+    <text name="UserDetails">User details</text>
+    <text name="UserRoles">User roles</text>
+    <text name="ConfirmPassword">Confirm password</text>
+    <text name="Version">Version</text>
+    <text name="On">On</text>
+    <text name="Off">Off</text>
+    <text name="AreYouSureWantToDelete">Are you sure want to delete {0}?</text>
+    <text name="AreYouSureWantToContinue">Are you sure want to continue?</text>
+    <text name="DeleteProductConfirmation">This product {0} will be deleted.</text>
+    <text name="DeleteProductUnitConfirmation">This unit assigned {0} will be deleted.</text>
+    <text name="DeleteProductPriceConfirmation">The price of {0} will be deleted.</text>
+    <text name="DeleteVendorConfirmation">This vendor {0} will be deleted.</text>
+    <text name="StartTyping">Start Typing</text>
+    <text name="Skins">Skins</text>
+    <text name="Settings">Settings</text>
+    <text name="Filter">Filter</text>
+    
+    <text name="Purchases">Purchases</text>
+    <text name="PurchaseOrders">Purchase Orders</text>
+    <text name="PurchaseOrderCreate">Purchase Order Create</text>
+    <text name="PurchaseOrderEdit">Purchase Order Edit</text>
+    <text name="PurchaseOrderDelete">Purchase Order Delete</text>
+    <text name="PurchaseOrderExport">Purchase Order Export</text>
+    
+    <text name="PurchaseReceipts">Purchase Receipts</text>
+
+    <text name="Sales">Sales</text>
+    <text name="SalesOrders">Sales Orders</text>
+    <text name="SalesOrdersCreate">Sales Order Create</text>
+    <text name="SalesOrdersEdit">Sales Order Edit</text>
+    <text name="SalesOrdersForDelivery">Sales Order For Delivery</text>
+    <text name="SalesOrdersRevision">Sales Order Revision</text>
+    <text name="SalesOrdersDelete">Sales Order Delete</text>
+    <text name="SalesOrdersExport">Sales Order Export</text>
+    <text name="NewOrder">Sales Order {0} created.</text>
+    <text name="SubmitOrder">Sales Order {0} submitted.</text>
+    <text name="ForDeliveryOrder">Sales Order {0} updated For Delivery.</text>
+    <text name="DeliveredOrder">Sales Order {0} delivered.</text>
+
+    <text name="DeliveryReceipt">Delivery Receipt</text>
+    <text name="DeliveryReceiptCreate">Delivery Receipt Create</text>
+    <text name="DeliveryReceiptEdit">Delivery Receipt Edit</text>
+    <text name="DeliveryReceiptDelete">Delivery Receipt Delete</text>
+    <text name="DeliveryReceiptExport">Delivery Receipt Export</text>
+    <text name="DeliveryReceiptSubmit">Submit Delivery</text>
+    
+    <text name="NewDelivery">Delivery Receipt {0} created.</text>
+    <text name="SubmitDelivery">Delivery Receipt {0} submitted.</text>
+    <text name="BillDelivery">Delivery Receipt {0} billed.</text>
+
+    <text name="SalesInvoice">Sales Invoice</text>
+    <text name="SalesInvoiceCreate">Sales Invoice Create</text>
+    <text name="SalesInvoiceEdit">Sales Invoice Edit</text>
+    <text name="SalesInvoiceDelete">Sales Invoice Delete</text>
+    <text name="SalesInvoiceExport">Sales Invoice Export</text>
+    
+    <text name="Invoices">Invoices</text>
+   
+    
+    <text name="Stocks">Stocks</text>
+    <text name="StockTransfers">Stock Transfers</text>
+    
+    <text name="Reports">Reports</text>
+
+    <text name="MasterData">Master Data</text>
+    <text name="Warehouse">Warehouse</text>
+    <text name="WarehouseCreate">Warehouse Create</text>
+    <text name="WarehouseEdit">Warehouse Edit</text>
+    <text name="WarehouseDelete">Warehouse Delete</text>
+    
+    <text name="Vendors">Vendors</text>
+    <text name="VendorCreate">Vendor Create</text>
+    <text name="VendorEdit">Vendor Edit</text>
+    <text name="VendorDelete">Vendor Delete</text>
+    <text name="VendorExport">Vendor Export</text>
+
+    <text name="Clients">Clients</text>
+    <text name="ClientsAllAccounts">Clients All Accounts</text>
+    <text name="ClientsAccountExecutive">Clients Account Executive</text>
+    <text name="ClientCreate">Client Create</text>
+    <text name="ClientDetails">Client Details</text>
+    <text name="ClientEdit">Client Edit</text>
+    <text name="ClientApprove">Client Approve</text>
+    <text name="ClientDelete">Client Delete</text>
+    <text name="ClientExport">Client Export</text>
+    
+    <text name="ClientContactPersonEdit">Client Contact Person Edit</text>
+    <text name="ClientContactPersonDelete">Client Contact Person Delete</text>
+    
+    <text name="Employees">Employees</text>
+    <text name="EmployeesCreate">Employees Create</text>
+    <text name="EmployeesEdit">Employees Edit</text>
+    <text name="EmployeesDelete">Employees Delete</text>
+    <text name="EmployeesExport">Employees Export</text>
+    <text name="AccountsAbility">Employees Accountability</text>
+    <text name="EmployeesRecords">Employees Records</text>
+    <text name="EmployeePayrollRate">Employee Payroll Rate</text>
+    <text name="EmployeeAllowance">Employee Allowance</text>
+    <text name="EmployeeOTRates">Employee OTRates</text>
+    <text name="OTRate">Overtime Rate</text>
+    <text name="EmployeeLoan">Employee Loan</text>
+    <text name="Attendance">Attendance</text>
+    <text name="EmployeeAttendance">Employee Attendance</text>
+    <text name="AttendanceApprover">Attendance Approver</text>
+
+    <text name="GroupTypes">GroupTypes</text>
+
+    <text name="Products">Products</text>
+    <text name="ProductCreate">Product Create</text>
+    <text name="ProductEdit">Product Edit</text>
+    <text name="ProductDelete">Product Delete</text>
+    <text name="ProductExport">Product Export</text>
+
+    <text name="RFQ">RFQ</text>
+    <text name="RFQAllAccounts">RFQ All Accounts</text>
+    <text name="RFQAccountExecutive">RFQ Account Executive</text>
+    <text name="RFQAllAssigned">RFQ All Assigned</text>
+    <text name="RFQSalesCoordinator">RFQ Sales Coordinator</text>
+    <text name="RFQCreate">RFQ Create</text>
+    <text name="RFQEdit">RFQ Edit</text>
+    <text name="RFQDelete">RFQ Delete</text>
+    <text name="RFQExport">RFQ Export</text>
+    <text name="RFQAssign">RFQ Assign</text>
+    <text name="NewRFQ">RFQ {0} created.</text>
+    <text name="SubmitRFQ">RFQ {0} submitted to review/assign.</text>
+    <text name="RevisedRFQ">RFQ {0} revised to review/assign.</text>
+    <text name="RevisionRFQ">RFQ {0} needs revision.</text>
+    <text name="CompleteRFQ">RFQ {0} completed.</text>
+
+    <text name="ApproveRFQConfirmation">This rfq {0} will be approved.</text>
+    <text name="DeleteRFQConfirmation">This rfq {0} will be deleted.</text>
+
+
+    <text name="Quotations">Quotations</text>
+    <text name="QuotationsAllAccounts">Quotations All Accounts</text>
+    <text name="QuotationsAccountExecutive">Quotations Account Executive</text>
+    <text name="QuotationsAllAssigned">Quotations All Assigned</text>
+    <text name="QuotationsSalesCoordinator">Quotations Sales Coordinator</text>
+    <text name="QuotationsCreate">Quotation Create</text>
+    <text name="QuotationsEdit">Quotation Edit</text>
+    <text name="QuotationsDelete">Quotation Delete</text>
+    <text name="QuotationsExport">Quotation Export</text>
+    <text name="QuotationsSubmit">Quotation Submit</text>
+    <text name="QuotationsForOrder">Quotation For Order</text>
+    <text name="QuotationsDocuments">Quotation Documents</text>
+    <text name="QuotationsEditPDF">Quotation Edit w/PDF</text>
+    <text name="QuotationsSubmitPDF">Quotation Submit w/PDF</text>
+    <text name="NewQuotation">Quotation {0} created.</text>
+    <text name="SubmitQuotation">Quotation {0} submitted to review/assign.</text>
+    <text name="RevisedQuotation">Quotation {0} revised to review/assign.</text>
+    <text name="RevisionQuotation">Quotation {0} needs revision.</text>
+    <text name="CompleteQuotation">Quotation {0} completed.</text>
+    <text name="OrderQuotation">Quotation {0} updated for Order.</text>
+    <text name="OutbidQuotation">Quotation {0} have been out bid.</text>
+    <text name="CancelledQuotation">Quotation {0} cancelled.</text>
+
+    <text name="CRM">CRM</text>
+    <text name="Leads">Leads</text>
+    <text name="LeadsAllAccounts">Leads All Accounts</text>
+    <text name="LeadsAccountExecutive">Leads Account Executive</text>
+    <text name="LeadCreate">Lead Create</text>
+    <text name="LeadEdit">Lead Edit</text>
+    <text name="LeadApprove">Lead Approve</text>
+    <text name="LeadClose">Lead Close</text>
+    <text name="LeadDelete">Lead Delete</text>
+    <text name="LeadUpdates">Lead Updates</text>
+    <text name="LeadExport">Lead Export</text>
+    <text name="NewLead">New Lead {0} for Approval.</text>
+    <text name="UpdateLead">Lead {0} was {1}.</text>
+    <text name="NewLeadUpdate">Lead {0} has new update.</text>
+    <text name="AssignLeadUpdate">Lead {0} updated and re-assigned to you.</text>
+    <text name="RemoveLeadUpdate">Lead {0} updated and removed to your assignment.</text>
+
+    <text name="StockEntry">Stock Entry</text>
+    <text name="StockEntryCreate">Stock Entry Create</text>
+    <text name="StockEntryEdit">Stock Entry Edit</text>
+    <text name="StockEntryDelete">Stock Entry Delete</text>
+    <text name="StockEntryExport">Stock Entry Export</text>
+    <text name="StockEntrySubmit">Stock Entry Submit</text>
+    <text name="StockCard">Stock Card</text>
+    <text name="StockSummary">Stock Summary</text>
+
+    <text name="Accounts">Accounts</text>
+    <text name="AccountsCreate">Account Create</text>
+    <text name="AccountsEdit">Account Edit</text>
+    <text name="AccountsDelete">Account Delete</text>
+    <text name="AccountsExport">Account Export</text>
+
+    <text name="GeneralLedger">General Ledger</text>
+    <text name="AccountsReceivable">Accounts Receivable</text>
+
+    <text name="Collection">Collections</text>
+    <text name="CollectionCreate">Collection Create</text>
+    <text name="CollectionEdit">Collection Edit</text>
+    <text name="CollectionDelete">Collection Delete</text>
+    <text name="CollectionExport">Collection Export</text>
+
+    <text name="JournalEntry">Journal Entry</text>
+    <text name="JournalEntryCreate">Journal Entry Create</text>
+    <text name="JournalEntryEdit">Journal Entry Edit</text>
+    <text name="JournalEntryDelete">Journal Entry Delete</text>
+    <text name="JournalEntryExport">Journal Entry Export</text>
+
+    <text name="RFP">Request For Payment</text>
+    <text name="RFPCreate">RFP Create</text>
+    <text name="RFPEdit">RFP Edit</text>
+    <text name="RFPApprove">RFP Approve</text>
+    <text name="RFPDelete">RFP Delete</text>
+    <text name="RFPExport">RFP Export</text>
+
+    <text name="CV">Check Voucher</text>
+    <text name="CVCreate">CV Create</text>
+    <text name="CVEdit">CV Edit</text>
+    <text name="CVDelete">CV Delete</text>
+    <text name="CVExport">CV Export</text>
+
+    <text name="Assignment">Assignment</text>
+    <text name="AssignAllAccounts">Assign All Accounts</text>
+    <text name="AssignmentCreate">Assignment Create</text>
+    <text name="AssignmentEdit">Assignment Edit</text>
+    <text name="AssignmentDelete">Assignment Delete</text>
+    <text name="AssignmentExport">Assignment Export</text>
+    <text name="NewTask">New task {0} assigned.</text>
+    <text name="UpdateTask">Task {0} re-assigned.</text>
+    <text name="RemoveTask">Task {0} removed from your assignment.</text>
+
+    <text name="AccountPayable">Account Payable</text>
+    <text name="AccountReceivable">Account Receivable</text>
+    <text name="Payroll">Payroll</text>
+
+    <text name="Company">Company</text>
+    <text name="CompanyAllAccounts">Company All Accounts</text>
+    <text name="CompanyCreate">Company Create</text>
+    <text name="CompanyEdit">Company Edit</text>
+    <text name="CompanyDelete">Company Delete</text>
+    <text name="CompanyExport">Company Export</text>
+
+    <text name="ChartAccount">Chart of Account</text>
+    <text name="ChartAccountCreate">Chart of Account Create</text>
+    <text name="ChartAccountEdit">Chart of Account Edit</text>
+    <text name="ChartAccountDelete">Chart of Account Delete</text>
+    <text name="ChartAccountExport">Chart of Account Export</text>
+
+    <text name="TaxType">Tax Type</text>
+    <text name="TaxTypeCreate">Tax Type Create</text>
+    <text name="TaxTypeEdit">Tax Type Edit</text>
+    <text name="TaxTypeDelete">Tax Type Delete</text>
+
+    <text name="PaymentTerm">Payment Term</text>
+    <text name="PaymentTermCreate">Payment Term Create</text>
+    <text name="PaymentTermEdit">Payment Term Edit</text>
+    <text name="PaymentTermDelete">Payment Term Delete</text>
+
+    <text name="WarrantyType">Warranty Type</text>
+    <text name="WarrantyTypeCreate">Warranty Type Create</text>
+    <text name="WarrantyTypeEdit">Warranty Type Edit</text>
+    <text name="WarrantyTypeDelete">Warranty Type Delete</text>
+    <text name="PayrollDetailReport">Payroll Detail Report</text>
+    <text name="SalesOrderReport">Sales Order Report</text>
+    <text name="TPCUpdate">TPC Update</text>
+    <text name="SalesOrderSummaryReport">Sales Summary Report</text>
+
+    <text name="OrderType">Order Type</text>
+    <text name="OrderTypeCreate">Order Type Create</text>
+    <text name="OrderTypeEdit">Order Type Edit</text>
+    <text name="OrderTypeDelete">Order Type Delete</text>
+
+    <text name="PaymentMode">Payment Mode</text>
+    <text name="PaymentModeCreate">Payment Mode Create</text>
+    <text name="PaymentModeEdit">Payment Mode Edit</text>
+
+    <text name="ChargeType">Charge Type</text>
+    <text name="ChargeTypeCreate">Charge Type Create</text>
+    <text name="ChargeTypeEdit">Charge Type Edit</text>
+    <text name="PagesPayrollEdit">Payroll Edit</text>
+
+    <text name="PayrollAkcnowledgement">Payroll Acknowledgement</text>
+    <text name="Month13">13Month Report</text>
+    <text name="EmployeeLoanEdit">Edit Loan</text>
+    <text name="EmployeeLoanDelete">Delete Loan</text>
+    <text name="DashboardTraffic">Dashboard Traffic</text>
+    <text name="PayrollJournalDetails">Payroll Journal Details</text>
+    <text name="Employee201Report">Employee 201 Report</text>
+    <text name="EmployeeMasterListReport">Employee Masterlist Report</text>
+    <text name="RateMasterListReport">Employee Rate MasterList Report</text>
+    <text name="AcknowledgementNetPayPrint">Acknowledgement NetPay Print</text>
+    <text name="LoanCollectionList">Loan Collection List</text>
+    <text name="LoanSummaryReportList">Loan Summary Report</text>
+    <text name="PremiumDeductionReport">Premium Deduction Report</text>
+    <text name="OTSummaryReport">OT Summary Report</text>
+
+    <text name="CashVoucher">Cash Voucher</text>
+    <text name="CashVoucherCreate">Cash Voucher Create</text>
+    <text name="CashVoucherEdit">Cash Voucher Edit</text>
+    <text name="CashVoucherDelete">Cash Voucher Delete</text>
+    <text name="CashVoucherExport">Cash Voucher Export</text>
+    
+    <text name="ExpenseItem">Expense Item</text>
+    <text name="ExpenseItemCreate">Expense Item Create</text>
+    <text name="ExpenseItemEdit">Expense Item Edit</text>
+    <text name="ExpenseItemDelete">Expense Item Delete</text>
+    <text name="ExpenseItemExport">Expense Item Export</text>
+    <text name="AllowanceEdit">Allowance Edit</text>
+    <text name="AllowanceDelete">Allowance Delete</text>
+    
+  </texts>
+</localizationDictionary>

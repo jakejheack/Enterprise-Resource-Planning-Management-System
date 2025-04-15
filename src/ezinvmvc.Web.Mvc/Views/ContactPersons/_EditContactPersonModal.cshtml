@@ -1,0 +1,161 @@
+﻿@using ezinvmvc.Web.Models.Common.Modals
+@model ezinvmvc.Web.Models.ContactPersons.ContactPersonUpdateModel
+@{
+    Layout = null;
+}
+<script src="~/view-resources/Views/ContactPersons/_EditContactPersonModal.js" asp-append-version="true"></script>
+@Html.Partial("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel("Edit Contact Person"))
+<div class="modal-body">
+    <form name="ContactPersonEditForm" role="form" novalidate class="form-validation">
+        <div class="row clearfix" style="margin-top:10px;">
+            <div class="col-sm-6">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">For</label>
+                        <input type="hidden" id="CpId" name="Id" value="@Model.ContactPerson.Id" />
+                        <input type="hidden" id="CpReferenceId" name="ReferenceId" value="@Model.ContactPerson.ReferenceId" />
+                        <input type="hidden" id="CpReference" name="Reference" value="@Model.ContactPerson.Reference" />
+                        <input type="text" id="CpReferenceName" name="ReferenceName" class="form-control" value="@Model.ContactPerson.ReferenceName" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                &nbsp;
+            </div>
+        </div>
+        <div class="row clearfix" style="margin-top:10px;">
+            <div class="col-sm-6">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">First Name</label>
+                        <div class="input-group">
+                            <div class="input-group-addon" style="padding: 0 0 0 0 !important; border: 0 !important;width:90px">
+                                <input type="hidden" id="hCpTitle" value="@Model.ContactPerson.Title" />
+                                <select id="CpTitle" name="Title" class="selectpicker form-control">
+                                    @*<option>-- Select --</option>*@
+                                    @if (Model.ContactPerson.Title.ToUpper() == "Mr.".ToUpper())
+                                    {
+                                        <option selected>Mr.</option>
+                                    }
+                                    else
+                                    {
+                                        <option>Mr.</option>
+                                    }
+                                    @if (Model.ContactPerson.Title.ToUpper() == "Ms.".ToUpper())
+                                    {
+                                        <option selected>Ms.</option>
+                                    }
+                                    else
+                                    {
+                                        <option>Ms.</option>
+                                    }
+                                    @if (Model.ContactPerson.Title.ToUpper() == "Mrs.".ToUpper())
+                                    {
+                                        <option selected>Mrs.</option>
+                                    }
+                                    else
+                                    {
+                                        <option>Mrs.</option>
+                                    }
+                                    @if (Model.ContactPerson.Title.ToUpper() == "Dr.".ToUpper())
+                                    {
+                                        <option selected>Dr.</option>
+                                    }
+                                    else
+                                    {
+                                        <option>Dr.</option>
+                                    }
+                                    @if (Model.ContactPerson.Title.ToUpper() == "Atty.".ToUpper())
+                                    {
+                                        <option selected>Atty.</option>
+                                    }
+                                    else
+                                    {
+                                        <option>Atty.</option>
+                                    }
+                                    @if (Model.ContactPerson.Title.ToUpper() == "Engr.".ToUpper())
+                                    {
+                                        <option selected>Engr.</option>
+                                    }
+                                    else
+                                    {
+                                        <option>Engr.</option>
+                                    }
+                                    @if (Model.ContactPerson.Title.ToUpper() == "Arch.".ToUpper())
+                                    {
+                                        <option selected>Arch.</option>
+                                    }
+                                    else
+                                    {
+                                        <option>Arch.</option>
+                                    }
+                                </select>
+                            </div>
+                            <input type="text" id="CpFirstName" name="FirstName" class="form-control" placeholder="First Name" value="@Model.ContactPerson.FirstName" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" id="CpLastName" name="LastName" class="form-control" placeholder="Last Name" value="@Model.ContactPerson.LastName" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix" style="margin-top:10px;">
+            <div class="col-sm-3">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">Tel. No.</label>
+                        <input type="text" id="CpTelNo" name="TelNo" class="validate form-control" value="@Model.ContactPerson.TelNo" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">Mobile No.</label>
+                        <input type="text" id="CpMobileNo" name="MobileNo" class="validate form-control" value="@Model.ContactPerson.MobileNo" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="CpEmail" name="Email" class="validate form-control" placeholder="email@email.com" value="@Model.ContactPerson.Email" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix" style="margin-top:10px;">
+            <div class="col-sm-6">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">Position</label>
+                        <input type="text" id="CpPosition" name="Position" class="form-control" value="@Model.ContactPerson.Position" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">Birthday</label>
+                        <div class="form-group">
+                            <div class="input-group date" id="cpdatetimepicker" data-target-input="nearest">
+                                <input id="CpBirthday" class="form-control datetimepicker-input" placeholder="mm/dd/yyyy" type="text" name="Birthday" data-target="#cpdatetimepicker" value='@(Convert.ToDateTime(Model.ContactPerson.Birthday).ToString("MM/dd/yyyy") == "01/01/1900" ? "" : Convert.ToDateTime(Model.ContactPerson.Birthday).ToString("MM/dd/yyyy"))'>
+                                <div class="input-group-append" data-target="#cpdatetimepicker" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@Html.Partial("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")

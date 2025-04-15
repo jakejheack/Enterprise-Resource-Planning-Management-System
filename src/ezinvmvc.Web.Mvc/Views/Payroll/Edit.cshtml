@@ -1,0 +1,1502 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Payroll
+
+@model PayrollEditModel
+@{
+    ViewBag.CurrentPageName = PageNames.PayrollEdit;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/PayrollManagement/Edit.js" asp-append-version="true"></script>
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-11 col-xl-11">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Edit Payroll</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1 col-xl-1">
+                <div class="row" hidden>
+                    <div class="btn-group" role="group" style=" padding-top:10px">
+                        @*<button id="AttendanceList" style="width:100%" data-toggle="modal" data-target="#AttList" class="btn btn-outline-primary"><i class="fa fa-list-ol"></i>&nbsp;Filter</button>*@
+                        <button id="AttRecordList" style="width:100%" data-toggle="modal" data-target="#AttRecord" class="btn btn-outline-primary"><i class="fa fa-list-ol"></i>&nbsp;Logs</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 col-xl-4" hidden>
+                        <form name="EmpAttIdRec" role="form" novalidate class="form-validation">
+                            <table id="AttendanceNameCompTable" class="table table-striped table-hover" style="padding: 10px;background-color: #e3e3e3;">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Timekeeping&nbsp;Code</th>
+                                        <th width="10%">EmpId</th>
+                                        <th width="10%">No</th>
+                                        <th width="40%">Name</th>
+                                        <th>Company</th>
+                                        <th width="10%">Action</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </form>
+                    </div>
+                    <div class="col-md-12 col-xl-12">
+
+                        <form name="EmpPayrollRec" role="form" novalidate class="form-validation">
+                            <div class="row">
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="attid" name="attid" type="hidden" class="form-control" placeholder="Time keeping Code" value="@ViewBag.Attid" readonly>
+                                    <input id="companyId" name="companyId" type="text" class="form-control" hidden placeholder="companyId">
+                                    <input id="PId" class="form-control font-weight-bold" disabled type="hidden" name="PId" value="@ViewBag.Id" required>
+                                    <input id="EmpId" name="EmpId" type="hidden" class="form-control input-sm" value="@ViewBag.EmpId">
+                                    <input id="Status" name="Status" type="text" class="form-control input-sm" value="Active" hidden>
+                                    <input id="TaxStatus" name="TaxStatus" type="text" disabled class="form-control" hidden placeholder="Tax Status" maxlength="128">
+                                    <input id="CivilStatus" name="CivilStatus" type="text" disabled class="form-control" hidden placeholder="CivilStatus" maxlength="128">
+                                    <input id="rateid" name="rateid" type="hidden" disabled class="form-control" placeholder="CivilStatus" maxlength="128">
+                                    <input id="RatePerMonth" name="RatePerMonth" title="Rate Per Day" type="text" disabled class="form-control" hidden placeholder="Rate Per Day" maxlength="128">
+                                    <input id="dateTrans" name="dateTrans" type="hidden" disabled class="form-control"  placeholder="dateTrans" maxlength="128">
+                                    <input id="FullName" name="FullName" type="text" disabled class="form-control" placeholder="Employee Name" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="EmpCode" name="EmpCode" type="text" disabled class="form-control"  value="@ViewBag.EmpCode" placeholder="Code" maxlength="128">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <input id="SalaryPeriod" name="SalaryPeriod" type="text" disabled class="form-control" hidden placeholder="Code" maxlength="128">
+                                    <select class="form-control selectpicker" id="SalaryPeriodid" name="SalaryPeriodid" disabled style=" background-color: #a1e7ff;font-weight: 600;">
+                                        <option selected="">Nothing selected</option>
+                                        <option value="4">Monthly</option>
+                                        <option value="3">Semi-Monthly</option>
+                                        <option value="1">Daily</option>
+                                        <option value="2">Weekly</option>aa
+                                    </select>
+                                </div>
+                                <div class="col-md-4 col-xl-4" hidden>
+                                    <input id="Periodid" name="Periodid" type="text" disabled class="form-control" hidden placeholder="Code" maxlength="128">
+                                    <select class="form-control selectpicker" id="Period" name="Period" disabled style=" background-color: #a1e7ff;font-weight: 600;">
+                                        <option selected="">Nothing selected</option>
+                                        <option value="4">Monthly</option>
+                                        <option value="3">Semi-Monthly</option>
+                                        <option value="1">Daily</option>
+                                        <option value="2">Weekly</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="Department"></label>
+                                    <input id="DeptName" name="DeptName" type="text" disabled class="form-control" placeholder="Department" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <label for="Department"></label>
+                                    <select id="CutOff" name="CutOff" class="form-control selectpicker secondary" data-live-search="true">
+                                        <option value="0" selected>-CutOff-</option>
+                                        <option value="1">1st</option>
+                                        <option value="2">2nd</option>
+                                    </select>
+                                    <input id="CutOffid" name="CutOffid" type="text" disabled class="form-control" hidden placeholder="Code" maxlength="128">
+
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="PayrollPeriod"></label>
+                                    <input id="RatePerDay" name="RatePerDay" title="Rate Per Day" type="text" disabled class="form-control" placeholder="Rate Per Day" maxlength="128">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="PayrollPeriod"></label>
+                                    <input id="RatePerHour" name="RatePerHour" title="Rate Per Hour" type="text" disabled class="form-control" placeholder="Rate Per Hour" maxlength="128">
+                                </div>
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <h4>EARNINGS</h4>
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <label for="BasicSalaryCurrent">Current</label>
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <label for="BasicSalaryAdjustment">Adjustment</label>
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="BasicSalaryAmount">Amount</label>
+                                </div>
+
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="BasicSalary" name="BasicSalary" type="text" disabled class="form-control" value="BASIC SALARY" placeholder="BASIC SALARY" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="BasicSalaryCurrent" name="BasicSalaryCurrent" type="text" class="form-control" placeholder="0" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="BasicSalaryAdjustment" name="BasicSalaryAdjustment" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="BasicSalaryAmount" name="BasicSalaryAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="Travelhours" name="Travelhours" type="text" disabled class="form-control" value="TRAVEL HOURS" placeholder="TRAVEL HOURS" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="TravelhoursCurrent" name="TravelhoursCurrent" type="text" class="form-control" placeholder="0" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="TravelhoursAdjustment" name="TravelhoursAdjustment" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="TravelhoursAmount" name="TravelhoursAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="Absenses" name="Absenses" type="text" disabled class="form-control" value="HOLIDAYS" placeholder="ABSENCES" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="HolidayCurrent" name="HolidayCurrent" type="text" disabled class="form-control" placeholder="0" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="HolidayAdjustment" name="HolidayAdjustment" type="text" disabled class="form-control" placeholder="00.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="HolidayAmount" name="HolidayAmount" type="text" disabled class="form-control" placeholder="00.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="Absenses" name="Absenses" type="text" disabled class="form-control" value="ABSENCES" placeholder="ABSENCES" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="AbsensesCurrent" name="AbsensesCurrent" type="text" class="form-control" placeholder="0" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="AbsensesAdjustment" name="AbsensesAdjustment" type="text" disabled class="form-control" placeholder="00.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="AbsensesAmount" name="AbsensesAmount" type="text" disabled class="form-control" placeholder="00.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="Tardiness" name="Tardiness" type="text" disabled class="form-control" value="TARDINESS" placeholder="TARDINESS" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="TardinessCurrent" name="TardinessCurrent" disabled type="text" class="form-control" placeholder="00:00" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="TardinessAjustment" name="TardinessAjustment" type="text" class="form-control" disabled placeholder="0.00" maxlength="128" value="0:00">
+                                    <input id="TardinessDeductionLate" name="TardinessDeductionLate" type="text" disabled class="form-control" hidden placeholder="00.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="TardinessAmount" name="TardinessAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="Undertime" name="Undertime" type="text" disabled class="form-control" value="UNDERTIME" placeholder="UNDERTIME" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="UndertimeCurrent" name="UndertimeCurrent" type="text" class="form-control" placeholder="00:00" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="UndertimeAdjustment" name="UndertimeAdjustment" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="UndertimeAmount" name="UndertimeAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="NightDiff" name="NightDiff" type="text" disabled class="form-control" value="NIGHT DIFF HOUR" placeholder="NIGHT DIFF HOUR" maxlength="128">
+                                </div>
+                                <div class="col-md-5 col-xl-5" hidden>
+                                    <input id="NightDiffval" name="NightDiffval" type="text" disabled class="form-control" placeholder="0" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="NightDiffCurrent" name="NightDiffCurrent" type="text" class="form-control" placeholder="00:00" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="NightDiffAdjustment" name="NightDiffAdjustment" type="text" disabled class="form-control" placeholder="0.10" value="0.10" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="NightDiffAmount" name="NightDiffAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="Leave" name="Leave" type="text" disabled class="form-control" value="LEAVE" placeholder="LEAVE USE" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2" hidden>
+                                    <input id="TotalLeave" name="TotalLeave" type="text" disabled class="form-control" hidden placeholder="0" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2" hidden>
+                                    <input id="TotalLeaveUse" name="TotalLeaveUse" type="text" disabled class="form-control" hidden placeholder="0" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="LeaveToUse" name="LeaveToUse" type="text" disabled class="form-control" placeholder="0" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="LeaveUse" name="LeaveUse" type="text" class="form-control" placeholder="0" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="LeaveAmout" name="LeaveAmout" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="LeaveTotalAmout" name="LeaveTotalAmout" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <button id="RGOT" type="button" style="width:100% ;text-align: left;" class="btn btn-outline-primary"><i class="fa fa-th-large"></i>&nbsp;OVERTIME</button>
+                                    @*<button id="RGOT" name="RGOT" style="width:100% ;text-align: left;" data-toggle="modal" data-target="#RateModal" class="btn btn-outline-primary"><i class="fa fa-th-large"></i>&nbsp;OVERTIME</button>*@
+                                    @*<input id="RGOT" name="RGOT" type="text" disabled class="form-control" value="RGOT" placeholder="RGOT"  maxlength="128">*@
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    @*<input id="RGOTCurrent" name="RGOTCurrent" type="text" disabled class="form-control" placeholder="0.00"  maxlength="128">*@
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    @*<input id="RGOTAdjustment" name="RGOTAdjustment" type="text" disabled class="form-control" placeholder="0.00"  maxlength="128">*@
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="RGOTAmount" name="RGOTAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <button id="BtnAllowanceAdjstment" name="BtnAllowanceAdjstment" type="button" style="width:100% ;text-align: left;" data-toggle="modal" data-target="#AllowanceAdjstment" class="btn btn-outline-primary"><i class="fa fa-plus-square"></i>&nbsp;ALLOWANCE</button>
+                                    @*<input id="AllowanceAdjstment" name="AllowanceAdjstment" type="text" disabled class="form-control" value="ALLOWANCE Afj" placeholder="NON T/ALLOWANCE"  maxlength="128">*@
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="AllowanceAdjs" name="AllowanceAdjs" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+
+                                @*attadj*@
+                                <div class="col-md-5 col-xl-5">
+                                    <button id="BtnAttAdjstment" name="BtnAttAdjstment" type="button" style="width:100% ;text-align: left;" data-toggle="modal" data-target="#AttAdjstment" class="btn btn-outline-primary"><i class="fa fa-plus-square"></i>&nbsp;ADJUSTMENT</button>
+                                    @*<input id="AllowanceAdjstment" name="AllowanceAdjstment" type="text" disabled class="form-control" value="ALLOWANCE Afj" placeholder="NON T/ALLOWANCE"  maxlength="128">*@
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="AttAdjs" name="AttAdjs" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                @*attadj*@
+
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="GeneralAllowance" name="GeneralAllowance" type="text" disabled class="form-control" value="TAXABLE ALLOWANCE" placeholder="T/ALLOWANCE" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="GeneralCurrent" name="GeneralCurrent" type="text" disabled class="form-control" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="GeneralAdjustment" name="GeneralAdjustment" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="GeneralAmount" name="GeneralAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="NONGeneralAllowance" name="NONGeneralAllowance" type="text" disabled class="form-control" value="NON TAXABLE ALLOWANCE" placeholder="NON T/ALLOWANCE" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="NONGeneralCurrent" name="NONGeneralCurrent" type="text" disabled class="form-control" placeholder="" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="NONGeneralAdjustment" name="NONGeneralAdjustment" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="NONGeneralAmount" name="NONGeneralAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:15px"></div>
+                                </div>
+                                <div class="col-md-12 col-xl-12 ">
+                                    <div class="text-right bg-primary2" style="padding-top:15px; padding-bottom:15px;">
+                                        <div class="row">
+                                            <div class="col-md-5 col-xl-5">
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <button id="Compute" style="width:100%" class="btn btn-outline-success"><i class="fa fa-th-large"></i>&nbsp;Compute Gross Pay</button>
+                                            </div>
+                                            <div class="col-md-3 col-xl-3">
+                                                <input id="GrossAmount" name="GrossAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+
+                                <div class="col-md-5 col-xl-5">
+                                    <h4>CONTRIBUTIONS</h4>
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <label for="BasicSalaryAdjustment">EE</label>
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <label for="BasicSalaryAmount">ER</label>
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="BasicSalaryCurrent">EC</label>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="SSS" name="SSS" type="text" disabled class="form-control" value="SSS PREMIUM" placeholder="BASIC SALARY" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="SSSAmount" name="SSSAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="SSSAdjustment" name="SSSAdjustment" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="SSSCurrent" name="SSSCurrent" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="PHILHEALTH" name="PHILHEALTH" type="text" disabled class="form-control" value="PHILHEALTH" placeholder="ABSENCES" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="PhilhealthAmount" name="PhilhealthAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="PhilhealthAdjustment" name="PhilhealthAdjustment" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="PhilhealthCurrent" name="PhilhealthCurrent" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <input id="PAGIBIG" name="PAGIBIG" type="text" disabled class="form-control" value="PAGIBIG" placeholder="TARDINESS" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="PagibigAmount" name="PagibigAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="PagibigAdjustment" name="PagibigAdjustment" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="PagibigCurrent" name="PagibigCurrent" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:15px"></div>
+                                </div>
+                                <div class="col-md-12 col-xl-12 ">
+                                    <div class="text-right bg-primary2" style="padding-top:15px; padding-bottom:15px;">
+                                        <div class="row">
+                                            <div class="col-md-5 col-xl-5">
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <button id="ComputeContribution" style="width:100%" class="btn btn-outline-success"><i class="fa fa-th-large"></i>&nbsp;Compute Contribution</button>
+
+                                            </div>
+                                            <div class="col-md-3 col-xl-3">
+                                                <input id="ContributionAmount" name="ContributionAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <h4>DEDUCTIONS</h4>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <button id="SSSLoanDeduction" name="SSSLoanDeduction" style="width:100% ;text-align: left;" class="btn btn-outline-primary"><i class="fa fa-th-large"></i>&nbsp;SSS LOAN</button>
+                                    @*<input id="SSSLoanDeduction" name="SSSLoanDeduction" type="text" disabled class="form-control" value="SSS LOAN" placeholder="BASIC SALARY"  maxlength="128">*@
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="SSSLoanCurrent" name="SSSLoanCurrent" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="SSSLoanAdjustment" name="SSSLoanAdjustment" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="SSSLoanAmount" name="SSSLoanAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <button id="PagibigLoanDeduction" name="PagibigLoanDeduction" style="width:100% ;text-align: left;" class="btn btn-outline-primary"><i class="fa fa-th-large"></i>&nbsp;PAGIBIG LOAN</button>
+
+                                    @*<input id="PagibigLoanDeduction" name="PagibigLoanDeduction" type="text" disabled class="form-control" value="PAGIBIG LOAN" placeholder="ABSENCES"  maxlength="128">*@
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="PagibigLoanCurrent" name="PagibigLoanCurrent" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="PagibigLoanAdjustment" name="PagibigLoanAdjustment" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="PagibigLoanAmount" name="PagibigLoanAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <button id="OtherLoanDeduction" name="OtherLoanDeduction" style="width:100% ;text-align: left;" class="btn btn-outline-primary"><i class="fa fa-th-large"></i>&nbsp;OTHER LOAN</button>
+
+                                    @*<input id="OtherLoanDeduction" name="OtherLoanDeduction" type="text" disabled class="form-control" value="OTHER LOAN" placeholder="ABSENCES"  maxlength="128">*@
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="OtherLoanCurrent" name="OtherLoanCurrent" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="OtherLoanAdjustment" name="OtherLoanAdjustment" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="OtherLoanAmount" name="OtherLoanAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+                                <div class="col-md-5 col-xl-5">
+                                    <button id="OtherDed" name="OtherDed" style="width:100% ;text-align: left;" class="btn btn-outline-primary"><i class="fa fa-plus-square"></i>&nbsp;OTHER DEDUCTION</button>
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="OtherDeduction" name="OtherDeduction" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                </div>
+
+                                @*<div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+                                    <div class="col-md-5 col-xl-5">
+                                        <input id="btnTax" name="btnTax" type="text" disabled class="form-control" value="TAX W/HELD" placeholder="TARDINESS" maxlength="128">
+                                    </div>
+                                    <div class="col-md-4 col-xl-4">
+                                    </div>
+                                    <div class="col-md-3 col-xl-3">
+                                        <input id="TaxHeld" name="TaxHeld" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                    </div>*@
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:15px"></div>
+                                </div>
+                                <div class="col-md-12 col-xl-12 ">
+                                    <div class="text-right bg-primary2" style="padding-top:15px; padding-bottom:15px;">
+                                        <div class="row">
+                                            <div class="col-md-5 col-xl-5">
+                                            </div>
+                                            <div class="col-md-4 col-xl-4">
+                                                <button id="ComputeLoans" style="width:100%" class="btn btn-outline-success"><i class="fa fa-th-large"></i>&nbsp;Compute Deduction</button>
+                                            </div>
+                                            <div class="col-md-3 col-xl-3">
+                                                <input id="LoansAmount" name="LoansAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128" value="0.00">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:20px"></div>
+                                </div>
+
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="text-right" style="padding-top:15px"></div>
+                                </div>
+                                <div class="col-md-12 col-xl-12 ">
+                                    <div class="text-right  bg-primary2" style="padding-top:15px; padding-bottom:15px;">
+                                        <div class="row">
+                                            <div class="col-md-9 col-xl-9">
+                                                <input id="TAXABLE" name="TAXABLE" type="text" class="btn btn-outline-brand input-large" readonly value="TAXABLE INCOME" maxlength="128">
+                                            </div>
+                                            <div class="col-md-3 col-xl-3">
+                                                <input id="TaxableAmount" name="TaxableAmount" type="text" disabled class="form-control" placeholder="0.00" maxlength="128">
+                                            </div>
+                                            <div class="col-md-12 col-xl-12">
+                                                <div class="text-right" style="padding-top:10px"></div>
+                                            </div>
+                                            <div class="col-md-9 col-xl-9">
+                                                <input id="TAX" name="TAX" type="text" class="btn btn-outline-brand input-large" readonly value="TAX AMOUNT" maxlength="128">
+                                            </div>
+                                            <div class="col-md-3 col-xl-3">
+                                                <input id="Percent" name="Percent" type="text" disabled class="form-control" placeholder="0.00" maxlength="128" value="0.00">
+                                                <input id="Prescribe" name="Prescribe" hidden disabled class="form-control" placeholder="0.00" maxlength="128" value="0.00">
+                                            </div>
+                                            <div class="col-md-12 col-xl-12">
+                                                <div class="text-right" style="padding-top:10px"></div>
+                                            </div>
+                                            <div class="col-md-9 col-xl-9">
+                                                <input id="net" name="net" type="text" class="btn btn-outline-brand input-large" readonly value="NET AMOUNT" maxlength="128">
+                                            </div>
+                                            <div class="col-md-3 col-xl-3">
+                                                <input id="NetIncome" name="NetIncome" type="text" disabled class="form-control" width="70" placeholder="0.00" maxlength="128" value="0.00">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-xl-12 ">
+                                    <div class="text-right" style="padding-top:15px; padding-bottom:10px;">
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12 col-xl-12 ">
+                                    <div class="row">
+                                        <div class="col-md-9 col-xl-9 ">
+                                        </div>
+                                        <div class="col-md-3 col-xl-3">
+                                            <button id="btnSavePayroll" name="btnSavePayroll" style="width:100%" class="btn btn-outline-primary">&nbsp;<i class="fa fa-save"></i>&nbsp;&nbsp;&nbsp;SAVE</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AttList" tabindex="-1" role="dialog" aria-labelledby="AttListLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <span>Attendance List</span>
+                </h6>
+            </div>
+            <input id="startdate" name="startdate" type="hidden" class="form-control">
+            <input id="enddate" name="enddate" type="hidden" class="form-control">
+            <div id="Allowance-list" class="col-md-12 col-xl-12" style="padding-left: 15px;padding-right: 15px;"></div>
+
+            <div class="modal-body" style="height:400px">
+                <table id="AttendanceTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px;">
+                    <thead>
+                        <tr>
+                            <th width="20%">Date</th>
+                            <th width="40%">Timekeeping&nbsp;Code</th>
+                            <th width="40%">Company</th>
+                            <th width="40%">StartDate</th>
+                            <th width="40%">EndDate</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="RateModal" tabindex="-1" role="dialog" aria-labelledby="RateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Rates</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3 col-xl-3">
+
+                        <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> Regural Rates</label>
+                        <div class="input-group mb-3">
+                            <input id="Regural" name="Regural" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="Reguraltime" name="Reguraltime" type="text" class="form-control" placeholder="00:00">
+                            <input id="ReguralTotalMin" name="ReguralTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> Rest Day</label>
+                        <div class="input-group mb-3">
+                            <input id="RestDay" name="RestDay" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="RestDaytime" name="RestDaytime" type="text" class="form-control" placeholder="00:00">
+                            <input id="RestDayTotalMin" name="RestDayTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> Special Holiday</label>
+                        <div class="input-group mb-3">
+                            <input id="SpecialHoliday" name="SpecialHoliday" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="SpecialHolidaytime" name="SpecialHolidaytime" type="text" class="form-control" placeholder="00:00">
+                            <input id="SpecialHolidayTotalMin" name="SpecialHolidayTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> Legal Holiday</label>
+                        <div class="input-group mb-3">
+                            <input id="LegalHoliday" name="LegalHoliday" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" readonly>
+                            <input id="LegalHolidaytime" name="LegalHolidaytime" type="text" class="form-control" placeholder="00:00">
+                            <input id="LegalHolidayTotalMin" name="LegalHolidayTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> SpHol Restday</label>
+                        <div class="input-group mb-3">
+                            <input id="SpecialHolidayRestday" name="SpecialHolidayRestday" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="SpecialHolidayRestdaytime" name="SpecialHolidayRestdaytime" type="text" class="form-control" placeholder="00:00">
+                            <input id="SpecialHolidayRestdayTotalMin" name="SpecialHolidayRestdayTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+
+                        <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> LgHol Restday</label>
+                        <div class="input-group mb-3">
+                            <input id="LegalHolidayRestday" name="LegalHolidayRestday" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="LegalHolidayRestdaytime" name="LegalHolidayRestdaytime" type="text" class="form-control" placeholder="00:00">
+                            <input id="LegalHolidayRestdayTotalMin" name="LegalHolidayRestdayTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                    </div>
+                    <div class="col-md-3 col-xl-3">
+                        <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Regural Rates OT</label>
+                        <div class="input-group mb-3">
+                            <input id="ReguralOT" name="ReguralOT" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="ReguralOTtime" name="ReguralOTtime" type="text" class="form-control" placeholder="00:00">
+                            <input id="ReguralOTTotalMin" name="ReguralOTTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Rest Day OT</label>
+                        <div class="input-group mb-3">
+                            <input id="RestDayOT" name="RestDayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="RestDayOTtime" name="RestDayOTtime" type="text" class="form-control" placeholder="00:00">
+                            <input id="RestDayOTTotalMin" name="RestDayOTTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Special Holiday OT</label>
+                        <div class="input-group mb-3">
+                            <input id="SpecialHolidayOT" name="SpecialHolidayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="SpecialHolidayOTtime" name="SpecialHolidayOTtime" type="text" class="form-control" placeholder="00:00">
+                            <input id="SpecialHolidayOTTotalMin" name="SpecialHolidayOTTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Legal Holiday OT</label>
+                        <div class="input-group mb-3">
+                            <input id="LegalHolidayOT" name="LegalHolidayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="LegalHolidayOTtime" name="SpecialHolidayOTtime" type="text" class="form-control" placeholder="00:00">
+                            <input id="LegalHolidayOTTotalMin" name="SpecialHolidayOTTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> SpHol Restday OT</label>
+                        <div class="input-group mb-3">
+                            <input id="SpecialHolidayRestdayOT" name="SpecialHolidayRestdayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="SpecialHolidayRestdayOTtime" name="SpecialHolidayRestdayOTtime" type="text" class="form-control" placeholder="00:00">
+                            <input id="SpecialHolidayRestdayOTTotalMin" name="SpecialHolidayRestdayOTTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> LgHol Restday OT</label>
+                        <div class="input-group mb-3">
+                            <input id="LegalHolidayRestdayOT" name="LegalHolidayRestdayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="LegalHolidayRestdayOTtime" name="LegalHolidayRestdayOTtime" type="text" class="form-control" placeholder="00:00">
+                            <input id="LegalHolidayRestdayOTTotalMin" name="LegalHolidayRestdayOTTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-3 col-xl-3">
+                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND Basic Rates</label>
+                        <div class="input-group mb-3">
+                            <input id="NDRegural" name="NDRegural" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="NDReguraltime" name="NDReguraltime" type="text" class="form-control" placeholder="00:00">
+                            <input id="NDReguralTotalMin" name="NDReguralTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND Rest Day</label>
+                        <div class="input-group mb-3">
+                            <input id="NDRestDay" name="NDRestDay" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="NDRestDaytime" name="NDRestDaytime" type="text" class="form-control" placeholder="00:00">
+                            <input id="NDRestDayTotalMin" name="NDRestDayTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND Special Holiday</label>
+                        <div class="input-group mb-3">
+                            <input id="NDSpecialHoliday" name="NDSpecialHoliday" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="NDSpecialHolidaytime" name="NDSpecialHolidaytime" type="text" class="form-control" placeholder="00:00">
+                            <input id="NDSpecialHolidayTotalMin" name="NDSpecialHolidayTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND Legal Holiday</label>
+                        <div class="input-group mb-3">
+                            <input id="NDLegalHoliday" name="NDLegalHoliday" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="NDLegalHolidaytime" name="NDLegalHolidaytime" type="text" class="form-control" placeholder="00:00">
+                            <input id="NDLegalHolidayTotalMin" name="NDLegalHolidayTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND SpHol Restday</label>
+                        <div class="input-group mb-3">
+                            <input id="NDSpecialHolidayRestday" name="NDSpecialHolidayRestday" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="NDSpecialHolidayRestdaytime" name="NDSpecialHolidayRestdaytime" type="text" class="form-control" placeholder="00:00">
+                            <input id="NDSpecialHolidayRestdayTotalMin" name="NDSpecialHolidayRestdayTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND LgHol Restday</label>
+                        <div class="input-group mb-3">
+                            <input id="NDLegalHolidayRestday" name="NDLegalHolidayRestday" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="NDLegalHolidayRestdaytime" name="NDLegalHolidayRestdaytime" type="text" class="form-control" placeholder="00:00">
+                            <input id="NDLegalHolidayRestdayTotalMin" name="NDLegalHolidayRestdayTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                    </div>
+                    <div class="col-md-3 col-xl-3">
+                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND RG Rates O.T.</label>
+                        <div class="input-group mb-3">
+                            <input id="NDReguralOT" name="NDReguralOT" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="NDReguralOTtime" name="NDReguralOTtime" type="text" class="form-control" placeholder="00:00">
+                            <input id="NDReguralOTTotalMin" name="NDReguralOTTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND RD O.T.</label>
+                        <div class="input-group mb-3">
+                            <input id="NDRestDayOT" name="NDRestDayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="NDRestDayOTtime" name="NDRestDayOTtime" type="text" class="form-control" placeholder="00:00">
+                            <input id="NDRestDayOTTotalMin" name="NDRestDayOTTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND SH O.T.</label>
+                        <div class="input-group mb-3">
+                            <input id="NDSpecialHolidayOT" name="NDSpecialHolidayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="NDSpecialHolidayOTtime" name="NDSpecialHolidayOTtime" type="text" class="form-control" placeholder="00:00">
+                            <input id="NNDSpecialHolidayOTTotalMin" name="NDSpecialHolidayOTTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND LH O.T.</label>
+                        <div class="input-group mb-3">
+                            <input id="NDLegalHolidayOT" name="NDLegalHolidayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="NDLegalHolidayOTtime" name="NDLegalHolidayOTtime" type="text" class="form-control" placeholder="00:00">
+                            <input id="NDLegalHolidayOTTotalMin" name="NDLegalHolidayOTTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND SHRD O.T.</label>
+                        <div class="input-group mb-3">
+                            <input id="NDSpecialHolidayRestdayOT" name="NDSpecialHolidayRestdayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="NDSpecialHolidayRestdayOTtime" name="NDSpecialHolidayRestdayOTtime" type="text" class="form-control" placeholder="00:00">
+                            <input id="NDSpecialHolidayRestdayOTTotalMin" name="NDSpecialHolidayRestdayOTTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+
+                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND LHRD O.T.</label>
+                        <div class="input-group mb-3">
+                            <input id="NDLegalHolidayRestdayOT" name="NDLegalHolidayRestdayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" readonly>
+                            <input id="NDLegalHolidayRestdayOTtime" name="NDLegalHolidayRestdayOTtime" type="text" class="form-control" placeholder="00:00">
+                            <input id="NDLegalHolidayRestdayOTTotalMin" name="NDLegalHolidayRestdayOTTotalMin" type="hidden" class="form-control" placeholder="00.00">
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 col-xl-12">
+                        <table id="OTTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px; margin: 15px;">
+                            <thead>
+                                <tr>
+                                    <th>#</th>@*0*@
+                                    <th>index</th>
+                                    <th>EmpId</th>
+                                    <th width="20%">AttId</th>
+                                    <th width="40%">Desc</th>
+                                    <th width="10%">Rate</th>
+                                    <th width="10%">Hour</th>
+                                    <th width="10%">Amount</th>
+                                    <th width="10%"></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnReloadOt" class="btn btn-outline-info pull-right">&nbsp;<i class="fa fa-refresh"></i>&nbsp;Reload</button>
+                <button type="button" id="Btndismiss" class="btn btn-outline-warning pull-right"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AllowanceAdjstment" tabindex="-1" role="dialog" aria-labelledby="AttListLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <span>Allowance Adjustment</span>
+                </h6>
+            </div>
+            <div class="modal-body" style="height:400px">
+                <div class="row">
+                    <div class="col-md-5 col-xl-5">
+                        <input id="AllowanceDescription" name="AllowanceDescription" type="text" class="form-control" placeholder="Description" maxlength="128">
+                    </div>
+
+                    <div class="col-md-3 col-xl-3">
+                        <input id="Date" name="Date" type="date" class="form-control" placeholder="Date" maxlength="128">
+                    </div>
+                    <div class="col-md-2 col-xl-2">
+                        <input id="AllowanceAmount" name="AllowanceAmount" type="text" class="form-control" width="70" placeholder="0.00" maxlength="128">
+                    </div>
+                    <div class="col-md-2 col-xl-2">
+                        <button id="AddAllowance" name="AddAllowance" class="btn btn-outline-success btn-lg" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                    </div>
+                    <div class="col-md-12 col-xl-12">
+
+
+                        <table id="AllowanceTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px; margin: 15px;">
+                            <thead>
+                                <tr>
+                                    <th></th>@*0*@
+                                    <th>#</th>
+                                    <th>EmpId</th>
+                                    <th>AttId</th>
+                                    <th width="10%">Date</th>
+                                    <th width="40%">Description</th>
+                                    <th width="10%">Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnReloadAll" class="btn btn-outline-info pull-right">&nbsp;<i class="fa fa-refresh"></i>&nbsp;Reload</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AttAdjstment" name="AttAdjstment" tabindex="-1" role="dialog" aria-labelledby="AttAdjstmentListLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <span>Adjustment</span>
+                </h6>
+            </div>
+            <div class="modal-body" style="height:400px">
+                <div class="row">
+                    <div class="col-md-3 col-xl-3">
+                        <label for="EmployeeName">Att Id</label>
+                        <select class="form-control selectpicker" id="AttIdrecord" name="AttIdrecord" required style=" background-color: #a1e7ff;font-weight: 600;"></select>
+                    </div>
+
+                    <div class="col-md-3 col-xl-3">
+                        <label for="EmployeeName">Adj Date</label>
+                        <input id="DateT" name="DateT" type="text" class="form-control" disabled placeholder="Date" maxlength="128">
+                    </div>
+                    <div class="col-md-3 col-xl-3">
+                        <label for="EmployeeName">Adj Type</label>
+                        <select class="form-control selectpicker" id="AdjType" name="AdjType" required style=" background-color: #a1e7ff;font-weight: 600;"></select>
+                        <input id="AdjTypeId" name="AdjTypeId" type="text" class="form-control" hidden readonly placeholder="0" maxlength="128">
+
+                    </div>
+                    <div class="col-md-3 col-xl-3">
+                        <label for="EmployeeName">Add/Deduction</label>
+                        <select class="form-control selectpicker" id="plusminus" name="plusminus" required style=" background-color: #a1e7ff;font-weight: 600;">
+                            <option selected=""></option>
+                            <option value="1">+ Add</option>
+                            <option value="2">- Deduct</option>
+                        </select>
+                    </div>
+                    <div id="Salary" class="col-md-12 col-xl-12">
+                        <div class="row">
+                            <div class="col-md-6 col-xl-6">
+                                <input id="AttAdjDescription" name="AttAdjDescription" type="text" class="form-control" placeholder="Salary Description" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttAdjAmount" name="AttAdjAmount" type="text" class="form-control" width="70" placeholder="0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <button id="AddAttAdj" name="AddAttAdj" class="btn btn-outline-success btn-lg" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Absent" class="col-md-12 col-xl-12">
+                        <div class="row">
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttAbsentDescription" name="AttAbsentDescription" type="text" class="form-control" placeholder="Absent Description" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttAbsent" name="AttAbsent" type="text" class="form-control" width="70" placeholder="0" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttAbsentAmount" name="AttAbsentAmount" type="text" class="form-control" width="70" placeholder="0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <button id="AddAttAbsentAdj" name="AddAttAbsentAdj" class="btn btn-outline-success btn-lg" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Tardines" class="col-md-12 col-xl-12">
+                        <div class="row">
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttTardinesDescription" name="AttAbsentDescription" type="text" class="form-control" placeholder="Tardines Description" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttTardines" name="AttTardines" type="text" class="form-control" width="70" placeholder="0:00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttTardinesAmount" name="AttTardinesAmount" type="text" class="form-control" width="70" placeholder="0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <button id="AddAttTardinesAdj" name="AddAttTardinesAdj" class="btn btn-outline-success btn-lg" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="UnderTime" class="col-md-12 col-xl-12">
+                        <div class="row">
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttUnderTimeDescription" name="AttUnderTimeDescription" type="text" class="form-control" placeholder="Undertime Description" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttUnderTime" name="AttUnderTime" type="text" class="form-control" width="70" placeholder="0:00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttUnderTimeAmount" name="AttUnderTimeAmount" type="text" class="form-control" width="70" placeholder="0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <button id="AddAttUnderTimeAdj" name="AddAttUnderTimeAdj" class="btn btn-outline-success btn-lg" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Lvs" class="col-md-12 col-xl-12">
+                        <div class="row">
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttLeaveDescription" name="AttLeaveDescription" type="text" class="form-control" placeholder="Leave Description" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttLeave" name="AttLeave" type="text" class="form-control" width="70" placeholder="0:00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttLeaveAmount" name="AttLeaveAmount" type="text" class="form-control" width="70" placeholder="0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <button id="AddAttLeaveAdj" name="AddAttLeaveAdj" class="btn btn-outline-success btn-lg" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="OT" class="col-md-12 col-xl-12">
+                        <div class="row">
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttOTDescription2" name="AttOTDescription2" type="text" class="form-control" hidden placeholder="OT Description" maxlength="128">
+                                <select class="form-control selectpicker" id="AttOTDescription" name="AttOTDescription" required style=" background-color: #a1e7ff;font-weight: 600;">
+                                    <option selected=""></option>
+                                    <option value="Regural Rates">Regural Rates</option>
+                                    <option value="Rest Day">Rest Day</option>
+                                    <option value="Special Holiday">Special Holiday</option>
+                                    <option value="Legal Holiday">Legal Holiday</option>
+                                    <option value="SpHol Restday">SpHol Restday</option>
+                                    <option value="LgHol Restday">LgHol Restday</option>
+                                    <option value="Regural Rates OT">Regural Rates OT</option>
+                                    <option value="Rest Day OT">Rest Day OT</option>
+                                    <option value="Special Holiday OT">Special Holiday OT</option>
+                                    <option value="Legal Holiday OT">Legal Holiday OT</option>
+                                    <option value="SpHol Restday OT">SpHol Restday OT</option>
+                                    <option value="LgHol Restday OT">LgHol Restday OT</option>
+                                    <option value="ND Basic Rates">ND Basic Rates</option>
+                                    <option value="ND Rest Day">ND Rest Day</option>
+                                    <option value="ND Special Holiday">ND Special Holiday</option>
+                                    <option value="ND Legal Holiday">ND Legal Holiday</option>
+                                    <option value="ND SpHol Restday">ND SpHol Restday</option>
+                                    <option value="ND LgHol Restday">ND LgHol Restday</option>
+                                    <option value="ND RG Rates OT">ND RG Rates OT</option>
+                                    <option value="ND RD OT">ND RD OT</option>
+                                    <option value="ND LH OT">ND LH OT</option>
+                                    <option value="ND SHRD OT">ND SHRD OT</option>
+                                    <option value="ND LHRD OT">ND LHRD OT</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttOT" name="AttOT" type="text" class="form-control" width="70" placeholder="0:00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttOTAmount" name="AttOTAmount" type="text" class="form-control" width="70" placeholder="0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <button id="AddAttOTAdj" name="AddAttOTAdj" class="btn btn-outline-success btn-lg" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Alwnce" class="col-md-12 col-xl-12">
+                        <div class="row">
+                            <div class="col-md-6 col-xl-6">
+                                <input id="AttAlwnceDescription" name="AttAlwnceDescription" type="text" class="form-control" placeholder="Allowance Description" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttAlwnceAmount" name="AttAlwnceAmount" type="text" class="form-control" width="70" placeholder="0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <button id="AddAttAlwnce" name="AddAttAlwnce" class="btn btn-outline-success btn-lg" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Othrs" class="col-md-12 col-xl-12">
+                        <div class="row">
+                            <div class="col-md-6 col-xl-6">
+                                <input id="AttOthrsDescription" name="AttOthrsDescription" type="text" class="form-control" placeholder="Others Description" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttOthrsAmount" name="AttOthrsAmount" type="text" class="form-control" width="70" placeholder="0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <button id="AddAttOthrs" name="AddAttOthrs" class="btn btn-outline-success btn-lg" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Days" class="col-md-12 col-xl-12">
+                        <div class="row">
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttDaysDescription" name="AttDaysDescription" type="text" class="form-control" placeholder="Days Description" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttDays" name="AttDays" type="text" class="form-control" width="70" placeholder="0" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <input id="AttDaysAmount" name="AttDaysAmount" type="text" class="form-control" width="70" placeholder="0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <button id="AddAttDaysAdj" name="AddAttDaysAdj" class="btn btn-outline-success btn-lg" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-xl-12">
+                        <table name="AttAdjTable" id="AttAdjTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px; margin: 15px;">
+                            <thead>
+                                <tr>
+                                    <th width="5%">#</th>@*0*@
+                                    <th width="5%">Index</th>@*01*@
+                                    <th width="10%">EmpId</th>@*02*@
+                                    <th width="10%">AttId</th>@*03*@
+                                    <th width="40%">Date</th>@*04*@
+                                    <th width="40%">AdjTypeId</th>@*05*@
+                                    <th width="40%">AdjType</th>@*06*@
+                                    <th width="40%">Add/DedId</th>@*07*@
+                                    <th width="40%">Add/Ded</th>@*08*@
+                                    <th width="40%">Description</th>@*09*@
+                                    <th width="10%">Amount</th>@*010*@
+                                    <th width="40%">Description1</th>@*11*@
+                                    <th width="40%">Hrs/day</th>@*12*@
+                                    <th width="40%">Type</th>@*13*@
+                                    <th></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnReloadAdj" class="btn btn-outline-info pull-right">&nbsp;<i class="fa fa-refresh"></i>&nbsp;Reload</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*//sss*@
+<div class="modal fade" id="SSSLoanmodal" tabindex="-1" role="dialog" aria-labelledby="SSSLoanmodalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <span>SSS Loan</span>
+                </h6>
+            </div>
+            <div class="modal-body" style="height:400px">
+                <div class="row">
+                    <div class="col-md-12 col-xl-12">
+                        <table id="SSSLoanTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px;">
+                            <thead>
+                                <tr>
+                                    <th width="5%">Id</th>@*0*@
+                                    <th width="5%">EmpId</th>@*0*@
+                                    <th width="10%">Attid</th>
+                                    <th width="10%">AppNo</th>
+                                    <th width="20%">Deduction</th>
+                                    <th width="10%">Amount</th>
+                                    <th width="30%">Balance</th>
+                                    <th width="20%">Installment</th>
+                                    <th width="5%"></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>                
+            </div>
+            <div class="modal-footer">
+                <button id="btnReloadSSS" class="btn btn-outline-info pull-right">&nbsp;<i class="fa fa-refresh"></i>&nbsp;Reload</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*//Pagibig*@
+<div class="modal fade" id="PagibigLoanmodal" tabindex="-1" role="dialog" aria-labelledby="PagibigLoanmodalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <span>Pag Ibig Loan</span>
+                </h6>
+            </div>
+            <div class="modal-body" style="height:400px">
+                <div class="row">
+                    <div class="col-md-12 col-xl-12">
+                        <table id="PagibigLoanTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px;">
+                            <thead>
+                                <tr>
+                                    <th width="5%">Id</th>@*0*@
+                                    <th width="5%">EmpId</th>@*0*@
+                                    <th width="10%">Attid</th>
+                                    <th width="10%">AppNo</th>
+                                    <th width="20%">Deduction</th>
+                                    <th width="10%">Amount</th>
+                                    <th width="30%">Balance</th>
+                                    <th width="20%">Installment</th>
+                                    <th width="5%"></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnReloadPagibig" class="btn btn-outline-primary">&nbsp;<i class="fa fa-refresh"></i>&nbsp;Reload</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*//OtherLoan*@
+<div class="modal fade" id="OtherLoanmodal" tabindex="-1" role="dialog" aria-labelledby="OtherLoanmodalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <span>Other Loan</span>
+                </h6>
+            </div>
+            <div class="modal-body" style="height:400px">
+                <div class="row">
+                    <div class="col-md-12 col-xl-12">
+                        <table id="OtherLoanmodalTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px;">
+                            <thead>
+                                <tr>
+                                    <th width="5%">Id</th>@*0*@
+                                    <th width="5%">EmpId</th>@*0*@
+                                    <th width="10%">Attid</th>
+                                    <th width="10%">AppNo</th>
+                                    <th width="20%">Deduction</th>
+                                    <th width="10%">Amount</th>
+                                    <th width="30%">Balance</th>
+                                    <th width="20%">Installment</th>
+                                    <th width="5%"></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnOtherLoan" class="btn btn-outline-info pull-right">&nbsp;<i class="fa fa-refresh"></i>&nbsp;Reload</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*//OtherDeduction*@
+<div class="modal fade" id="Others" tabindex="-1" role="dialog" aria-labelledby="OtherDecLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">Other Deduction</h6>
+            </div>
+            <div class="modal-body" style="height:400px">
+                <div class="row">
+                    <div class="col-md-5 col-xl-5">
+                        <input id="DeductionDescription" name="DeductionDescription" type="text" class="form-control" placeholder="Description" maxlength="128">
+                    </div>
+
+                    <div class="col-md-3 col-xl-3">
+                        <input id="DedDate" name="DedDate" type="date" class="form-control" placeholder="Date" maxlength="128">
+                    </div>
+                    <div class="col-md-2 col-xl-2">
+                        <input id="DeductionAmount" name="DeductionAmount" type="text" class="form-control" width="70" placeholder="0.00" maxlength="128">
+                    </div>
+                    <div class="col-md-2 col-xl-2">
+                        <button id="AddDeduction" name="AddDeduction" class="btn btn-outline-success btn-lg" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                    </div>
+                    <div class="col-md-12 col-xl-12">
+                        <table id="DeductionTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px; margin: 15px;">
+                            <thead>
+                                <tr>
+                                    <th width="5%">Id</th>@*0*@
+                                    <th width="5%">Empid</th>@*0*@
+                                    <th width="5%">AttId</th>@*0*@
+                                    <th width="5%">Index</th>@*0*@
+                                    <th width="10%">Date</th>
+                                    <th width="40%">Description</th>
+                                    <th width="10%">Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnReloadd" class="btn btn-outline-info pull-right">&nbsp;<i class="fa fa-refresh"></i>&nbsp;Reload</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*//Contribution*@
+<div class="modal fade" id="ModalContribution" tabindex="-1" role="dialog" aria-labelledby="AttListLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <span>Contribution</span>
+                </h6>
+                <div class="modal-body" style="height:400px">
+                    <form name="frmcontribution" role="form" novalidate class="form-validation">
+                        <div class="row">
+                            <div class="col-md-6 col-xl-6">
+                                <label for="EmployeeName" class="col-md-12 col-xl-12 flat-color-4">Description</label>
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <label for="EmployeeName" class="col-md-12 col-xl-12 flat-color-4">EE</label>
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <label for="EmployeeName" class="col-md-12 col-xl-12 flat-color-4">ER</label>
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <label for="EmployeeName" class="col-md-12 col-xl-12 flat-color-4"></label>
+                            </div>
+
+                            <div class="col-md-6 col-xl-6">
+                                <input type="checkbox" class="form-check-input" id="ssscheck" style="height: 30px;">
+                                <div class="input-group mb-12">
+                                    <div class="input-group-prepend">
+                                        <label for="EmployeeName" class="btn btn-outline-primary" readonly style="width: 120px;text-align: LEFT;"><i class="fa fa-th-large"></i> SSS</label>
+                                    </div>
+                                    <select id="SSSType" name="SSSType" class="form-control selectpicker primary" data-live-search="true">
+                                        <option value="" selected>-Type-</option>
+                                        <option value="1">Basic</option>
+                                        <option value="2">Gross</option>
+                                        <option value="3">Fix</option>
+                                    </select>
+                                    <select id="SSSCutOff" name="SSSCutOff" class="form-control selectpicker secondary" data-live-search="true">
+                                        <option value="" selected>-Cut Off-</option>
+                                        <option value="1">1st</option>
+                                        <option value="2">2nd</option>
+                                        <option value="3">Both</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <input id="SSSEE" name="SSSEE" type="text" class="form-control" placeholder="ER 0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <input id="SSSER" name="SSSER" type="text" class="form-control" placeholder="EC 0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <input id="SSSEC" name="SSSEC" type="text" class="form-control" placeholder="ECC 0.00" maxlength="128">
+                            </div>
+
+                            <div class="col-md-6 col-xl-6">
+                                <input type="checkbox" class="form-check-input" id="Pagibigcheck" style="height: 30px;">
+                                <div class="input-group mb-12">
+                                    <div class="input-group-prepend">
+                                        <label for="EmployeeName" class="btn btn-outline-primary" readonly style="width: 120px;text-align: LEFT;"><i class="fa fa-th-large"></i> Pag-ibig</label>
+                                    </div>
+                                    <select id="PagibigType" name="PagibigType" class="form-control selectpicker primary" data-live-search="true">
+                                        <option value="" selected>-Type-</option>
+                                        <option value="1">Basic</option>
+                                        <option value="2">Gross</option>
+                                        <option value="3">Fix</option>
+                                    </select>
+                                    <select id="PagibigCutOff" name="PagibigCutOff" class="form-control selectpicker secondary" data-live-search="true">
+                                        <option value="" selected>-Cut Off-</option>
+                                        <option value="1">1st</option>
+                                        <option value="2">2nd</option>
+                                        <option value="3">Both</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <input id="PagibigEC" name="PagibigEC" type="text" class="form-control" placeholder="EC 0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <input id="PagibigER" name="PagibigER" type="text" class="form-control" placeholder="ER 0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <input id="PagibigECC" name="PagibigECC" type="text" class="form-control" placeholder="TOTAL" maxlength="128">
+                            </div>
+                            <div class="col-md-6 col-xl-6">
+                                <input type="checkbox" class="form-check-input" id="PhilHealthcheck" style="height: 30px;">
+                                <div class="input-group mb-12">
+                                    <div class="input-group-prepend">
+                                        <label for="EmployeeName" class="btn btn-outline-primary" readonly style="width: 120px;text-align: LEFT;"><i class="fa fa-th-large"></i> Phil-Health</label>
+                                    </div>
+                                    <select id="PhilHealthType" name="PhilHealthType" class="form-control selectpicker primary" data-live-search="true">
+                                        <option value="" selected>-Type-</option>
+                                        <option value="1">Basic</option>
+                                        <option value="2">Gross</option>
+                                        <option value="3">Fix</option>
+                                    </select>
+                                    <select id="PhilHealthCutOff" name="PhilHealthCutOff" class="form-control selectpicker secondary" data-live-search="true">
+                                        <option value="" selected>-Cut Off-</option>
+                                        <option value="1">1st</option>
+                                        <option value="2">2nd</option>
+                                        <option value="3">Both</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <input id="PhilHealthEC" name="PhilHealthEC" type="text" class="form-control" placeholder="EC 0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <input id="PhilHealthER" name="PhilHealthER" type="text" class="form-control" placeholder="ER 0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <input id="PhilHealthECC" name="PhilHealthECC" type="text" class="form-control" placeholder="TOTAL" maxlength="128">
+                            </div>
+
+                            <div class="col-md-6 col-xl-6">
+                                <input type="checkbox" class="form-check-input" id="WTaxcheck" style="height: 30px;">
+                                <div class="input-group mb-12">
+                                    <div class="input-group-prepend">
+                                        <label for="EmployeeName" class="btn btn-outline-primary" readonly style="width: 120px;text-align: LEFT;"><i class="fa fa-th-large"></i> W/Tax</label>
+                                    </div>
+                                    <select id="WTaxType" name="WTaxType" class="form-control selectpicker primary" data-live-search="true">
+                                        <option value="" selected>-Type-</option>
+                                        <option value="1">Basic</option>
+                                        <option value="2">Gross</option>
+                                        <option value="3">Fix</option>
+                                    </select>
+                                    <select id="WTaxCutOff" name="WTaxCutOff" class="form-control selectpicker secondary" data-live-search="true">
+                                        <option value="" selected>-Cut Off-</option>
+                                        <option value="1">1st</option>
+                                        <option value="2">2nd</option>
+                                        <option value="3">Both</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <button id="btnCompute" type="button" class="btn btn-outline-success btn-lg pull-right" style="width:100%"><i class="fa fa-calculator"></i>&nbsp;Compute</button>
+                                <input id="WTaxER" name="WTaxER" type="text" class="form-control" placeholder="0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <input id="WTaxEC" name="WTaxEC" type="text" class="form-control" placeholder="0.00" maxlength="128">
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <input id="WTaxECC" name="WTaxECC" type="text" class="form-control" placeholder="TOTAL" maxlength="128">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AttRecord" tabindex="-1" role="dialog" aria-labelledby="AttRecordLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <span>Attendance</span>
+                </h6>
+            </div>
+            <div class="modal-body">
+                <div style="width: 100%; overflow-y: scroll;">
+                    <table id="AttRecTable" class="table table-striped table-hover dt-responsive nowrap">
+                        <thead>
+                            <tr>
+                                <th>AttId</th>
+                                <th>Date</th>
+                                <th width="20%">Days</th>
+                                <th width="20%">Holidays</th>
+                                <th width="20%">TimeIn</th>
+                                <th width="20%">BreakOut</th>@*5*@
+                                <th width="20%">BreakIn</th>
+                                <th width="20%">TimeOut</th>
+                                <th width="20%"></th>@*Status18*@
+                                <th width="20%"></th>@*AMIn*@
+                                <th width="20%"></th>@*BreakOut10*@
+                                <th width="20%"></th>@*BreakIn*@
+                                <th width="20%"></th>@*pmOut*@
+                                <th width="20%"></th>@*amLateIn*@
+                                <th width="20%"></th>@*amLAteEndIn*@
+                                <th width="20%"></th>@*CountLates*@
+                                <th width="20%">Lates</th>@*Lates16*@
+                                <th width="20%">UnderTime</th>@*Tardiness17*@
+                                <th width="20%">NightDiff</th>@*NightDiff18*@
+                                <th width="20%"></th>@*Daily19*@
+                                <th width="20%"></th>@*TotalDaily20*@
+                                <th width="20%"></th>@*Status221*@
+                                <th width="20%"></th>@*Status322*@
+                                <th width="20%"></th>@*Description123*@
+                                <th width="20%"></th>@*Legal24*@
+                                <th width="20%"></th>@*HolPercent25*@
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+

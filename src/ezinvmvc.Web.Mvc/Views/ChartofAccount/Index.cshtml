@@ -1,0 +1,383 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc;
+@{
+
+    ViewBag.CurrentPageName = PageNames.ChartAccount;
+
+}
+@section styles{
+    <link rel="stylesheet" type="text/css" href="~/lib/treetables/tree-table.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/treetables/node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/treetables/node_modules/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/ChartAccount/Index.js" asp-append-version="true"></script>
+    @*<link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
+        <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>*@
+    @*<script src="~/lib/treetables/node_modules/jquery/dist/jquery.js" asp-append-version="true"></script>*@
+    <script src="~/lib/treetables/node_modules/datatables.net/js/jquery.dataTables.js" asp-append-version="true"></script>
+    <script src="~/lib/treetables/node_modules/datatables.net-bs4/js/dataTables.bootstrap4.js" asp-append-version="true"></script>
+    <script src="~/lib/treetables/treeTable.js" asp-append-version="true"></script>
+
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Chart of Account</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="text-right" style="padding-top:10px">
+                    <div class="btn-group" hidden>
+                        <button class="btn btn-primary" id="expand">Expand all</button>
+                        <button class="btn btn-primary" id="collapse">Collapse all</button>
+                    </div>
+                    @if (IsGranted(PermissionNames.Pages_ChartAccount_Create))
+                    {
+                    @*<button id="CreateNewButton" onclick="location.href='@Url.Action("Create", "ChartofAccount")'" target="_blank" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create</button>*@
+                    <button id="CreateButton" data-toggle="modal" data-target="#AccountCreateModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create</button>
+                    }
+                    <button id="ExportToExcelButton" class="btn btn-outline-success btn-sm"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @*@RenderBody()
+                            @RenderSection("Scripts", required: false)*@
+                        @*<ejs-scripts></ejs-scripts>*@
+                        <ejs-treegrid id="TreeGrid" dataSource="@ViewBag.data" childMapping="Children" treeColumnIndex="1" allowPaging="true" hidden>
+                            <e-treegrid-columns>
+                                <e-treegrid-column field="TaskId" headerText="Task ID" textAlign="Right" width="95">1</e-treegrid-column>
+                                <e-treegrid-column field="TaskName" headerText="Task Name" width="220">2</e-treegrid-column>
+                                <e-treegrid-column field="StartDate" headerText=" Start Date" textAlign="Right" format="yMd" type="date" width="115">hello</e-treegrid-column>
+                                <e-treegrid-column field="EndDate" headerText=" End Date" textAlign="Right" format="yMd" type="date" width="115">3</e-treegrid-column>
+                                <e-treegrid-column field="Duration" headerText="Duration" textAlign="Right" width="100">4</e-treegrid-column>
+                                <e-treegrid-column field="Progress" headerText="Progress" textAlign="Right" width="105">5</e-treegrid-column>
+                                <e-treegrid-column field="Priority" headerText="Priority" width="100">6</e-treegrid-column>
+                            </e-treegrid-columns>
+                        </ejs-treegrid>
+
+
+                        @* Filter *@
+                        @*<div class="row align-items-center m--margin-bottom-10">
+                                <input type="text" id="hassignid" hidden>
+                                <div class="col-md-3 col-xl-3">
+                                    <div class="form-group">
+                                        <input type="text" id="DateFrom" name="DateFrom" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-xl-3">
+                                    <div class="form-group">
+                                        <input type="text" id="DateTo" name="DateTo" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-xl-3" hidden>
+                                    <div class="form-group">
+                                        <select id="StatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                            <option value="1">Draft</option>
+                                            <option value="2">Submitted</option>
+                                            <option value="3">For Revision</option>
+                                            <option value="4">Closed</option>
+                                            <option value="5">Revised</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" id="SearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Type code to search">
+                                            <span class="input-group-btn">
+                                                <button id="SearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="AccountTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="10%">Node</th>
+                                            <th width="10%">Parent Node</th>
+                                            <th width="10%">Code</th>
+                                            <th width="25%">Name</th>
+                                            <th width="25%">Account Class</th>
+                                            <th width="10%">Account Type</th>
+                                            <th width="10%">Account Group</th>
+                                            <th width="10%">Is Child</th>
+                                            <th width="10%">Is Active</th>
+                                            <th width="5%">@L("Actions")</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-xl-12" hidden>
+                                <table id="AccountTable2" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="10%">Node</th>
+                                            <th width="10%">Parent Node</th>
+                                            <th width="10%">Code</th>
+                                            <th width="25%">Name</th>
+                                            <th width="25%">Account Class</th>
+                                            <th width="10%">Account Type</th>
+                                            <th width="10%">Account Group</th>
+                                            <th width="10%">Is Child</th>
+                                            <th width="10%">Is Active</th>
+                                            <th width="5%">@L("Actions")</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="AccountCreateModal" tabindex="-1" role="dialog" aria-labelledby="AccountCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Create New Account</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="AccountCreateForm" role="form" novalidate class="form-validation">
+                    <div class="row clearfix">
+                        @*<div class="col-md-6 col-xl-6">
+                            </div>*@
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="RFQ">Company</label>
+                                <div class="input-group">
+                                    <select name="CompanyId" id="Companies" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="name" class="form-label">Parent</label>
+                                    <input id="ParentId" type="hidden" name="ParentId">
+                                    <input id="ParentName" type="text" name="ParentName" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="code" class="form-label">Code</label>
+                                    <input id="code" type="text" name="Code" required maxlength="32" minlength="1" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input id="name" type="text" name="Name" required maxlength="32" minlength="2" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="row clearfix hidden" >
+                            <div class="col-sm-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <label for="description" class="form-label">Description</label>
+                                        <textarea id="description" name="Description" class="validate form-control"></textarea>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+                    <div class="row clearfix">
+                        <div class="col-sm-2">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="IsParent">Is Parent &nbsp;</label>
+                                    <input type="checkbox" name="IsChild" class="filled-in" id="IsChild" />
+                                    <label for="IsActive">Is Active&nbsp;</label>
+                                    <input type="checkbox" name="IsActive" class="filled-in" id="IsActive" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="email-input" class=" form-control-label">Account Class</label>
+                                    <select name="AccountClassId" id="AccountClassId" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="email-input" class=" form-control-label">Account Type</label>
+                                    <select name="AccountTypeId" id="AccountTypeId" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="email-input" class=" form-control-label">Account Group</label>
+                                    <select name="AccountGroupId" id="AccountGroupId" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+                        <button id="submit" class="btn btn-outline-success btn-sm" type="submit"><i class="fa fa-save" aria-label="@L("Save")"></i>&nbsp;Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AccountEditModal" tabindex="-1" role="dialog" aria-labelledby="AccountEditModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+
+                    <span>Edit Account</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="AccountEditForm" role="form" novalidate class="form-validation">
+                    <div class="row clearfix">
+                        @*<div class="col-md-6 col-xl-6">
+                            </div>*@
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="RFQ">Company</label>
+                                <div class="input-group">
+                                    <select name="CompanyIdE" id="CompaniesE" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="nameE" class="form-label">Parent</label>
+                                    <input id="ParentIdE" type="hidden" name="ParentIdE">
+                                    <input id="ParentNameE" type="text" name="ParentNameE" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input id="Id" type="text" name="Id" required class="validate form-control" hidden>
+                                    <label for="codeE" class="form-label">Code</label>
+                                    <input id="codeE" type="text" name="CodeE" required maxlength="32" minlength="1" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="nameE" class="form-label">Name</label>
+                                    <input id="nameE" type="text" name="NameE" required maxlength="32" minlength="2" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="row clearfix hidden" >
+                            <div class="col-sm-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line">
+                                        <label for="description" class="form-label">Description</label>
+                                        <textarea id="description" name="Description" class="validate form-control"></textarea>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+                    <div class="row clearfix">
+                        <div class="col-sm-2">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="IsChildE">Is Parent &nbsp;</label>
+                                    <input type="checkbox" name="IsChildE" class="filled-in" id="IsChildE" />
+                                    <label for="IsActive">Is Active&nbsp;</label>
+                                    <input type="checkbox" name="IsActiveE" class="filled-in" id="IsActiveE" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="email-input" class=" form-control-label">Account Class</label>
+                                    <select name="AccountClassIdE" id="AccountClassIdE" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="email-input" class=" form-control-label">Account Type</label>
+                                    <select name="AccountTypeIdE" id="AccountTypeIdE" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="email-input" class=" form-control-label">Account Group</label>
+                                    <select name="AccountGroupIdE" id="AccountGroupIdE" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+                        <button id="update" class="btn btn-outline-success btn-sm" type="submit"><i class="fa fa-save" aria-label="@L("Save")"></i>&nbsp;Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

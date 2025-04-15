@@ -1,0 +1,276 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Products
+@using ezinvmvc.App.Products
+
+
+@model ProductCreateModel
+@{
+    ViewBag.CurrentPageName = PageNames.Products_Edit;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Products/Update.js" asp-append-version="true"></script>
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Edit Product</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="SaveProductButton" class="btn btn-outline-primary btn-sm"><i class="fa fa-save"></i>&nbsp; Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body card-block">
+                        <form id="ProductForm" name="ProductForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+                            <div class="row">
+                                <div class="col-md-8 col-xl-8">
+                                    <div class="form-group">
+                                        <label for="Product">Code</label>
+                                        <input id="Id" type="hidden" name="Id" value="@Model.Product.Id">
+                                        <input id="UnitId" type="hidden" name="UnitId" value="@Model.Product.UnitId">
+                                        <input id="OldCode" type="hidden" name="OldCode" value="@Model.Product.Code">
+                                        <input id="OldImageName" type="hidden" name="OldImageName" value="@Model.Product.ImageName">
+                                        <input id="Code" class="form-control" type="text" name="Code" value="@Model.Product.Code" required maxlength="64">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Product">Name</label>
+                                        <input id="Name" class="form-control" type="text" name="Name" value="@Model.Product.Name" required maxlength="128">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Product">Category</label>
+                                        <div class="input-group">
+                                            <select name="CategoryId" id="lbCategories" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                @foreach (var item in Model.Categories)
+                                                {
+                                                    if (item.Id == Model.Product.CategoryId)
+                                                    {
+                                                        <option value="@item.Id" name="@Html.NameFor(c => c.Product.CategoryId)" selected>@item.Name</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.Id" name="@Html.NameFor(c => c.Product.CategoryId)">@item.Name</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <span class="input-group-btn">
+                                                <button id="CreateCategoryButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#CategoryCreateModal">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Product">Brand</label>
+                                        <div class="input-group">
+                                            <select name="BrandId" id="lbBrands" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                @foreach (var item in Model.Brands)
+                                                {
+                                                    if (item.Id == Model.Product.BrandId)
+                                                    {
+                                                        <option value="@item.Id" name="@Html.NameFor(c => c.Product.BrandId)" selected>@item.Name</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.Id" name="@Html.NameFor(c => c.Product.BrandId)">@item.Name</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <span class="input-group-btn">
+                                                <button id="CreateBrandButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#BrandCreateModal">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Product">Description</label>
+                                        <textarea asp-for="@Model.Product.Description" id="Description" rows="5" name="Description" class="form-control"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Product">Alert Level</label>
+                                        <input id="AlertLevel" class="form-control" type="text" name="AlertLevel" onkeypress="return decimalOnly(this.id);" value="@Model.Product.AlertLevel" required>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom:35px;">
+                                        <label for="Product">Costing Type</label>
+                                        <div class="input-group">
+                                            <select name="CostingTypeId" id="CostingTypeId" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                @foreach (var item in Model.CostingTypes)
+                                                {
+                                                    if (item.Id == Model.Product.CostingTypeId)
+                                                    {
+                                                        <option value="@item.Id" name="@Html.NameFor(c => c.Product.CostingTypeId)" selected>@item.Name</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.Id" name="@Html.NameFor(c => c.Product.CostingTypeId)">@item.Name</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="form-group">
+                                        <label for="Product">Unit</label><div class="input-group">
+                                            <table id="UnitsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th width="40%">Name</th>
+                                                        <th width="45%">Value</th>
+                                                        <th width="5%">Default</th>
+                                                        <th width="5%"></th>
+                                                        <th width="5%"></th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 col-xl-6 ">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <select name="Units" id="Units" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                        @foreach (var item in Model.Units)
+                                                        {
+                                                            <option value="@item.Id">@item.Name</option>
+                                                        }
+                                                    </select>
+                                                    <span class="input-group-btn">
+                                                        <button id="CreateUnitButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#UnitCreateModal">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6 ">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input id="Conversion" class="form-control" type="text" name="Conversion" onkeypress="return decimalOnly(this.id);">
+                                                    <span class="input-group-btn">
+                                                        <button id="AssignUnitButton" type="button" class="btn btn-default">
+                                                            Add
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="form-group">
+                                        <label for="Product">Price</label><div class="input-group">
+                                            <table id="PriceTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th width="40%">Type</th>
+                                                        <th width="45%">Unit</th>
+                                                        <th width="5%">Price</th>
+                                                        <th width="5%"></th>
+                                                        <th width="5%"></th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 col-xl-4 ">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <select name="PricingTypes" id="PricingTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                                                    </select>
+                                                    <span class="input-group-btn">
+                                                        <button id="CreatePricingTypeButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#PricingTypeCreateModal">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-xl-4 ">
+                                            <div class="form-group">
+                                                <select name="PriceUnits" id="PriceUnits" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                 
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-xl-4 ">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input id="UnitPrice" class="form-control" type="text" name="UnitPrice" onkeypress="return decimalOnly(this.id);">
+                                                    <span class="input-group-btn">
+                                                        <button id="AddPriceButton" type="button" class="btn btn-default">
+                                                            Add
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <div class="form-group">
+                                        <label for="Product">Primary Image</label>
+                                        <div class="custom-file" id="customFile">
+                                            <input id="fileinput" type="file" class="custom-file-input">
+                                            <label for="fileinput" class="custom-file-label text-truncate">Choose file...</label>
+                                        </div>
+                                        <img id="filepreview" src="~/products/@Model.Product.Code/@Model.Product.ImageName" class="img-fluid img-thumbnail" style="margin-top:25px" alt="your image" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CategoryCreateModal" tabindex="-1" role="dialog" aria-labelledby="CategoryCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="BrandCreateModal" tabindex="-1" role="dialog" aria-labelledby="BrandCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="UnitCreateModal" tabindex="-1" role="dialog" aria-labelledby="UnitCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="PricingTypeCreateModal" tabindex="-1" role="dialog" aria-labelledby="PricingTypeCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ProductUnitEditModal" tabindex="-1" role="dialog" aria-labelledby="ProductUnitEditModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>

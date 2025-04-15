@@ -1,0 +1,266 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+
+@{
+    //ViewData["Title"] = "RFQ";
+
+    ViewBag.CurrentPageName = PageNames.TaxType;
+
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/TaxType/Index.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Tax Type</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="text-right" style="padding-top:10px">
+                    @if (IsGranted(PermissionNames.Pages_TaxType_Create))
+                    {
+                        <button id="CreateButton" data-toggle="modal" data-target="#TaxTypeCreateModal" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create TaxType</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        @*<div class="row align-items-center m--margin-bottom-10">
+                                <input type="text" id="h1" value="@Model.EmpId" hidden>
+                                <input type="text" id="hassignid" hidden>
+                                <div class="col-md-3 col-xl-3">
+                                    <div class="form-group">
+                                        <input type="text" id="DateFrom" name="DateFrom" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-xl-3">
+                                    <div class="form-group">
+                                        <input type="text" id="DateTo" name="DateTo" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-xl-3" hidden>
+                                    <div class="form-group">
+                                        <select id="StatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                            <option value="1">Draft</option>
+                                            <option value="2">Submitted</option>
+                                            <option value="3">For Revision</option>
+                                            <option value="4">Closed</option>
+                                            <option value="5">Revised</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" id="SearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Type Code and Client to search">
+                                            <span class="input-group-btn">
+                                                <button id="SearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="TaxTypeTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="10%">Code</th>
+                                            <th width="20%">Name</th>
+                                            <th width="10%">Rate</th>
+                                            <th width="10%">Account Liability</th>
+                                            <th width="10%">Type</th>
+                                            <th width="3%">@L("Actions")</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="TaxTypeCreateModal" tabindex="-1" role="dialog" aria-labelledby="EmployeeCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Create Tax Type</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="TaxTypeCreateForm" role="form" novalidate class="form-validation">
+                    <div class="row clearfix">
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="Code" class="form-label">Code</label>
+                                    <input id="Code" type="text" name="Code" required maxlength="32" minlength="2" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input id="name" type="text" name="Name" required maxlength="32" minlength="2" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="rate" class="form-label">Rate</label>
+                                    <input type="text" id="rate" name="Rate" class="form-control" required>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Account Liability</label>
+                                    <input type="hidden" id="LiabilityAccountId" name="LiabilityAccountId" required>
+                                    <input type="text" id="LiabilityAccount" name="LiabilityAccount" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="rate" class="form-label">Type</label>
+                                    <select id="Type" name="Type" class="form-control selectpicker">
+                                        <option value="1">VAT</option>
+                                        <option value="2">EWT</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+                        <button id="submit" class="btn btn-outline-success btn-sm" type="submit"><i class="fa fa-save" aria-label="@L("Save")"></i>&nbsp;Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="TaxTypeEditModal" tabindex="-1" role="dialog" aria-labelledby="EmployeeCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+
+                    <span>Edit Tax Type</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="TaxTypeEditForm" role="form" novalidate class="form-validation">
+                    <div class="row clearfix">
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input id="Id" type="text" name="Id" required hidden>
+                                    <label for="abbr" class="form-label">Code</label>
+                                    <input id="Ecode" type="text" name="Ecode" required maxlength="32" minlength="2" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="Ename" class="form-label">Name</label>
+                                    <input id="Ename" type="text" name="EName" required maxlength="32" minlength="2" class="validate form-control">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="ERate" class="form-label">Rate</label>
+                                    <input type="text" id="ERate" name="ERate" class="form-control" required>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label>Account Liability</label>
+                                    <input type="hidden" id="EAccountId" name="EAccountId" required>
+                                    <input type="text" id="EAccount" name="EAccount" placeholder="Type Name to search" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-4">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label for="rate" class="form-label">Type</label>
+                                    <select id="EType" name="EType" class="form-control selectpicker">
+                                        <option value="1">VAT</option>
+                                        <option value="2">EWT</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                        </div>
+                    </div>
+
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+                        <button id="update" class="btn btn-outline-success btn-sm" type="submit"><i class="fa fa-save" aria-label="@L("Save")"></i>&nbsp;Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,112 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Products
+
+@{
+    ViewBag.CurrentPageName = PageNames.Products;
+}
+@section scripts
+{
+    <script src="~/view-resources/Views/Products/Index.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Products</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    @if (IsGranted(PermissionNames.Master_Products_Export))
+                    {
+                        <button id="ExportToExcelButton" class="btn btn-outline-success btn-sm"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                        @*<button id="ExportToPDF" class="btn btn-outline-success btn-sm"><i class="fa fa-printer"></i>&nbsp;Print</button>*@
+                    }
+                    @if (IsGranted(PermissionNames.Master_Products_Create))
+                    {
+                        <button id="CreateNewProductButton" onclick="window.open('@Url.Action("Create", "Products")')" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        <div class="row align-items-center m--margin-bottom-10">
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <select name="lbCategories" id="lbCategories" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <select name="lbBrands" id="lbBrands" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                   
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" id="ProductTableFilter" class="form-control m-input input-sm form-control-sm" placeholder="Search..." value="@Model.FilterText">
+                                        <span class="input-group-btn">
+                                            <button id="GetProductButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="ListTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="10%">Image</th>
+                                            <th width="10%">Code</th>
+                                            <th width="25%">Name</th>
+                                            <th width="15%">Category</th>
+                                            <th width="10%">Unit</th>
+                                            <th width="4%">@L("Actions")</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-xl-12" hidden>
+                                <table id="ListTable2" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th width="10%">Code</th>
+                                            <th width="25%">Name</th>
+                                            <th width="15%">Category</th>
+                                            <th width="10%">Unit</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

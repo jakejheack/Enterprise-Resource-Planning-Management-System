@@ -1,0 +1,124 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+
+@{
+    ViewBag.CurrentPageName = PageNames.Sales_Invoice;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/SalesInvoice/Index.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Sales Invoice</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    @if (IsGranted(PermissionNames.Pages_Sales_Invoice_Export))
+                    {
+                        <button id="ExportToExcelButton" class="btn btn-outline-success btn-sm"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                    }
+                    @if (IsGranted(PermissionNames.Pages_Sales_Invoice_Create))
+                    {
+                        <button id="CreateNewButton" onclick="window.open('@Url.Action("Create", "SalesInvoice")')" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create New</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        <div class="row align-items-center m--margin-bottom-10">
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <input type="text" id="DateFrom" name="DateFrom" class="input-sm form-control-sm form-control date-picker" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <input type="text" id="DateTo" name="DateTo" class="input-sm form-control-sm form-control date-picker" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <select id="StatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                        <option value="1">Draft</option>
+                                        <option value="2">Unpaid</option>
+                                        <option value="3">Paid</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" id="SearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Search..." value="">
+                                        <span class="input-group-btn">
+                                            <button id="SearchButton" class="btn btn-default" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="ListTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>@*0*@
+                                            <th width="10%">Id</th>@*1*@
+                                            <th width="30%">Client</th>@*2*@
+                                            <th width="10%">Date</th>@*3*@
+                                            <th width="10%">Status</th>@*4*@
+                                            <th width="10%">Net</th>@*5*@
+                                            <th width="10%">Tax</th>@*6*@
+                                            <th width="10%">SubTotal</th>@*7*@
+                                            <th width="10%">Charges</th>@*8*@
+                                            <th width="10%">GrandTotal</th>@*9*@
+                                            <th width="4%">@L("Actions")</th>@*10*@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-xl-12" hidden>
+                                <table id="ListTable2" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th width="10%">Id</th>@*1*@
+                                            <th width="30%">Client</th>@*2*@
+                                            <th width="10%">Date</th>@*3*@
+                                            <th width="10%">Status</th>@*4*@
+                                            <th width="10%">Net</th>@*5*@
+                                            <th width="10%">Tax</th>@*6*@
+                                            <th width="10%">SubTotal</th>@*7*@
+                                            <th width="10%">Charges</th>@*8*@
+                                            <th width="10%">GrandTotal</th>@*9*@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

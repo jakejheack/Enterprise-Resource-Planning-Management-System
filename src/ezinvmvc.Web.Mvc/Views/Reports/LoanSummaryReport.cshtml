@@ -1,0 +1,232 @@
+﻿@using ezinvmvc.Web.Startup
+@{
+    ViewBag.CurrentPageName = PageNames.LoanSummaryReport;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Reports/LoanSummaryReport.js" asp-append-version="true"></script>
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                @*<div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Attendance Adjustment Report</h1>
+                        </div>
+                    </div>*@
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right">
+                    <div class="btn-group" role="group" style=" padding-top:10px ; padding-bottom:10px">
+                        <button id="AttendanceList" style="width:100%" data-toggle="modal" data-target="#AttList" class="btn btn-outline-success btn-sm"><i class="fa fa-list-ol"></i>&nbsp;Filter&nbsp;Data</button>
+                        @*<button name="ExportToExcelButton" id="ExportToExcelButton" value="Export" type="button" class="btn btn-outline-dark btn-sm"><i class="fa fa-file-excel-o"></i> Export</button>
+                        <button name="PrintActualButton" id="PrintActualButton" value="Print" type="button" class="btn btn-outline-primary btn-sm"><i class="fa fa-print"></i> Print</button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-body">
+                <div id="PrintTable3" style="background-color: white;">
+                    <div class="col-md-12 col-xl-12">
+                        <input id="id" name="id" type="text" class="form-control" hidden required placeholder="Time keeping Code" value="0">
+                        <input id="comp" name="comp" type="text" class="form-control" hidden required placeholder="companyId" value="0">
+                        <input id="dept" name="dept" type="text" class="form-control" hidden required placeholder="Time keeping Code" value="0">
+                        <input id="SSS" name="SSS" type="text" class="form-control"  hidden required placeholder="SSS" value="0">
+                        <input id="PHLT" name="PHLT" type="text" class="form-control"  hidden required placeholder="PHLT" value="0">
+                        <input id="PGB" name="dePGBpt" type="text" class="form-control"  hidden required placeholder="PGB" value="0">
+                        <input id="TIN" name="TIN" type="text" class="form-control"  hidden required placeholder="TIN" value="0">
+                        <input id="DateR" name="DateR" type="text" class="form-control"  hidden required placeholder="DateR" value="0">
+                        <input id="FName" name="FName" type="text" class="form-control"  hidden required placeholder="FName" value="0">
+
+
+                        <div class="page-title center" style="text-align:center">
+                            <h4>Loan Summary Report</h4>
+                        </div>
+                        <div class="page-title center" style="text-align:center">
+                            <label id="Company" name="Company"></label>
+                        </div>
+                        <div class="page-title center" style="text-align:left">
+                            <label id="Name" name="Name"></label>
+                        </div>
+                        <div id="ssslabel" class="page-title center" style="text-align:left; ">
+                            <label>SSS Summary Loan</label> ( <label style="font-weight:600" id="totalsssamount" name="totalsssamount"></label> )
+                        </div>
+                        <table id="AttadjTable" class="table table-striped table-bordered table-hover dt-responsive nowrap" style="width: 100%;font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th style="font-size:smaller; background: lightgray;"></th>
+                                    <th style="font-size:smaller; background: lightgray;">EmpId</th>
+                                    <th style="font-size:smaller; background: lightgray;">LoanType</th>
+                                    <th style="font-size:smaller; background: lightgray;">Application No.</th>
+                                    <th style="font-size:smaller; background: lightgray;">AttId</th>
+                                    <th style="font-size:smaller; background: lightgray;">Loan&nbsp;Amt</th>
+                                    <th style="font-size:smaller; background: lightgray;">Start</th>
+                                    <th style="font-size:smaller; background: lightgray;">End</th>
+                                    <th style="font-size:smaller; background: lightgray;">Amortization</th>
+                                    <th style="font-size:smaller; background: lightgray;">Date Paid</th>
+                                    <th style="font-size:smaller; background: lightgray;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot id="tfooter" style="background: gainsboro;">
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th style="text-align:right">Total:</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div id="ssslabel" class="page-title center" style="text-align:left; ">
+                            <label>Pagibig Summary Loan</label> ( <label style="font-weight:600" id="totalpgbamount" name="totalpgbamount"></label> )
+                        </div>
+                        <table id="PgbTable" class="table table-striped table-bordered table-hover dt-responsive nowrap" style="width: 100%;font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th style="font-size:smaller; background: lightgray;"></th>
+                                    <th style="font-size:smaller; background: lightgray;">EmpId</th>
+                                    <th style="font-size:smaller; background: lightgray;">LoanType</th>
+                                    <th style="font-size:smaller; background: lightgray;">Application No.</th>
+                                    <th style="font-size:smaller; background: lightgray;">AttId</th>
+                                    <th style="font-size:smaller; background: lightgray;">Loan&nbsp;Amt</th>
+                                    <th style="font-size:smaller; background: lightgray;">Start</th>
+                                    <th style="font-size:smaller; background: lightgray;">End</th>
+                                    <th style="font-size:smaller; background: lightgray;">Amortization</th>
+                                    <th style="font-size:smaller; background: lightgray;">Date Paid</th>
+                                    <th style="font-size:smaller; background: lightgray;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot id="tfooter" style="background: gainsboro;">
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th style="text-align:right">Total:</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+
+                        </table>
+
+                        <div id="ssslabel" class="page-title center" style="text-align:left; ">
+                            <label>Others Summary Loan</label> ( <label style="font-weight:600" id="totalothamount" name="totalothamount"></label> )
+                        </div>
+                        <table id="OthTable" class="table table-striped table-bordered table-hover dt-responsive nowrap" style="width: 100%;font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th style="font-size:smaller; background: lightgray;"></th>
+                                    <th style="font-size:smaller; background: lightgray;">EmpId</th>
+                                    <th style="font-size:smaller; background: lightgray;">LoanType</th>
+                                    <th style="font-size:smaller; background: lightgray;">Application No.</th>
+                                    <th style="font-size:smaller; background: lightgray;">AttId</th>
+                                    <th style="font-size:smaller; background: lightgray;">Loan&nbsp;Amt</th>
+                                    <th style="font-size:smaller; background: lightgray;">Start</th>
+                                    <th style="font-size:smaller; background: lightgray;">End</th>
+                                    <th style="font-size:smaller; background: lightgray;">Amortization</th>
+                                    <th style="font-size:smaller; background: lightgray;">Date Paid</th>
+                                    <th style="font-size:smaller; background: lightgray;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot id="tfooter" style="background: gainsboro;">
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th style="text-align:right">Total:</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="AttList" tabindex="-1" role="dialog" aria-labelledby="AttListLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <span>Employee List</span>
+                </h6>
+            </div>
+            <div class="row m-0">
+                <div class="col-md-4 col-xl-4">
+                    <div class="form-group">
+                        <select name="SearchBy" id="SearchBy" class="selectpicker form-control">
+                            <option value="0">-- Search By --</option>
+                            <option selected value="CompleteName">Full Name</option>
+                            <option value="Department">Department</option>
+                            <option value="Company">Company</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-8 col-xl-8">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" id="EmployeeTableFilter" class="form-control m-input" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button id="GetEmployeeButton" class="btn btn-default" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body" style="padding-top: 0px !important;">
+                <table id="AttendanceTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px; width: 100%;font-size: 12px;">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>empId</th>
+                            <th width="10%">Comp</th>
+                            <th width="10%">Emp&nbsp;Code</th>
+                            <th width="50%">Full&nbsp;Name</th>
+                            <th width="30%">Department</th>
+                            <th></th>
+                            <th width="30%"></th>@*SSS*@
+                            <th width="30%"></th>@*PHLT*@
+                            <th width="30%"></th>@*PGB*@
+                            <th width="30%"></th>@*TINO*@
+                            <th width="30%"></th>@*DateH*@
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+

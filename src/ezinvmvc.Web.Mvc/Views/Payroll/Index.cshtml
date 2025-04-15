@@ -1,0 +1,474 @@
+﻿@using ezinvmvc.Web.Startup
+@{
+    ViewBag.CurrentPageName = PageNames.Payroll;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/PayrollManagement/Index.js" asp-append-version="true"></script>
+}
+    <div class="breadcrumbs">
+        <div class="breadcrumbs-inner">
+            <div class="row m-0">
+                <div class="col-md-10 col-xl-10">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Payroll Management</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-xl-2">
+                    <div class="btn-group" role="group" style="width:100% ; padding-top:10px">
+                        <button id="AttendanceList" style="width:100%" data-toggle="modal" data-target="#AttList" class="btn btn-outline-primary"><i class="fa fa-list-ol"></i>&nbsp;Attendance</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 col-xl-4 card border border-info bg-primary2">
+                            <form name="EmpAttIdRec" role="form" novalidate class="form-validation">
+                                <table id="EmpAttIdTable" class="table table-striped table-bordered table-hover nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>EmpId</th>
+                                            <th>Name</th>
+                                            <th>Code</th>
+                                            <th>Att&nbsp;Id</th>
+                                            <th>Date</th>
+                                            <th>Start</th>
+                                            <th>End</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </form>
+                        </div>
+                        <div class="col-md-8 col-xl-8">
+
+                            <form name="EmpPayrollRec" role="form" novalidate class="form-validation">
+                                <div class="row">
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="FullName" name="FullName" type="text" disabled class="form-control" placeholder="Employee Name" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-3 col-xl-3">
+                                        <input id="attid" name="attid" type="hidden" class="form-control input-sm">
+                                        <input id="EmpId" name="EmpId" type="hidden" class="form-control input-sm">
+                                        <input id="Status" name="Status" type="hidden" class="form-control input-sm" value="Active">
+                                        <input id="EmpCode" name="EmpCode" type="text" disabled class="form-control" placeholder="Code" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-3 col-xl-3">
+                                        <input id="Department" name="Department" type="hidden" disabled class="form-control" placeholder="Department" required maxlength="128">
+                                        <input id="DeptName" name="DeptName" type="text" disabled class="form-control" placeholder="Department" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <label for="PayrollPeriod"></label>
+                                        <input id="PayrollPeriod" name="PayrollPeriod" type="text" disabled class="form-control" placeholder="Payroll Period" required maxlength="128">
+                                        <input id="Period" name="Period" type="hidden" disabled class="form-control" placeholder="Payroll Period" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-3 col-xl-3">
+                                        <label for="PayrollPeriod"></label>
+                                        <input id="PayrollMonthly" name="PayrollMonthly" type="text" disabled class="form-control" placeholder="Payroll Monthly" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-3 col-xl-3">
+                                        <label for="PayrollPeriod"></label>
+                                        <input id="PayrollRate" name="PayrollRate" type="text" disabled class="form-control" placeholder="Payroll Rate" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <label for="PayrollPeriod"></label>
+                                        <input id="TaxStatus" name="TaxStatus" type="text" disabled class="form-control" placeholder="Tax Status" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <label for="PayrollPeriod"></label>
+                                        <input id="CivilStatus" name="CivilStatus" type="text" disabled class="form-control" placeholder="CivilStatus" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <h4>EARNINGS</h4>
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <label for="BasicSalaryCurrent">Current</label>
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <label for="BasicSalaryAdjustment">Adjustment</label>
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <label for="BasicSalaryAmount">Amount</label>
+                                    </div>
+
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="BasicSalary" name="BasicSalary" type="text" disabled class="form-control" value="BASIC SALARY" placeholder="BASIC SALARY" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="BasicSalaryCurrent" name="BasicSalaryCurrent" type="text" disabled class="form-control" placeholder="0" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="BasicSalaryAdjustment" name="BasicSalaryAdjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="BasicSalaryAmount" name="BasicSalaryAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="Absenses" name="Absenses" type="text" disabled class="form-control" value="ABSENCES" placeholder="ABSENCES" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="AbsensesCurrent" name="AbsensesCurrent" type="text" disabled class="form-control" placeholder="0" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="AbsensesAdjustment" name="AbsensesAdjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="AbsensesAmount" name="AbsensesAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="Tardiness" name="Tardiness" type="text" disabled class="form-control" value="TARDINESS" placeholder="TARDINESS" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="TardinessCurrent" name="TardinessCurrent" type="text" disabled class="form-control" placeholder="0:00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="TardinessAjustment" name="TardinessAjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128" value="0:00">
+                                        <input id="TardinessDeductionLate" name="TardinessDeductionLate" type="hidden" disabled class="form-control" placeholder="0.00" required maxlength="128" value="0:00">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="TardinessAmount" name="TardinessAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="Undertime" name="Undertime" type="text" disabled class="form-control" value="UNDERTIME" placeholder="UNDERTIME" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="UndertimeCurrent" name="UndertimeCurrent" type="text" disabled class="form-control" placeholder="0:00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="UndertimeAdjustment" name="UndertimeAdjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="UndertimeAmount" name="UndertimeAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="RGOT" name="RGOT" type="text" disabled class="form-control" value="RGOT" placeholder="RGOT" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="RGOTCurrent" name="RGOTCurrent" type="text" disabled class="form-control" class="txt" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="RGOTAdjustment" name="RGOTAdjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="RGOTAmount" name="RGOTAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="GeneralAllowance" name="GeneralAllowance" type="text" disabled class="form-control" value="TAXABLE ALLOWANCE" placeholder="T/ALLOWANCE" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="GeneralCurrent" name="GeneralCurrent" type="text" disabled class="form-control" placeholder="" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="GeneralAdjustment" name="GeneralAdjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="GeneralAmount" name="GeneralAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="NONGeneralAllowance" name="NONGeneralAllowance" type="text" disabled class="form-control" value="NON TAXABLE ALLOWANCE" placeholder="NON T/ALLOWANCE" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="NONGeneralCurrent" name="NONGeneralCurrent" type="text" disabled class="form-control" placeholder="" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="NONGeneralAdjustment" name="NONGeneralAdjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="NONGeneralAmount" name="NONGeneralAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:15px"></div>
+                                    </div>
+                                    <div class="col-md-12 col-xl-12 ">
+                                        <div class="text-right bg-primary2" style="padding-top:15px; padding-bottom:15px;">
+                                            <div class="row">
+                                                <div class="col-md-4 col-xl-4">
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <button id="Compute" style="width:100%" class="btn btn-outline-success"><i class="fa fa-th-large"></i>&nbsp;Compute Gross Pay</button>
+
+                                                </div>
+                                                <div class="col-md-3 col-xl-3">
+                                                    <input id="GrossAmount" name="GrossAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+
+                                    <div class="col-md-6 col-xl-6">
+                                        <h4>CONTRIBUTIONS</h4>
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <label for="BasicSalaryCurrent">Total</label>
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <label for="BasicSalaryAdjustment">ER</label>
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <label for="BasicSalaryAmount">EE</label>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="SSS" name="SSS" type="text" disabled class="form-control" value="SSS PREMIUM" placeholder="BASIC SALARY" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="SSSCurrent" name="SSSCurrent" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="SSSAdjustment" name="SSSAdjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="SSSAmount" name="SSSAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="PHILHEALTH" name="PHILHEALTH" type="text" disabled class="form-control" value="PHILHEALTH" placeholder="ABSENCES" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="PhilhealthCurrent" name="PhilhealthCurrent" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="PhilhealthAdjustment" name="PhilhealthAdjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="PhilhealthAmount" name="PhilhealthAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="PAGIBIG" name="PAGIBIG" type="text" disabled class="form-control" value="PAGIBIG" placeholder="TARDINESS" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="PagibigCurrent" name="PagibigCurrent" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="PagibigAjustment" name="PagibigAdjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="PagibigAmount" name="PagibigAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:15px"></div>
+                                    </div>
+                                    <div class="col-md-12 col-xl-12 ">
+                                        <div class="text-right bg-primary2" style="padding-top:15px; padding-bottom:15px;">
+                                            <div class="row">
+                                                <div class="col-md-4 col-xl-4">
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <button id="ComputeContribution" style="width:100%" class="btn btn-outline-success"><i class="fa fa-th-large"></i>&nbsp;Compute Contribution</button>
+
+                                                </div>
+                                                <div class="col-md-3 col-xl-3">
+                                                    <input id="ContributionAmount" name="ContributionAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <h4>LOAN DEDUCTIONS</h4>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="SSSLoanDeduction" name="SSSLoanDeduction" type="text" disabled class="form-control" value="SSS LOAN" placeholder="BASIC SALARY" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="SSSLoanCurrent" name="SSSLoanCurrent" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="SSSLoanAdjustment" name="SSSLoanAdjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="SSSLoanAmount" name="SSSLoanAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="PagibigLoanDeduction" name="PagibigLoanDeduction" type="text" disabled class="form-control" value="PAGIBIG LOAN" placeholder="ABSENCES" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="PagibigLoanCurrent" name="PagibigLoanCurrent" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="PagibigLoanAdjustment" name="PagibigLoanAdjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="PagibigLoanAmount" name="PagibigLoanAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-6">
+                                        <input id="OtherLoanDeduction" name="OtherLoanDeduction" type="text" disabled class="form-control" value="OTHER LOAN" placeholder="ABSENCES" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="OtherLoanCurrent" name="OtherLoanCurrent" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="OtherLoanAdjustment" name="OtherLoanAdjustment" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+                                    <div class="col-md-2 col-xl-2">
+                                        <input id="OtherLoanAmount" name="OtherLoanAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:15px"></div>
+                                    </div>
+                                    <div class="col-md-12 col-xl-12 ">
+                                        <div class="text-right bg-primary2" style="padding-top:15px; padding-bottom:15px;">
+                                            <div class="row">
+                                                <div class="col-md-4 col-xl-4">
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <button id="ComputeLoans" style="width:100%" class="btn btn-outline-success"><i class="fa fa-th-large"></i>&nbsp;Compute Loans</button>
+                                                </div>
+                                                <div class="col-md-3 col-xl-3">
+                                                    <input id="LoansAmount" name="LoansAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128" value="0.00">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:20px"></div>
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12">
+                                        <div class="text-right" style="padding-top:15px"></div>
+                                    </div>
+                                    <div class="col-md-12 col-xl-12 ">
+                                        <div class="text-right  bg-primary2" style="padding-top:15px; padding-bottom:15px;">
+                                            <div class="row">
+                                                <div class="col-md-9 col-xl-9">
+                                                    <input id="TAXABLE" name="TAXABLE" type="text" class="btn btn-outline-brand input-large" readonly value="TAXABLE INCOME" required maxlength="128">
+                                                </div>
+                                                <div class="col-md-3 col-xl-3">
+                                                    <input id="TaxableAmount" name="TaxableAmount" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128">
+                                                </div>
+                                                <div class="col-md-12 col-xl-12">
+                                                    <div class="text-right" style="padding-top:10px"></div>
+                                                </div>
+                                                <div class="col-md-9 col-xl-9">
+                                                    <input id="TAX" name="TAX" type="text" class="btn btn-outline-brand input-large" readonly value="TAX AMOUNT" required maxlength="128">
+                                                </div>
+                                                <div class="col-md-3 col-xl-3">
+                                                    <input id="Percent" name="Percent" type="text" disabled class="form-control" placeholder="0.00" required maxlength="128" value="0.00">
+                                                    <input id="Prescribe" name="Prescribe" type="hidden" disabled class="form-control" placeholder="0.00" required maxlength="128" value="0.00">
+                                                </div>
+                                                <div class="col-md-12 col-xl-12">
+                                                    <div class="text-right" style="padding-top:10px"></div>
+                                                </div>
+                                                <div class="col-md-9 col-xl-9">
+                                                    <input id="net" name="net" type="text" class="btn btn-outline-brand input-large" readonly value="NET AMOUNT" required maxlength="128">
+                                                </div>
+                                                <div class="col-md-3 col-xl-3">
+                                                    <input id="NetIncome" name="NetIncome" type="text" disabled class="form-control" width="70" placeholder="0.00" required maxlength="128" value="0.00">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 col-xl-12 ">
+                                        <div class="text-right" style="padding-top:15px; padding-bottom:10px;">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-12 col-xl-12 ">
+                                        <div class="row">
+                                            <div class="col-md-9 col-xl-9 ">
+                                            </div>
+                                            <div class="col-md-3 col-xl-3">
+                                                <button id="btnSavePayroll" style="width:100%" class="btn btn-outline-primary">&nbsp;<i class="fa fa-save"></i>&nbsp;&nbsp;&nbsp;SAVE</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="AttList" tabindex="-1" role="dialog" aria-labelledby="AttListLabel" data-backdrop="static">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">
+                        <span>Attendance List</span>
+                    </h6>
+                </div>
+                <form name="FormAtt" role="form" novalidate class="form-validation">
+                    <div class="modal-body">
+                        <div class="col-md-12 col-xl-12">
+                            <table id="AttendanceTable" class="table table-striped table-bordered table-hover dt-responsive nowrap">
+                                <thead>
+                                    <tr>
+                                        <th width="40%">Date</th>
+                                        <th width="20%">Attendance&nbsp;Id</th>
+                                        <th width="20%">Company</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+

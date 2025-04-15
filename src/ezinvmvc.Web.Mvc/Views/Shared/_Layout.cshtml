@@ -1,0 +1,334 @@
+﻿@using System.Globalization
+@using Abp.Configuration
+@using Abp.Configuration.Startup
+@using Abp.Web.Mvc.Alerts
+@using Abp.Web.Security.AntiForgery
+@using ezinvmvc
+@using ezinvmvc.Configuration
+@using ezinvmvc.Web.Resources
+@using ezinvmvc.Web.Views.Shared.Components.SideBarNav
+@using ezinvmvc.Web.Views.Shared.Components.SideBarUserArea
+@using ezinvmvc.Web.Views.Shared.Components.TopBarLanguageSwitch
+@using ezinvmvc.Web.Views.Shared.Components.RightSideBar
+@inject ezinvmvc.Timing.AppTimes AppTimes
+@inject IAbpAntiForgeryManager AbpAntiForgeryManager
+@inject IWebResourceManager WebResourceManager
+@inject ISettingManager SettingManager
+@inject IAlertManager AlertManager
+@{ 
+    Layout = null;
+    AbpAntiForgeryManager.SetCookie(Context);
+    var uiTheme = await SettingManager.GetSettingValueAsync(AppSettingNames.UiTheme);
+
+}
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="">
+    <meta name="author" content="rey paglalunan">
+
+    <link rel="apple-touch-icon" href="~/images/favicon.png">
+    <link rel="shortcut icon" href="~/images/favicon.png">
+    <title>@ViewBag.CurrentPageName | MFT v1.06102024</title>
+
+    <link href="~/fonts/roboto/roboto.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/fonts/material-icons/materialicons.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/fonts/poppins/fonts-poppins.min.css" rel="stylesheet" asp-append-version="true" />
+
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />@*changed*@
+    <link href="~/css/bootstrap-select.min.css" rel="stylesheet" asp-append-version="true" />@*changed*@
+    <link href="~/css/bootstrap-imageupload.css" rel="stylesheet" asp-append-version="true" />@*changed*@
+    <link href="~/css/jquery-ui.min.css" rel="stylesheet" asp-append-version="true" />@*changed*@
+    <link href="~/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" asp-append-version="true" />@*changed*@
+    <link href="~/css/jquery.fileupload.css" rel="stylesheet" asp-append-version="true" />@*changed*@
+
+    <link href="~/lib/toastr/toastr.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/lib/famfamfam-flags/dist/sprite/famfamfam-flags.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/lib/Waves/dist/waves.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/lib/animate.css/animate.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/cs-skin-elastic.css" rel="stylesheet" asp-append-version="true" />  @*changed*@
+    <link href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/lib/datatables.net-responsive-bs4/css/responsive.bootstrap4.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/common/scripts/Datatables/datatables.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/style.css" rel="stylesheet" asp-append-version="true" />  @*changed*@
+    <link href="~/view-resources/Views/Shared/_Layout.css" rel="stylesheet" asp-append-version="true" />
+
+    <link href="~/css/chartist.min.css" rel="stylesheet" asp-append-version="true" />@*Wilson*@
+    <link href="~/css/main.css" rel="stylesheet" asp-append-version="true" />  @*changed*@
+    <link href="~/css/pe-icon-7-stroke.css" rel="stylesheet" asp-append-version="true" /> @*changed*@
+
+    <!-- View specific styles -->
+
+    @RenderSection("styles", required: false)
+    <style>
+        #weatherWidget .currentDesc {
+            color: #ffffff !important;
+        }
+
+        .traffic-chart {
+            min-height: 335px;
+        }
+
+        #flotPie1 {
+            height: 150px;
+        }
+
+            #flotPie1 td {
+                padding: 3px;
+            }
+
+            #flotPie1 table {
+                top: 20px !important;
+                right: -10px !important;
+            }
+
+        .chart-container {
+            display: table;
+            min-width: 270px;
+            text-align: left;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        #flotLine5 {
+            height: 105px;
+        }
+
+        #flotBarChart {
+            height: 150px;
+        }
+
+        #cellPaiChart {
+            height: 160px;
+        }
+    </style>
+    <script type="text/javascript">
+        // This is used to get the application's root path from javascript. It's useful if you're running application in a virtual directory under IIS.
+        var abp = abp || {};
+        abp.appPath = '@ApplicationPath';
+    </script>
+</head>
+<body>
+    <!-- Left Panel -->
+    <section>
+        <aside id="left-panel" class="left-panel">
+            @await Component.InvokeAsync(typeof(SideBarNavViewComponent), new { activeMenu = ViewBag.CurrentPageName })
+        </aside>
+    </section>
+    <!-- Right Panel -->
+    <section>
+        <div id="right-panel" class="right-panel">
+            <!-- Header-->
+            <header id="header" class="header">
+                <div class="top-left">
+                    <div class="navbar-header">
+                        <input type="hidden" name="Uid" id="Uid" />
+                        <a class="navbar-brand" asp-controller="Home" asp-action="Index"><img src="~/images/logo.png" alt="Logo"></a>
+                        <a class="navbar-brand hidden" asp-controller="Home" asp-action="Index"><img src="~/images/logo2.png" alt="Logo"></a>
+                        <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
+                    </div>
+                </div>
+                <div class="top-right">
+                    <div class="header-menu">
+                        <div class="header-left">
+                            @*<button class="search-trigger"><i class="fa fa-search"></i></button>
+        <div class="form-inline">
+            <form class="search-form">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search ..." aria-label="Search">
+                <button class="search-close" type="submit"><i class="fa fa-close"></i></button>
+            </form>
+        </div>*@
+
+                            <div class="dropdown for-notification">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-bell"></i>
+                                    <span class="count bg-danger" id="notifcount" style="display:none"></span>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="notification">
+                                    <p id="notifred" name="notifred"></p>
+                                    <p id="markread" name="markread" style="text-align:right"></p>
+                                    <ul id="notiflist" style="max-height:300px;overflow-y:scroll"></ul>
+                                    @*<p class="red">You have 3 Notification</p>
+                                    <a class="dropdown-item media" href="#">
+                                        <i class="fa fa-check"></i>
+                                        <p>Server #1 overloaded.</p>
+                                    </a>
+                                    <a class="dropdown-item media" href="#">
+                                        <i class="fa fa-info"></i>
+                                        <p>Server #2 overloaded.</p>
+                                    </a>
+                                    <a class="dropdown-item media" href="#">
+                                        <i class="fa fa-warning"></i>
+                                        <p>Server #3 overloaded.</p>
+                                    </a>*@
+                                </div>
+                            </div>
+
+                            <div class="dropdown for-message" hidden>
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="message" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-envelope"></i>
+                                    <span class="count bg-primary">4</span>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="message">
+                                    <p class="red">You have 4 Mails</p>
+                                    <a class="dropdown-item media" href="#">
+                                        <span class="photo media-left"><img alt="avatar" src="images/avatar/user.png"></span>
+                                        <div class="message media-body">
+                                            <span class="name float-left">Jonathan Smith</span>
+                                            <span class="time float-right">Just now</span>
+                                            <p>Hello, this is an example msg</p>
+                                        </div>
+                                    </a>
+                                    <a class="dropdown-item media" href="#">
+                                        <span class="photo media-left"><img alt="avatar" src="images/avatar/user.png"></span>
+                                        <div class="message media-body">
+                                            <span class="name float-left">Jack Sanders</span>
+                                            <span class="time float-right">5 minutes ago</span>
+                                            <p>Lorem ipsum dolor sit amet, consectetur</p>
+                                        </div>
+                                    </a>
+                                    <a class="dropdown-item media" href="#">
+                                        <span class="photo media-left"><img alt="avatar" src="images/avatar/user.png"></span>
+                                        <div class="message media-body">
+                                            <span class="name float-left">Cheryl Wheeler</span>
+                                            <span class="time float-right">10 minutes ago</span>
+                                            <p>Hello, this is an example msg</p>
+                                        </div>
+                                    </a>
+                                    <a class="dropdown-item media" href="#">
+                                        <span class="photo media-left"><img alt="avatar" src="images/avatar/user.png"></span>
+                                        <div class="message media-body">
+                                            <span class="name float-left">Rachel Santos</span>
+                                            <span class="time float-right">15 minutes ago</span>
+                                            <p>Lorem ipsum dolor sit amet, consectetur</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="user-area dropdown float-right">
+                            @*<a href="#" class="dropdown-toggle active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img class="user-avatar rounded-circle" src="~/images/avatar/user.png" alt="User Avatar">
+                                </a>
+
+                                <div class="user-menu dropdown-menu">
+                                    <a class="nav-link" href="#"><i class="fa fa- user"></i>My Profile</a>
+
+                                    <a class="nav-link" href="#"><i class="fa fa- user"></i>Notifications <span class="count">13</span></a>
+
+                                    <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
+
+                                    <a class="nav-link" href="@Url.Action("Logout", "Account", new { area= string.Empty })"><i class="fa fa-power -off"></i>@L("Logout")</a>
+                                </div>*@
+
+                            @await Component.InvokeAsync(typeof(SideBarUserAreaViewComponent), new { activeMenu = ViewBag.CurrentPageName })
+                        </div>
+
+                    </div>
+                </div>
+            </header>
+            <!-- /#header -->
+            <!-- Content -->
+            @RenderBody()
+            <!-- Content -->
+            <!-- Animated -->
+            <div class="animated fadeIn">
+                @if (AlertManager.Alerts.Any())
+                {
+                    <div id="AbpPageAlerts">
+                        @foreach (var alertMessage in AlertManager.Alerts)
+                        {
+                            <div class="alert alert-@alertMessage.Type.ToString().ToLower() @(alertMessage.Dismissible ? "alert-dismisable" : "")" role="alert">
+                                <h4 class="alert-heading">
+                                    @alertMessage.Title
+                                    @if (alertMessage.Dismissible)
+                                    {
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    }
+                                </h4>
+                                <p>@alertMessage.Text</p>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            <!-- .animated -->
+            <!-- /.content -->
+            <div class="clearfix"></div>
+
+        </div>
+    </section>
+    <script src="~/lib/signalr-client/signalr.min.js" asp-append-version="true"></script>
+    <script src="~/lib/json2/json2.js" asp-append-version="true"></script>
+
+    <script src="~/js/jquery.min.js" asp-append-version="true"></script>@*changed*@
+    <script src="~/js/popper.min.js" asp-append-version="true"></script>  @*changed*@
+    <script src="~/js/bootstrap.min.js" asp-append-version="true"></script>  @*changed*@
+    <script src="~/js/bootstrap-select.min.js" asp-append-version="true"></script> @*changed*@
+    <script src="~/js/bootstrap-imageupload.js" asp-append-version="true"></script> @*changed*@
+    <script src="~/js/jquery.matchHeight.min.js" asp-append-version="true"></script>  @*changed*@
+    <script src="~/js/jquery-ui.min.js" asp-append-version="true"></script>@*changed*@
+    <script src="~/js/Moment.js" asp-append-version="true"></script>@*changed*@
+    <script src="~/js/tempusdominus-bootstrap-4.min.js" asp-append-version="true"></script>@*changed*@
+
+    <script src="~/lib/moment/min/moment-with-locales.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js" asp-append-version="true"></script>
+    <script src="~/lib/blockUI/jquery.blockUI.js" asp-append-version="true"></script>
+    <script src="~/lib/toastr/toastr.js" asp-append-version="true"></script>
+    <script src="~/lib/sweetalert/dist/sweetalert.min.js" asp-append-version="true"></script>
+    <script src="~/lib/spin.js/spin.js" asp-append-version="true"></script>
+    <script src="~/lib/spin.js/jquery.spin.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-slimscroll/jquery.slimscroll.js" asp-append-version="true"></script>
+    <script src="~/lib/Waves/dist/waves.js" asp-append-version="true"></script>
+    <script src="~/lib/push.js/push.js" asp-append-version="true"></script>
+    <script src="~/lib/abp-web-resources/Abp/Framework/scripts/abp.js" asp-append-version="true"></script>
+    <script src="~/lib/abp-web-resources/Abp/Framework/scripts/libs/abp.jquery.js" asp-append-version="true"></script>
+    <script src="~/lib/abp-web-resources/Abp/Framework/scripts/libs/abp.toastr.js" asp-append-version="true"></script>
+    <script src="~/lib/abp-web-resources/Abp/Framework/scripts/libs/abp.blockUI.js" asp-append-version="true"></script>
+    <script src="~/lib/abp-web-resources/Abp/Framework/scripts/libs/abp.spin.js" asp-append-version="true"></script>
+    <script src="~/lib/abp-web-resources/Abp/Framework/scripts/libs/abp.sweet-alert.js" asp-append-version="true"></script>
+    <script src="~/js/main.js" asp-append-version="true"></script>
+
+
+    <script src="~/lib/datatables.net/js/jquery.dataTables.js" asp-append-version="true"></script>
+    <script src="~/lib/datatables.net-select/js/dataTables.select.js" asp-append-version="true"></script>
+    <script src="~/lib/datatables.net-responsive/js/dataTables.responsive.js" asp-append-version="true"></script>
+    <script src="~/lib/datatables.net-responsive-bs4/js/responsive.bootstrap4.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" asp-append-version="true"></script>
+    <script src="~/lib/jsPDF/dist/jspdf.min.js" asp-append-version="true"></script>
+    <script src="~/js/jspdf.plugin.autotable.min.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.fileupload.js" asp-append-version="true"></script>
+
+    <script src="~/common/scripts/Datatables/datatables.ajax.js" asp-append-version="true"></script>
+    <script src="~/common/scripts/Datatables/datatables.defaults.js" asp-append-version="true"></script>
+    <script src="~/common/scripts/Datatables/datatables.record-actions.js" asp-append-version="true"></script>
+    <script src="~/common/scripts/ModalManager.js" asp-append-version="true"></script>
+    <script src="~/common/scripts/helpers.js" asp-append-version="true"></script>
+
+    <script src="~/view-resources/Views/Shared/_Layout.js" asp-append-version="true"></script>    @if (CultureInfo.CurrentUICulture.Name != "en")
+    {
+        <script src="~/lib/jquery-validation/src/localization/messages_@Html.Raw(CultureInfo.CurrentUICulture.Name.Replace("-", "_") + ".js")" asp-append-version="true"></script>
+    }
+    <script>
+    // Localizing momentjs
+    moment.locale('@CultureInfo.CurrentUICulture.Name');
+    </script>
+    <!--Local Stuff-->
+    <!-- Dynamic scripts of ABP system (They are created on runtime and can not be bundled) -->
+    <script src="~/AbpServiceProxies/GetAll?v=@(AppTimes.StartupTime.Ticks)" type="text/javascript"></script>
+    <script src="~/AbpScripts/GetScripts?v=@(AppTimes.StartupTime.Ticks)" type="text/javascript"></script>
+
+    <script src="~/lib/abp-web-resources/Abp/Framework/scripts/libs/abp.signalr-client.js" asp-append-version="true"></script>
+    @WebResourceManager.RenderScripts()
+    <!-- View specific scripts -->
+    @RenderSection("scripts", required: false)
+</body>
+</html>

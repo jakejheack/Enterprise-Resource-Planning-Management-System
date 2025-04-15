@@ -1,0 +1,993 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Clients
+@using ezinvmvc.App.Clients
+@{
+    ViewBag.CurrentPageName = PageNames.Clients_Details;
+}
+@model ClientDetailsModel
+@section scripts
+    {
+    <script src="~/view-resources/Views/Clients/Details.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <input type="text" id="h1" value="@Model.EmpId" hidden>
+                        <h1>Client Details</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12 col-xl-12">
+                <div class="card">
+                    <div class="card-body card-block">
+                        <div class="row clearfix">
+                            <div class="col-md-12 col-xl-12">
+                                <h4 class="font-weight-bold" style="font-size:1.5rem">
+                                    Ref. No. : @Model.Client.Code
+                                    &nbsp;&nbsp;&nbsp;
+                                    Name : @Model.Client.Name
+                                </h4>
+                                <input type="hidden" id="ClientId" value="@Model.Client.Id" />
+                                <input type="hidden" id="ClientName" value="@Model.Client.Name" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row clearfix">
+                            <div class="col-md-12 col-xl-12">
+                                <div class="custom-tab">
+                                    <nav>
+                                        <div class="nav nav-tabs">
+                                            <a data-toggle="tab" href="#generalinfo" class="nav-item nav-link active show" role="tab" aria-controls="custom-nav-home" aria-selected="true">General Info</a>
+                                            <a data-toggle="tab" href="#haddress" class="nav-item nav-link" role="tab" aria-controls="custom-nav-home" aria-selected="true">Address History</a>
+                                            <a data-toggle="tab" href="#agent" class="nav-item nav-link" role="tab" aria-controls="custom-nav-home" aria-selected="true">Sales Persons</a>
+                                            <a data-toggle="tab" href="#contacts" class="nav-item nav-link" role="tab" aria-controls="custom-nav-home" aria-selected="true">Contact Persons</a>
+                                            @if (IsGranted(PermissionNames.CRM_Leads))
+                                            {
+                                                <a data-toggle="tab" href="#leads" class="nav-item nav-link" role="tab" aria-controls="custom-nav-home" aria-selected="true">Leads</a>
+                                            }
+                                            @if (IsGranted(PermissionNames.Pages_Rfq))
+                                            {
+                                                <a data-toggle="tab" href="#rfqs" class="nav-item nav-link" role="tab" aria-controls="custom-nav-home" aria-selected="true">RFQs</a>
+                                            }
+                                            @if (IsGranted(PermissionNames.Pages_Quotations))
+                                            {
+                                                <a data-toggle="tab" href="#quotation" class="nav-item nav-link" role="tab" aria-controls="custom-nav-home" aria-selected="true">Quotations</a>
+                                            }
+                                            @if (IsGranted(PermissionNames.Pages_Sales_Orders))
+                                            {
+                                                <a data-toggle="tab" href="#order" class="nav-item nav-link" role="tab" aria-controls="custom-nav-home" aria-selected="true">Sales Orders</a>
+                                            }
+                                            <a hidden data-toggle="tab" href="#invoice">Sales Invoices</a>
+                                            <a hidden data-toggle="tab" href="#documents">File Attachments</a>
+                                        </div>
+                                    </nav>
+                                    <div class="tab-content pl-3 pt-2">
+                                        <div class="tab-pane fade in active show" id="generalinfo">
+                                            <div class="row">
+                                                <div class="col-md-4 col-xl-4 " hidden>
+                                                    <div class="form-group">
+                                                        <label for="Client">Type</label>
+                                                        <select id="Type" name="Type" class="selectpicker form-control" disabled>
+                                                            @if (Model.Client.Type.ToUpper() == "Corporate".ToUpper())
+                                                            {
+                                                                <option selected>Corporate</option>
+                                                                <option>Individual</option>
+                                                            }
+                                                            else if (Model.Client.Type.ToUpper() == "Individual".ToUpper())
+                                                            {
+                                                                <option>Corporate</option>
+                                                                <option selected>Individual</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-xl-3 " hidden>
+                                                    <div class="form-group">
+                                                        <label for="Client">Reseller</label>
+                                                        <select id="IsReseller" name="IsReseller" class="selectpicker form-control" disabled>
+                                                            @if (Model.Client.IsReseller)
+                                                            {
+                                                                <option value=false>No</option>
+                                                                <option value=true selected>Yes</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value=false selected>No</option>
+                                                                <option value=true>Yes</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4 ">
+                                                    <div class="form-group">
+                                                        <label for="Client">TIN</label>
+                                                        <input id="TaxNo" class="validate form-control" type="text" name="TaxNo" value="@Model.Client.TaxNo" maxlength="31" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4 ">
+                                                    <div class="form-group">
+                                                        <label for="Client">VAT Type</label>
+                                                        <input type="hidden" id="hVATTypeId" name="hVATTypeId" value="@Model.Client.VATTypeId" />
+                                                        <select id="VATTypeId" name="VATTypeId" class="selectpicker form-control" disabled></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <div class="form-group">
+                                                        <label for="Client">Email</label>
+                                                        <input type="email" id="CEmail" name="Email" class="validate form-control" value="@Model.Client.Email">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="Client">Tel. No</label>
+                                                    <input id="TelNo" class="validate form-control" type="text" name="TelNo" value="@Model.Client.TelNo" disabled>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="Client">Fax No.</label>
+                                                    <input id="FaxNo" class="validate form-control" type="text" name="FaxNo" value="@Model.Client.FaxNo" disabled>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4">
+                                                    <label for="Client">Mobile No.</label>
+                                                    <input id="MobileNo" class="validate form-control" type="text" name="MobileNo" value="@Model.Client.MobileNo" disabled>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 col-xl-6">
+                                                    <label for="Client">Market Segmentation</label>
+                                                    <input type="hidden" id="hIndustryId" name="hVATTypeId" value="@Model.Client.IndustryId" />
+                                                    <select id="IndustryId" name="IndustryId" class="selectpicker form-control" disabled></select>
+                                                    <span id="errInds" class="error" style="display:none">This field is required.</span>
+                                                </div>
+                                                <div class="col-md-6 col-xl-6">
+                                                    <label for="Client">Business Style</label>
+                                                    <input id="BusinessStyle" class="validate form-control" type="text" name="BusinessStyle" value="@Model.Client.BusinessStyle" disabled>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4 col-xl-4 ">
+                                                    <div class="form-group">
+                                                        <label for="Client">Country</label>
+                                                        <div class="input-group">
+                                                            <input type="hidden" id="hCountryId" value="@Model.Client.CountryId" />
+                                                            <select name="CountryId" id="lbCountries" class="selectpicker form-control" tabindex="-1" data-live-search="true" disabled></select>
+                                                        </div>
+                                                        <span id="errCoun" class="error" style="display:none">This field is required.</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4 ">
+                                                    <div class="form-group">
+                                                        <label for="Client">Province</label>
+                                                        <div class="input-group">
+                                                            <input type="hidden" id="hProvinceId" name="hProvinceId" value="@Model.Client.ProvinceId" />
+                                                            <select name="ProvinceId" id="lbProvinces" class="selectpicker form-control" tabindex="-1" data-live-search="true" disabled></select>
+                                                        </div>
+                                                        <span id="errProv" class="error" style="display:none">This field is required.</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-xl-4 ">
+                                                    <div class="form-group">
+                                                        <label for="Client">City</label>
+                                                        <div class="input-group">
+                                                            <input type="hidden" id="hCityId" name="hCityId" value="@Model.Client.CityId" />
+                                                            <select name="CityId" id="lbCities" class="selectpicker form-control" tabindex="-1" data-live-search="true" disabled></select>
+                                                        </div>
+                                                        <span id="errCity" class="error" style="display:none">This field is required.</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-xl-12 ">
+                                                    <div class="form-group">
+                                                        <label for="Client">Address</label>
+                                                        <textarea id="address" name="Address" maxlength="328" class="validate form-control" asp-for="@Model.Client.Address" disabled></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-pane fade " id="haddress">
+                                            <div class="col-md-12 col-xl-12">
+                                                <div class="col-sm-12" style="display:none">
+                                                    <div class="col-sm-12">
+                                                        <h5>Address History</h5>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="col-sm-12">
+                                                            <div class="pull-right">
+                                                                <a id="spopen" onclick="toggleSP()" class="btn btn-sm btn-success">
+                                                                    <span class="fa fa-sm fa-plus"></span>&nbsp;Add
+                                                                </a>
+                                                                <a id="spclose" onclick="reToggleSP()" class="btn btn-sm btn-danger" style="display: none">
+                                                                    <span class="fa fa-sm fa-close"></span>&nbsp;Cancel
+                                                                </a>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="divSalesPerson" class="col-sm-12" style="display: none">
+                                                            <div class="col-md-6">
+                                                                <div class="editor-label">Sales Person: &nbsp;<span id="errspemp" style="color: red;"></span></div>
+                                                                <div class="editor-field">
+                                                                    <div id="divSPerson">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="editor-label">Date: &nbsp;<span id="errspdate" style="color: red;"></span></div>
+                                                                <div class="editor-field">
+                                                                    <div class='input-group date' id='datetimepicker8'>
+                                                                        <input type="text" id="txtSPDateAssigned" class="form-control" name="date" />
+                                                                        <span class="input-group-addon">
+                                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-12">
+                                                                <div class="editor-label">Notes: &nbsp;<span id="errspnote" style="color: red;"></span></div>
+                                                                <div class="editor-field">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-12">
+                                                                <div class="pull-right">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-12">
+                                                            <div class="height-fluid" style="overflow: hidden">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row align-items-center m--margin-bottom-10" hidden>
+                                                    <div class="col-md-4 col-xl-4">
+                                                        <button class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create</button>
+                                                    </div>
+                                                    <div class="col-md-8 col-xl-8">
+
+                                                    </div>
+                                                    <div class="col-md-4 col-xl-4">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control m-input" placeholder="Search...">
+                                                            <span class="input-group-btn">
+                                                                <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                @* List *@
+                                                <div class="row align-items-center">
+                                                    <div class="col-xl-12">
+                                                        <table id="AddressTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th></th>
+                                                                    <th width="10%">Timestamp</th>
+                                                                    <th width="90%">Complete Address</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-pane fade " id="agent">
+                                            <div class="col-md-12 col-xl-12">
+                                                <div class="col-sm-12" style="display:none">
+                                                    <div class="col-sm-12">
+                                                        <h5>Sales Persons</h5>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="col-sm-12">
+                                                            <div class="pull-right">
+                                                                <a id="spopen" onclick="toggleSP()" class="btn btn-sm btn-success">
+                                                                    <span class="fa fa-sm fa-plus"></span>&nbsp;Add
+                                                                </a>
+                                                                <a id="spclose" onclick="reToggleSP()" class="btn btn-sm btn-danger" style="display: none">
+                                                                    <span class="fa fa-sm fa-close"></span>&nbsp;Cancel
+                                                                </a>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="divSalesPerson" class="col-sm-12" style="display: none">
+                                                            <div class="col-md-6">
+                                                                <div class="editor-label">Sales Person: &nbsp;<span id="errspemp" style="color: red;"></span></div>
+                                                                <div class="editor-field">
+                                                                    <div id="divSPerson">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="editor-label">Date: &nbsp;<span id="errspdate" style="color: red;"></span></div>
+                                                                <div class="editor-field">
+                                                                    <div class='input-group date' id='datetimepicker8'>
+                                                                        <input type="text" id="txtSPDateAssigned" class="form-control" name="date" />
+                                                                        <span class="input-group-addon">
+                                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-12">
+                                                                <div class="editor-label">Notes: &nbsp;<span id="errspnote" style="color: red;"></span></div>
+                                                                <div class="editor-field">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-12">
+                                                                <div class="pull-right">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-12">
+                                                            <div class="height-fluid" style="overflow: hidden">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row align-items-center m--margin-bottom-10" hidden>
+                                                    <div class="col-md-4 col-xl-4">
+                                                        <button class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create</button>
+                                                    </div>
+                                                    <div class="col-md-4 col-xl-4">
+
+                                                    </div>
+                                                    <div class="col-md-4 col-xl-4">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control m-input" placeholder="Search...">
+                                                            <span class="input-group-btn">
+                                                                <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                @* List *@
+                                                <div class="row align-items-center">
+                                                    <div class="col-xl-12">
+                                                        <table id="AgentsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th></th>
+                                                                    <th width="10%">Date</th>
+                                                                    <th width="90%">Assigned To</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-pane fade" id="contacts">
+                                            <div class="col-md-12 col-xl-12">
+                                                <div class="col-md-12 col-xl-12">
+                                                    <h5 style="display: none">Contact Persons</h5>
+                                                    <div class="text-right" style="padding-top:10px">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 col-xl-12" style="display: none">
+                                                    <div class="row align-items-center m--margin-bottom-10">
+                                                        <div class="col-md-12 col-xl-12" style="display: none">
+                                                            <div class="pull-right">
+                                                                <a id="openCP" onclick="toggleCP()" class="btn btn-sm btn-success">
+                                                                    <span class="fa fa-sm fa-plus"></span>&nbsp;Add
+                                                                </a>
+                                                                <a id="closeCP" onclick="reToggleCP()" class="btn btn-sm btn-danger" style="display: none">
+                                                                    <span class="fa fa-sm fa-close"></span>&nbsp;Cancel
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="divCP" class="col-md-12 col-xl-12" style="display: none">
+                                                        <div class="col-md-4 col-xl-4">
+                                                            <label>First Name: &nbsp;<span id="errcpfname" style="color: red;"></span></label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon" style="padding: 0 0 0 0 !important; border: 0 !important;">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 col-xl-12">
+                                                                <label>Last Name: &nbsp;<span id="errcplname" style="color: red;"></span></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label>Position: &nbsp;<span id="errcppos" style="color: red;"></span></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label>Birthday: &nbsp;<span id="errcpbday" style="color: red;"></span></label>
+                                                                <div class="form-group">
+                                                                    <div class='input-group date datepicker'>
+                                                                        <input type="text" id="txtBirthDate" class="form-control" name="date" />
+                                                                        <span class="input-group-addon">
+                                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <label>Tel. No.: &nbsp;<span id="errcptel" style="color: red;"></span></label>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <label>Mobile No.: &nbsp;<span id="errcpmob" style="color: red;"></span></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label>Email: &nbsp;<span id="errcpemail" style="color: red;"></span></label>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label>Status:</label>
+                                                            </div>
+                                                            <div class="col-sm-12" id="divSaveCP" style="text-align: right">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                @* Filter *@
+                                                <div class="row align-items-center m--margin-bottom-10">
+                                                    <div class="col-md-4 col-xl-4">
+                                                        <button id="CreateContactPersonButton" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create</button>
+                                                    </div>
+                                                    <div class="col-md-4 col-xl-4">
+
+                                                    </div>
+                                                    <div class="col-md-4 col-xl-4">
+                                                        <div class="input-group">
+                                                            <input type="text" id="CPSearchFilter" class="form-control m-input" placeholder="Search...">
+                                                            <span class="input-group-btn">
+                                                                <button id="CPSearchButton" class="btn btn-default" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                @* List *@
+                                                <div class="row align-items-center">
+                                                    <div class="col-xl-12">
+                                                        <table id="ContactPersonsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th></th>
+                                                                    <th width="25%">Name</th>
+                                                                    <th width="20%">Position</th>
+                                                                    <th width="10%">Tel. No.</th>
+                                                                    <th width="10%">Mobile No.</th>
+                                                                    <th width="20%">Email</th>
+                                                                    <th width="10%">Bday</th>
+                                                                    <th width="5%">@L("Actions")</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @if (IsGranted(PermissionNames.CRM_Leads))
+                                        {
+                                            <div class="tab-pane fade" id="leads">
+                                                <div class="col-md-12 col-xl-12">
+                                                    <div class="col-sm-12" style="display:none">
+                                                        <h5>Leads</h5>
+                                                    </div>
+                                                    <div class="col-sm-12" style="display:none">
+                                                        <div class="col-sm-12 hidden">
+                                                            <div class="pull-right">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <div class="height-fluid" style="overflow: hidden">
+                                                                <div class="gridview-container">
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @* Filter *@
+                                                    <div class="row align-items-center m--margin-bottom-10">
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="LeadDateFrom" name="LeadUpdateDate" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker1">
+                                                                    <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="LeadDateTo" name="LeadUpdateDate" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker2">
+                                                                    <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <select id="LeadSources" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <select id="LeadTasks" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <select id="AEs1" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="LeadSearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Ref. No./Project">
+                                                                    <span class="input-group-btn">
+                                                                        <button id="LeadSearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    @* List *@
+                                                    <div class="row align-items-center">
+                                                        <div class="col-xl-12">
+                                                            <table id="LeadsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th></th>
+                                                                        <th width="10%">Ref. No.</th>
+                                                                        <th width="10%">Date</th>
+                                                                        <th width="25%">Project</th>
+                                                                        <th width="10%">Task</th>
+                                                                        <th width="10%">Next Contact</th>
+                                                                        <th width="10%">Status</th>
+                                                                        <th width="5%">@L("Actions")</th>
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        @if (IsGranted(PermissionNames.Pages_Rfq))
+                                        {
+                                            <div class="tab-pane fade" id="rfqs">
+                                                <div class="col-md-12 col-xl-12">
+                                                    <div class="col-sm-12" style="display:none">
+                                                        <h5>RFQs</h5>
+                                                    </div>
+                                                    <div class="col-sm-12" style="display:none">
+                                                        <div class="col-sm-12 hidden">
+                                                            <div class="pull-right">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <div class="height-fluid" style="overflow: hidden">
+                                                                <div class="gridview-container">
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row align-items-center m--margin-bottom-10">
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="RfqDateFrom" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker3">
+                                                                    <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker4" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="RfqDateTo" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker4">
+                                                                    <div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <select id="RfqStatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                                                    <option value="1">Draft</option>
+                                                                    <option value="2">Submitted</option>
+                                                                    <option value="3">For Revision</option>
+                                                                    <option value="4">Closed</option>
+                                                                    <option value="5">Revised</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <select id="AEs2" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="RfqSearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Search...">
+                                                                    <span class="input-group-btn">
+                                                                        <button id="RfqSearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                                                        @*<button id="SearchButton" class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>*@
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    @* List *@
+                                                    <div class="row align-items-center">
+                                                        <div class="col-xl-12">
+                                                            <table id="RfqTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th></th>
+                                                                        <th width="20%">Code</th>
+                                                                        <th width="20%">Project Name</th>
+                                                                        <th width="20%">Date</th>
+                                                                        <th width="20%">Contact Person</th>
+                                                                        <th width="20%">Email</th>
+                                                                        <th width="15%">Status</th>
+                                                                        <th width="5%">@L("Actions")</th>
+                                                                        <th></th>@*Code Code*@
+                                                                        <th></th>@*StatusId*@
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        @if (IsGranted(PermissionNames.Pages_Quotations))
+                                        {
+                                            <div class="tab-pane fade " id="quotation">
+                                                <div class="col-md-12 col-xl-12">
+                                                    <div class="col-sm-12" style="display:none">
+                                                        <div class="col-sm-12">
+                                                            <h5>Quotations</h5>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <div class="col-sm-12" id="divAddUpdate" runat="server" visible="false">
+                                                                <div class="pull-right">
+                                                                    <a id="uopen" onclick="toggleUpdate()" class="btn btn-sm btn-success">
+                                                                        <span class="fa fa-sm fa-plus"></span>&nbsp;Add
+                                                                    </a>
+                                                                    <a id="uclose" onclick="reToggleUpdate()" class="btn btn-sm btn-danger" style="display: none">
+                                                                        <span class="fa fa-sm fa-close"></span>&nbsp;Cancel
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+
+                                                            <div id="divUpdate" class="col-sm-12" style="display: none">
+                                                                <div class="col-md-6">
+                                                                    <div class="editor-label">Action: &nbsp;<span id="erruaction" style="color: red;"></span></div>
+                                                                    <div class="editor-field">
+                                                                        <div class="input-group" id="divAction" style="display: none">
+                                                                            <span class="input-group-addon">
+                                                                                <a id="btnAction" title="Close" data-toggle="tooltip" onclick="btnAction_Click()"><span class="fa fa-lg fa-close"></span></a>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-6">
+                                                                    <div class="editor-label">Date: &nbsp;<span id="errudate" style="color: red;"></span></div>
+                                                                    <div class="editor-field">
+                                                                        <div class='input-group date datepicker'>
+                                                                            <input type="text" id="txtDateUpdate" class="form-control" name="date" />
+                                                                            <span class="input-group-addon">
+                                                                                <span class="glyphicon glyphicon-calendar"></span>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-6">
+                                                                    <div class="editor-label">Notes: &nbsp;<span id="errunote" style="color: red;"></span></div>
+                                                                    <div class="editor-field">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-6 hidden">
+                                                                    <div class="editor-label">Status:</div>
+                                                                    <div class="editor-field">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-12">
+                                                                    <div class="pull-right">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-12">
+                                                                <div class="height-fluid" style="overflow: hidden">
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @* Filter *@
+                                                    <div class="row align-items-center m--margin-bottom-10">
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker5" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="QTDateFrom" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker5">
+                                                                    <div class="input-group-append" data-target="#datetimepicker5" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker6" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="QTDateTo" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker6">
+                                                                    <div class="input-group-append" data-target="#datetimepicker6" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <select id="QTStatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                                                    <option value="1">Draft</option>
+                                                                    <option value="2">Submitted</option>
+                                                                    <option value="3">For Revision</option>
+                                                                    <option value="4">Completed</option>
+                                                                    <option value="5">Revised</option>
+                                                                    <option value="6">For Order</option>
+                                                                    <option value="7">Out Bid</option>
+                                                                    <option value="8">Cancelled</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <select id="AEs3" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="QTSearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Id" value="">
+                                                                    <span class="input-group-btn">
+                                                                        <button id="QTSearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    @* List *@
+                                                    <div class="row align-items-center">
+                                                        <div class="col-xl-12">
+                                                            <table id="QuotationsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th></th>
+                                                                        <th width="15%">Id</th>@*Id*@
+                                                                        <th width="15%">Date</th>@*Date*@
+                                                                        <th width="25%">Agent</th>@*Date*@
+                                                                        <th width="15%">Total</th>
+                                                                        <th width="10%">Status</th>
+                                                                        <th width="4%">@L("Actions")</th>
+                                                                        <th></th>@*Code Code*@
+                                                                        <th></th>@*StatusId*@
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        @if (IsGranted(PermissionNames.Pages_Sales_Orders))
+                                        {
+                                            <div class="tab-pane fade" id="order">
+                                                <div class="col-md-12 col-xl-12">
+                                                    <div class="col-sm-12" hidden>
+                                                        <h5>Sales Orders</h5>
+                                                    </div>
+                                                    <div class="col-sm-12" hidden>
+                                                        <div class="col-sm-12 hidden">
+                                                            <div class="pull-right">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <div class="height-fluid" style="overflow: hidden">
+                                                                <div class="gridview-container">
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @* Filter *@
+                                                    <div class="row align-items-center m--margin-bottom-10">
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="SODateFrom" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker7">
+                                                                    <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
+                                                                    <input class="form-control input-sm form-control-sm datetimepicker-input" type="text" id="SODateTo" value="@System.DateTime.Now.ToString("MM/dd/yyyy")" data-target="#datetimepicker8">
+                                                                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <select id="SOStatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                                                    <option value="1">Draft</option>
+                                                                    <option value="2">Submitted</option>
+                                                                    <option value="3">Completed</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <select id="AEs4" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-xl-3">
+                                                            <div class="form-group">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="SOSearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Search..." value="">
+                                                                    <span class="input-group-btn">
+                                                                        <button id="SOSearchButton" class="btn btn-sm btn-default" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    @* List *@
+                                                    <div class="row align-items-center">
+                                                        <div class="col-xl-12">
+                                                            <table id="SalesOrdersTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th></th>
+                                                                        <th width="15%">Id</th>@*Id*@
+                                                                        <th width="45%">Client</th>
+                                                                        <th width="15%">Date</th>@*Date*@
+                                                                        <th width="15%">Delivery</th>@*Date*@
+                                                                        <th width="10%">Status</th>
+                                                                        <th width="15%">Total</th>
+                                                                        <th width="4%">@L("Actions")</th>
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                            <div class="tab-pane fade" id="invoice">
+                                                <br />
+                                                <div class="col-md-12 col-xl-12">
+                                                    <div class="col-sm-12">
+                                                        <h5>Sales Invoice</h5>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="col-sm-12 hidden">
+                                                            <div class="pull-right">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <div class="height-fluid" style="overflow: hidden">
+                                                                <div class="gridview-container">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="tab-pane fade " id="documents">
+                                                <div class="col-md-12 col-xl-12">
+                                                    <div class="col-sm-12">
+                                                        <h5>Documents</h5>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="col-sm-12">
+                                                            <div class="pull-right">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-12">
+                                                            <div class="container-fluid">
+                                                                <div class="gridview-container">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ContactPersonCreateModal" tabindex="-1" role="dialog" aria-labelledby="ContactPersonCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ContactPersonEditModal" tabindex="-1" role="dialog" aria-labelledby="ContactPersonEditModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="LeadUpdateCreateModal" tabindex="-1" role="dialog" aria-labelledby="LeadUpdateCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>

@@ -1,0 +1,257 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Web.Models.Attendance
+
+@*@model AttendanceViewModel*@
+@{
+    ViewBag.CurrentPageName = PageNames.Adjustment;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/EmployeeAttendance/adjustment.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Adjustment</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="Open" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" class="btn btn-outline-success btn-sm"><i class="fa fa-filter"></i>&nbsp;Filter Data</button>
+                    <button id="Close" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" class="btn btn-outline-danger btn-sm"><i class="fa fa-close"></i>&nbsp;Filter Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="accordion" style="padding: 90px 25px 0px 25px;">
+    <div id="collapseTwo" class="panel-collapse collapse in">
+
+        <ul id="tabs" class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a id="tab-A" href="#edit-user-details" class="nav-link active" data-toggle="tab" role="tab" style="padding: 10px;">Attendance Date</a>
+            </li>
+            <li class="nav-item">
+                <a id="tab-B" href="#edit-user-roles" class="nav-link" data-toggle="tab" role="tab" style="padding: 10px;">Employee Attendance Record</a>
+            </li>
+        </ul>        
+        <div class="tab-content" style="background-color: #e3e3e3;padding:10px">
+            <div role="tabpanel" class="tab-pane animated fadeIn active" id="edit-user-details">
+                <div class="row clearfix" style="margin-top:10px;">
+                    <div class="col-sm-12">
+                        <table id="AttendanceTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px;background-color: #e3e3e3;">
+                            <thead>
+                                <tr>
+                                    <th width="20%">Date</th>
+                                    <th width="40%">Timekeeping&nbsp;Code</th>
+                                    <th width="40%">Company</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane animated fadeIn" id="edit-user-roles">
+                <div class="row clearfix" style="margin-top:10px;">
+                    <div class="col-sm-12">
+                        <table id="AttendanceNameCompTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px;background-color: #e3e3e3;">
+                            <thead>
+                                <tr>
+                                    <th width="20%">Date</th>
+                                    <th width="20%">Timekeeping&nbsp;Code</th>
+                                    <th width="20%">No</th>
+                                    <th width="40%">Name</th>
+                                    <th width="40%">Company</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col-md-5 col-xl-5 text-right" hidden>
+                        <input type="file" id="excelfile" class="form-control input-sm" />
+                    </div>
+                    
+                    <div class="col-md-12 col-xl-12" style="padding-top:15px">
+                    </div>
+                    <div class="col-md-12 col-xl-12">
+                        <table id="exceltable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>No</th>
+                                    <th>Name</th>
+                                    <th width="60px">Company</th>
+                                    <th width="60px">Description</th>
+                                    <th width="60px">Days</th>
+                                    <th width="100px">Date</th>
+                                    <th>AMIn</th>
+                                    <th>AMOut</th>
+                                    <th>PMIn</th>
+                                    <th>PMOut</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="col-md-12 col-xl-12">
+                        <form id="formexcel" name="formexcel" runat="server">
+                            <div class="row" id="Show">
+
+                                <div class="col-md-2 col-xl-2" hidden>
+                                    <input id="name1" name="name1" type="text" class="form-control" disabled placeholder="name" required />
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <input id="date1" name="date1" type="date" class="form-control" placeholder="date" required />
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="amIn1" name="amIn1" class="form-control" type="time" placeholder="AM In 00:00" required/>
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="amOut1" name="amOut1" class="form-control" type="time" placeholder="AM Out 00:00" />
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="pmIn1" name="pmIn1" class="form-control" type="time" placeholder="PM In 00:00" />
+                                </div>
+                                <div class="col-md-2 col-xl-2">
+                                    <input id="pmOut1" name="pmOut1" class="form-control" type="time" placeholder="PM Out 00:00" required />
+                                </div>
+                                <div class="col-md-1 col-xl-1">
+                                    <button id="Addrow" class="btn btn-outline-danger pull-right"><i class="fa fa-plus"></i>&nbsp;Add</button>
+                                </div>
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AttList" tabindex="-1" role="dialog" aria-labelledby="ClientCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <span>Modify Sched Data</span>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <form name="hiddenform" role="form" novalidate class="form-validation">
+                    <div class="col-md-4 col-xl-4 text-right" hidden>
+                        <input id="attid" name="attid" type="text" class="form-control" placeholder="Time keeping Code" required>
+                        <input id="companyId" name="companyId" type="text" class="form-control" placeholder="companyId" required>
+                        <input id="no" name="no" type="text" class="form-control" placeholder="no" required>
+                        <input type="text" id="dateT" name="dateT" class="input-sm form-control-sm form-control date-picker" disabled required>
+                        <input id="name" name="name" type="text" class="form-control" placeholder="name" required>
+                        <input type="text" id="startDate" name="startDate" class="input-sm form-control-sm form-control date-picker" disabled required>
+                        <input type="text" id="endDate" name="endDate" class="input-sm form-control-sm form-control date-picker" disabled required>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group form-float" hidden>
+                                <input id="idupdate" name="id" type="text" class="form-control" disabled placeholder="name" required />
+                            </div>
+                            <div class="form-group form-float">
+                                <label for="Date">Date</label>
+                                <input id="date1update" name="date" type="text" class="form-control date-picker" placeholder="date" required />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> Sched Status</label>
+                            <select id="SchedStatus" name="SchedStatus" class="form-control">
+                                <option value='0' selected>Regular</option>
+                                <option value='1'>Changed Sched</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <input id="description1update" name="description1" type="text" class="form-control" placeholder="Change Sched Description 300 Character only" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <label for="AMIn">AM In</label>
+                                <input id="amIn1update" name="amIn" type="time" class="form-control" placeholder="AM In 00:00" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <label for="PMIn">PM In</label>
+                                <input id="pmIn1update" name="pmIn" class="form-control" type="time" placeholder="PM In 00:00" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <label for="AMOut">Am Out</label>
+                                <input id="amOut1update" name="amOut" class="form-control" type="time" placeholder="AM Out 00:00" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <label for="PMOut">PM Out</label>
+                                <input id="pmOut1update" name="pmOut" class="form-control" type="time" placeholder="PM Out 00:00" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-warning pull-right" data-dismiss="modal"><i class="fa fa-close"></i>&nbsp;Closed</button>
+                        <button id="Delete" class="btn btn-outline-danger pull-right"><i class="fa fa-trash-o"></i>&nbsp;Delete</button>
+                        <button id="Update" class="btn btn-outline-success pull-right"><i class="fa fa-plus"></i>&nbsp;Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AttList2" tabindex="-1" role="dialog" aria-labelledby="AttListLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <span>Attendance List</span>
+                </h6>
+            </div>
+            <div class="modal-body" style="height:400px">
+                <div class="row clearfix">
+                    <table id="AttendanceTable" class="table table-striped table-bordered table-hover dt-responsive nowrap">
+                        <thead>
+                            <tr>
+                                <th width="20%">Date</th>
+                                <th width="40%">Timekeeping&nbsp;Code</th>
+                                <th width="40%">Company</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>

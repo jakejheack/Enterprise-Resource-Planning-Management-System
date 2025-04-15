@@ -1,0 +1,325 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Clients
+@using ezinvmvc.App.Clients
+
+@model ClientCreateModel
+@{
+    ViewBag.CurrentPageName = PageNames.Clients_Create;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Clients/Create.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <input type="text" id="h1" value="@Model.EmpId" hidden>
+                    <div class="page-title">
+                        <h1>Create Client</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="SaveClientButton" class="btn btn-outline-primary btn-sm"><i class="fa fa-save"></i>&nbsp; Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body card-block">
+                        <form id="ClientForm" name="ClientForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+
+                            <div class="row" style="display:none">
+                                <div class="col-md-4 col-xl-4">
+                                    <div class="form-group">
+                                        <label for="Client">Company</label>
+                                        <div class="input-group">
+                                            <select name="CompanyId" id="CompanyId" class="selectpicker validate form-control" tabindex="-1" data-live-search="true"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4" style="display:none">
+                                    <div class="form-group">
+                                        <label for="Client">Ref. No</label>
+                                        <input id="Code" class="form-control" type="text" name="Code" value="0" maxlength="128">
+                                    </div>
+                                </div>
+                                <div class="col-md-4  col-xl-4" style="display:none">
+                                    <div class="form-group">
+                                        <label>Date</label>
+                                        <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                                            <input id="LeadDate" class="form-control datetimepicker-input" placeholder="mm/dd/yyyy" type="text" name="LeadDate" data-target="#datetimepicker2" value='@System.DateTime.Now.ToString("MM/dd/yyyy")'>
+                                            <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4">&nbsp;</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4  col-xl-4">
+                                    <div class="form-group">
+                                        <input type="hidden" value="105" id="hTransactionCode" />
+                                        <input type="hidden" id="Prefix" name="Prefix" value="-" />
+                                        <label for="Client">Series</label>
+                                        <div class="input-group">
+                                            <select name="SeriesTypeId" id="SeriesTypeId" class="selectpicker required form-control" tabindex="-1" data-live-search="true"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-xl-8 ">
+                                    <div class="form-group">
+                                        <label for="Client">Name</label>
+                                        <input id="Name" class="validate form-control" type="text" name="Name" value="@Model.Client.Name" required maxlength="128">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4 ">
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 col-xl-4 " hidden>
+                                    <div class="form-group">
+                                        <label for="Client">Type</label>
+                                        <select id="Type" name="Type" class="selectpicker form-control">
+                                            <option>Corporate</option>
+                                            <option>Individual</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-xl-3 " hidden>
+                                    <div class="form-group">
+                                        <label for="Client">Reseller</label>
+                                        <select id="IsReseller" name="IsReseller" class="selectpicker form-control">
+                                            @if (Model.Client.IsReseller)
+                                            {
+                                                <option value=false>No</option>
+                                                <option value=true selected>Yes</option>
+                                            }
+                                            else
+                                            {
+                                                <option value=false selected>No</option>
+                                                <option value=true>Yes</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4 ">
+                                    <div class="form-group">
+                                        <label for="Client">TIN</label>
+                                        <input id="TaxNo" class="validate form-control" type="text" name="TaxNo" value="@Model.Client.TaxNo" maxlength="31">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4 ">
+                                    <div class="form-group">
+                                        <label for="Client">VAT Type</label>
+                                        <select id="VATTypeId" name="VATTypeId" class="selectpicker form-control" required>
+                                            <option value="">-- Select --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <div class="form-group">
+                                        <label for="Client">Email</label>
+                                        <input type="email" id="Email" name="Email" class="validate form-control" value="@Model.Client.Email">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="Client">Tel. No</label>
+                                    <input id="TelNo" class="validate form-control" type="text" name="TelNo" value="@Model.Client.TelNo">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="Client">Fax No.</label>
+                                    <input id="FaxNo" class="validate form-control" type="text" name="FaxNo" value="@Model.Client.FaxNo">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="Client">Mobile No.</label>
+                                    <input id="MobileNo" class="validate form-control" type="text" name="MobileNo" value="@Model.Client.MobileNo">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-xl-6">
+                                    <label for="Client">Market Segmentation</label>
+                                    <select id="IndustryId" name="IndustryId" class="selectpicker form-control" required>
+                                        <option value=0>-- Select --</option>
+                                        @foreach (var item in Model.Industries)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    </select>
+                                    <span id="errInds" class="error" style="display:none">This field is required.</span>
+                                </div>
+                                <div class="col-md-6 col-xl-6">
+                                    <label for="Client">Business Style</label>
+                                    <input type="text" id="BusinessStyle" name="BusinessStyle" class="validate form-control" value="@Model.Client.BusinessStyle">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 col-xl-4 ">
+                                    <div class="form-group">
+                                        <label for="Client">Country</label>
+                                        <div class="input-group">
+                                            <select name="CountryId" id="lbCountries" class="selectpicker form-control" tabindex="-1" data-live-search="true" required>
+                                                <option value=0>-- Select --</option>
+                                                @foreach (var item in Model.Countries)
+                                                {
+                                                    if (item.IsDefault)
+                                                    {
+                                                        <option value="@item.Id" name="@Html.NameFor(c => c.Client.CountryId)" selected>@item.Name</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.Id" name="@Html.NameFor(c => c.Client.CountryId)">@item.Name</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <span class="input-group-btn">
+                                                <button id="CreateCountryButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#CountryCreateModal">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <span id="errCoun" class="error" style="display:none">This field is required.</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4 ">
+                                    <div class="form-group">
+                                        <label for="Client">Province</label>
+                                        <div class="input-group">
+                                            <select name="ProvinceId" id="lbProvinces" class="selectpicker form-control" tabindex="-1" data-live-search="true" required>
+                                                <option value=0>-- Select Country --</option>
+                                            </select>
+                                            <span class="input-group-btn">
+                                                <button id="CreateProvinceButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#ProvinceCreateModal">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <span id="errProv" class="error" style="display:none">This field is required.</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4 ">
+                                    <div class="form-group">
+                                        <label for="Client">City</label>
+                                        <div class="input-group">
+                                            <select name="CityId" id="lbCities" class="selectpicker form-control" tabindex="-1" data-live-search="true" required>
+                                                <option value=0>-- Select Province --</option>
+                                            </select>
+                                            <span class="input-group-btn">
+                                                <button id="CreateCityButton" type="button" class="btn btn-default" data-toggle="modal" data-target="#CityCreateModal">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <span id="errCity" class="error" style="display:none">This field is required.</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xl-12 ">
+                                    <div class="form-group">
+                                        <label for="Client">Address</label>
+                                        <textarea id="address" name="Address" maxlength="328" class="validate form-control" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-xl-6">
+                                    <div class="form-group">
+                                        <label for="Client">Assigned To</label>
+                                        <input id="AssignedToId" type="hidden" name="AssignedToId" value="@Model.Client.AssignedToId" />
+                                        <input type="text" id="AssignedTo" name="AssignedTo" placeholder="Type name to search" class="validate form-control" value="@Model.Client.AssignedTo" required maxlength="128">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-6">
+                                    <div class="form-group">
+                                        <label for="Client">Assigned Email</label>
+                                        <input type="text" id="AssignedToEmail" name="AssignedToEmail" class="validate form-control" value="@Model.Client.AssignedToEmail" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" hidden>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="Client">Status</label>
+                                    <select id="StatusId" name="StatusId" class="selectpicker form-control">
+                                        <option value="1">Lead</option>
+                                        <option value="2">Client</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="modal fade" id="CategoryCreateModal" tabindex="-1" role="dialog" aria-labelledby="CategoryCreateModalLabel" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>Create Category</span>
+                    </h4>
+                </div>
+                <form name="categoryCreateForm" role="form" novalidate class="form-validation">
+                <div class="modal-body">
+                    <div class="row clearfix" style="margin-top:10px;">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <label class="form-label">Category</label>
+                                    <input class="form-control" type="text" id="Category" name="Name" required maxlength="64" minlength="2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">@L("Cancel")</button>
+                    <button id="SaveCategoryButton" class="btn btn-primary waves-effect"><i class="fa fa-save"></i>&nbsp; Save</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>*@
+
+<div class="modal fade" id="CountryCreateModal" tabindex="-1" role="dialog" aria-labelledby="CountryCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ProvinceCreateModal" tabindex="-1" role="dialog" aria-labelledby="ProvinceCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="CityCreateModal" tabindex="-1" role="dialog" aria-labelledby="CityCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>

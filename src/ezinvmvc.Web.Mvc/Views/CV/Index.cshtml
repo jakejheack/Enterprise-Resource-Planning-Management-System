@@ -1,0 +1,141 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.CV
+
+@model CVListModel
+@{
+    //ViewData["Title"] = "RFQ";
+
+    ViewBag.CurrentPageName = PageNames.CV;
+
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/CV/Index.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Check Voucher</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="text-right" style="padding-top:10px">
+                    @if (IsGranted(PermissionNames.Pages_Cv_Export))
+                    {
+                        <button id="ExportToExcelButton" class="btn btn-outline-success btn-sm"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                        @*<div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Menu
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                <a id="ExportToExcelButton" class="dropdown-item" href="#"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Export</a>
+                                <a id="ExportToPDFButton" class="dropdown-item" href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</a>
+
+                            </div>
+                        </div>*@
+                    }
+
+                    @if (IsGranted(PermissionNames.Pages_Cv_Create))
+                    {
+                        <button id="CreateNewButton" onclick="location.href='@Url.Action("Create", "CV")'" target="_blank" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        <div class="row align-items-center m--margin-bottom-10">
+                            <input type="text" id="h1" value="@Model.EmpId" hidden>
+                            <input type="text" id="hassignid" hidden>
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <input type="text" id="DateFrom" name="DateFrom" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <input type="text" id="DateTo" name="DateTo" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xl-3" hidden>
+                                <div class="form-group">
+                                    <select id="StatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                        <option value="1">Draft</option>
+                                        <option value="2">Submitted</option>
+                                        <option value="3">For Revision</option>
+                                        <option value="4">Closed</option>
+                                        <option value="5">Revised</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-xl-6">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" id="SearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Type Code and Client to search">
+                                        <span class="input-group-btn">
+                                            <button id="SearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                            @*<button id="SearchButton" class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>*@
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="CVTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="10%">Code</th>
+                                            <th width="20%">Vendor</th>
+                                            <th width="10%">Date</th>
+                                            <th width="10%">Status</th>
+                                            <th width="10%">Mode</th>
+                                            <th width="10%">Amount</th>
+                                            <th width="3%">@L("Actions")</th>
+                                            <th></th>@*Code Code*@
+                                            <th></th>@*StatusId*@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-xl-12" hidden>
+                                <table id="CVTable2" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="10%">Code</th>
+                                            <th width="20%">Vendor</th>
+                                            <th width="10%">Date</th>
+                                            <th width="10%">Status</th>
+                                            <th width="10%">Mode</th>
+                                            <th width="10%">Amount</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

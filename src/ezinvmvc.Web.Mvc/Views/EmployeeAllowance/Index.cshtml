@@ -1,0 +1,215 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.EmployeeAllowance
+
+@model EmployeeAllowanceViewModel
+@{
+    ViewBag.CurrentPageName = PageNames.Employee_Allowance;
+}
+@section scripts
+    {
+
+    <script src="~/view-resources/Views/EmployeeAllowance/Index.js" asp-append-version="true"></script>
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Employee Allowance</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="text-right" style="padding-top:10px">
+                    <button id="EmployeeList" data-toggle="modal" data-target="#EmployeeListModal" class="btn btn-outline-primary btn-md"><i class="fa fa-list-ol"></i>&nbsp;Employees</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-10 col-xl-10">
+                                <form name="EmployeeId" role="form" novalidate class="form-validation">
+                                    <input id="completeName" name="completeName" type="text" class="form-control" readonly required maxlength="128" placeholder="Select Employee">
+                                    <input id="EmpId" name="EmpId" type="hidden" class="form-control" required maxlength="128">
+                                </form>
+                            </div>
+                            <div class="col-md-2 col-xl-2">
+                                <button id="CompressButton" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" style="width:100%" class="btn btn-outline-primary btn-lg"><i class="fa fa-compress"></i>&nbsp;Compress</button>
+                                <button id="ExpandButton" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" style="width:100%" class="btn btn-outline-primary btn-lg"><i class="fa fa-expand"></i>&nbsp;Expand</button>
+                            </div>
+                            <div class="col-md-12 col-xl-12 m--margin-top-10">
+                                <div id="accordion">
+                                    <div id="collapseTwo" class="panel-collapse collapse out">
+                                        <form name="EmployeeAllowanceSettings" role="form" novalidate class="form-validation">
+                                            <div class="text-right" style="padding-top:20px">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3 col-xl-3">
+                                                    <label for="PayrollPeriod">Payroll Period</label>
+                                                    <select id="Period" name="Period" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                                                </div>
+                                                <div class="col-md-5 col-xl-5">
+                                                    <label for="Description">Description</label>
+                                                    <input id="Description" name="Description" type="text" class="form-control" required maxlength="128" placeholder="Allowance Description">
+
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="Taxable">Taxable</label>
+                                                    <select id="Taxable" name="Taxable" class="selectpicker form-control">
+                                                        <option></option>
+                                                        <option value="true">Yes</option>
+                                                        <option value="false" selected>No</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="Amount">Amount</label>
+                                                    <input id="Amount" name="Amount" type="text" class="form-control" maxlength="128">
+                                                </div>
+                                                <div class="col-md-3 col-xl-3 ">
+                                                    <label for="EmployeeCode">Start Date</label>
+                                                    <input id="StartDate" type="text" name="StartDate" class="form-control date-picker" required maxlength="128" placeholder="Allowance Start date">
+                                                </div>
+                                                <div class="col-md-3 col-xl-3 ">
+                                                    <label for="EmployeeCode">End Date</label>
+                                                    <input id="EndDate" type="text" name="EndDate" class="form-control date-picker" required maxlength="128" placeholder="Allowance End date">
+                                                </div>
+
+
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="Deminimis">FixType</label>
+                                                    <select id="Deminimis" name="Deminimis" class="selectpicker form-control">
+                                                        <option></option>
+                                                        <option value="true">Yes</option>
+                                                        <option value="false" selected>No</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="Cola">Type</label>
+                                                    <select id="Cola" name="Cola" class="selectpicker form-control">
+                                                        <option></option>
+                                                        <option value="true">Ecola</option>
+                                                        <option value="false" selected>Allowance</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2 col-xl-2">
+                                                    <label for="Status">Status</label>
+                                                    <select id="Status" name="Status" class="selectpicker form-control">
+                                                        <option value='Active' selected>Active</option>
+                                                        <option value='InActive'>InActive</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-12 col-xl-12">
+                                                    <div class="text-right" style="padding-top:10px">
+                                                        <div class="btn-group" role="group">
+                                                            <button id="AllowanceSavebutton" style="width:100%" class="btn btn-outline-primary"><i class="fa fa-save"></i>&nbsp; Save</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <table id="EmployeeAllowance" class="display table table-striped table-bordered table-hover dt-responsive">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>EmpId</th>
+                                    <th>FullName</th>
+                                    <th>Description</th>
+                                    <th>Period</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th>Fix</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>@L("Actions")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="EmployeeListModal" tabindex="-1" role="dialog" aria-labelledby="EmployeeListModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Employee List</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row align-items-center m--margin-bottom-10">
+                    <div class="col-md-1 col-xl-1">
+                    </div>
+                    <div class="col-md-4 col-xl-4">
+                        <div class="form-group">
+                            <select name="SearchBy" id="SearchBy" class="selectpicker form-control">
+                                <option value=0>-- Search By --</option>
+                                <option value="CompleteName">Full Name</option>
+                                <option value="Department">Department</option>
+                                <option value="Division">Division</option>
+                                <option value="Sectors">Sectors</option>
+                                <option value="Position">Position</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-xl-3 ">
+                        <div class="form-group">
+                            <select name="StatusId" id="StatusId" class="selectpicker form-control" multiple>
+                                <option value="1" selected>Hired</option>
+                                <option value="2">Resigned</option>
+                                <option value="3">Terminated</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-xl-4">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" id="EmployeeTableFilter" class="form-control m-input" placeholder="Search...">
+                                <span class="input-group-btn">
+                                    <button id="GetEmployeeButton" class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-xl-12">
+                        <table id="EmployeesTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Employee ID</th>
+                                    <th>Full Name</th>
+                                    <th>Cell No</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Status</th>
+                                    <th>@L("Actions")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+            </div>
+        </div>
+    </div>
+</div>

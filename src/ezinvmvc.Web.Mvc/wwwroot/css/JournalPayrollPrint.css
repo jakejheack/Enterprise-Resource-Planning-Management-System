@@ -1,0 +1,70 @@
+﻿/* Styles go here */
+
+.page-header,
+.page-header-space {
+    height: 70px;
+}
+
+.page-footer,
+.page-footer-space {
+    height: 100px;
+}
+
+.page-footer {
+    position: fixed;
+    bottom: 0mm;
+    width: 100%;
+    /*border-top: 1px solid black;*/
+    height: 100px;
+    /*background-color: rgba(233, 233, 233, 0.31);*/
+    /*padding-left: 50px;*/
+    /* for demo */
+    /*background: yellow;*/
+    /* for demo */
+}
+
+.page-header {
+    position: fixed;
+    top: 0mm;
+    width: 100%;
+    height: 80px;
+    /*background-color: rgba(233, 233, 233, 0.31);*/
+    /*padding-left: 90px;*/
+    /*border-bottom: 1px solid black;*/
+    /* for demo */
+    /*background: yellow;*/
+    /* for demo */
+}
+
+.page {
+    page-break-after: always;
+}
+
+@page {
+    margin-bottom: 10mm
+}
+
+@media print {
+    thead {
+        display: table-header-group;
+    }
+
+    tfoot {
+        display: table-footer-group;
+    }
+
+    button {
+        display: none;
+    }
+
+    body {
+        font-size: medium;
+        /*margin: 40px 0px 800px 0px;*/
+        /*padding-bottom:100mm;*/
+        /*top-margin: 0;*/
+    }
+}
+
+table2, th2, td2 {
+    border: 1px solid #000;
+}

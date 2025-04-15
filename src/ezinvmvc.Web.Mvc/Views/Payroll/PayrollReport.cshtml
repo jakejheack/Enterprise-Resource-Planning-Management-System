@@ -1,0 +1,326 @@
+﻿@using ezinvmvc.Web.Startup
+
+@{
+    ViewBag.CurrentPageName = PageNames.PayrollReport;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/PayrollManagement/PayrollReport.js" asp-append-version="true"></script>
+
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-11 col-xl-11">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Payroll Report</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1 col-xl-1">
+                <div class="row">
+                    <div class="btn-group" role="group" style=" padding-top:10px">
+                        <input id="logs" name="logs" type="hidden" class="form-control input-sm" required>
+                        <button id="AttendanceList" style="width:100%" data-toggle="modal" data-target="#AttList" class="btn btn-outline-primary"><i class="fa fa-list-ol"></i>&nbsp;Filter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-body">
+                <table id="EmpPayrollListTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px;">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>TimeCode</th>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th></th>
+                            <th></th>
+                            <th>Company</th>
+                            <th>Income</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="AttList" tabindex="-1" role="dialog" aria-labelledby="AttListLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <span>Attendance List</span>
+                </h6>
+            </div>
+            <div class="modal-body">
+                <table id="AttendanceTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px;">
+                    <thead>
+                        <tr>
+                            <th width="20%">Date</th>
+                            <th width="40%">Timekeeping&nbsp;Code</th>
+                            <th width="40%">Company</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="PayrollViewModal" tabindex="-1" role="dialog" aria-labelledby="PayrollViewModalLabel">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="PrintTable" style="background-color: white;">
+                    <div class="col-md-12 col-xl-12" style="text-align:center">
+                        <h6 class="modal-title" style="font-weight: 900;">
+                            <span>MFT INTERNATIONAL CORP.</span>
+                        </h6>
+                    </div>
+                    <div class="col-md-12 col-xl-12" style="text-align:center">
+                        <h6 class="modal-title" style="font-weight: 900;margin-bottom: 10px;">
+                            <span>PAYSLIP</span>
+                        </h6>
+                    </div>
+
+                    <div class="col-md-12 col-xl2-12" style="text-align:center">
+                        <span id ="start" class="startdate"></span> - <span id ="end" class="enddate"></span>
+                        @*<label id="startdate" name="startdate">01/01/2001</label>
+                        <label id="enddate" name="enddate">01/01/2001</label>*@
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-xl2-12 line"></div>
+                        <div class="col-md-4 col-xl-4">
+                            <label>Employee Name :</label>
+                        </div>
+                        <div class="col-md-8 col-xl-8">
+                            <label id="name" name="name"></label>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <label>Employee Id :</label>
+                        </div>
+                        <div class="col-md-8 col-xl-8">
+                            <label id="attid" hidden name="attid"></label>
+                            <label id="companyname" hidden name="companyname"></label>
+                            <input id="compname"  type="hidden" name="compname"></img>
+                            <label id="Empcode" hidden name="Empcode"></label>
+                            <label id="empId" name="empId"></label>
+                        </div>
+                        <div class="col-md-4 col-xl-4">
+                            <label>Department :</label>
+                        </div>
+                        <div class="col-md-8 col-xl-8">
+                            <label id="Department" name="Department"></label>
+                        </div>
+                        <div class="col-md-12 col-xl2-12 line"></div>
+                        <div class="col-md-4 col-xl-4">
+                            <label id="PayrollPeriod" name="PayrollPeriod"></label>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label id="RatePerMonth" name="RatePerMonth"></label>
+                        </div>
+                        <div class="col-md-5 col-xl-5"></div>
+                        @*//*@
+                        <div class="col-md-4 col-xl-4" id="EARNINGS1">
+                            <label style="font-weight: 700;">EARNINGS</label>
+                            <div class="col-md-12 col-xl-12 no-padding">
+                                <label style="width: 100%;  margin-bottom:0">BASIC:</label>
+                                <label id="HolidayCurrent0" style="width: 100%; margin-bottom:0">HOLIDAY:</label>
+                                <label id="TravelhoursCurrent0" style="width: 100%; margin-bottom:0">TRVLHRS:</label>
+                                <label id="AbsensesCurrent0" style="width: 100%; margin-bottom:0">ABSENCES:</label>
+                                <label id="NightDiffCurrent0" style="width: 100%; margin-bottom:0">NDF:</label>
+                                <label id="TardinessCurrent0" style="width: 100%; margin-bottom:0">TARDINESS:</label>
+                                <label id="UndertimeCurrent0" style="width: 100%; margin-bottom:0">UNDERTIME:</label>
+                                <label id="LeaveUse0" style="width: 100%; margin-bottom:0">LEAVE:</label>
+                                <label id="GeneralAmount2" style="width: 100%;">TAX/ ALWNCE:</label>
+                                <label id="NONGeneralAmount2" style="width: 100%;">NON TAX/ ALWNCE:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-xl-3" id="EARNINGS2">
+                            <label style="font-weight: 700;">CURRENT</label>
+                            <div class="col-md-12 col-xl-12 no-padding">
+                                <label id="BasicSalaryCurrent" name="BasicSalaryCurrent" style="width: 100%; margin-bottom:0"></label>
+                                <label id="HolidayCurrent" name="HolidayCurrent" style="width: 100%; margin-bottom:0"></label>
+                                <label id="TravelhoursCurrent" name="TravelhoursCurrent" style="width: 100%; margin-bottom:0"></label>
+                                <label id="AbsensesCurrent" name="AbsensesCurrent" style="width: 100%; margin-bottom:0"></label>
+                                <label id="NightDiffCurrent" name="NightDiffCurrent" style="width: 100%; margin-bottom:0"></label>
+                                <label id="TardinessCurrent" name="TardinessCurrent" style="width: 100%; margin-bottom:0"></label>
+                                <label id="UndertimeCurrent" name="UndertimeCurrent" style="width: 100%; margin-bottom:0"></label>
+                                <label id="LeaveUse" name="LeaveUse" style="width: 100%; margin-bottom:0"></label>
+                                <label id="GeneralAmount1" style="width: 100%; margin-bottom:0" value="0.00">0.00</label>
+                                <label id="NONGeneralAmount1" style="width: 100%; margin-bottom:0" value="0.00">0.00</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-xl-2" id="EARNINGS3">
+                            <label style="font-weight: 700;">ADJ</label>
+                            <div class="col-md-12 col-xl-12 no-padding">
+                                <label id="BasicSalaryAdjustment" name="BasicSalaryAdjustment" style="width: 100%; margin-bottom:0"></label>
+                                <label id="HolidayAdjustment" name="HolidayAdjustment" style="width: 100%; margin-bottom:0"></label>
+                                <label id="TravelhoursAdjustment" name="TravelhoursAdjustment" style="width: 100%; margin-bottom:0"></label>
+                                <label id="AbsensesAdjustment" name="AbsensesAdjustment" style="width: 100%; margin-bottom:0"></label>
+                                <label id="NightDiffAdjustment" name="NightDiffAdjustment" style="width: 100%; margin-bottom:0"></label>
+                                <label id="TardinessAjustment" name="TardinessAjustment" style="width: 100%; margin-bottom:0"></label>
+                                <label id="UndertimeAdjustment" name="UndertimeAdjustment" style="width: 100%; margin-bottom:0"></label>
+                                <label id="LeaveAmout" name="LeaveAmout" style="width: 100%; margin-bottom:0"></label>
+                                <label id="GeneralAmount0" style="width: 100%; margin-bottom:0" value="0.00">0.00</label>
+                                <label id="NONGeneralAmount0" style="width: 100%; margin-bottom:0" value="0.00">0.00</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-xl-3" id="EARNINGS4">
+                            <label style="font-weight: 700;">AMOUNT</label>
+                            <div class="col-md-12 col-xl-12 no-padding">
+                                <label id="BasicSalaryAmount" name="BasicSalaryAmount" style="width: 100%; margin-bottom:0"></label>
+                                <label id="HolidayAmount" name="HolidayAmount" style="width: 100%; margin-bottom:0"></label>
+                                <label id="TravelhoursAmount" name="TravelhoursAmount" style="width: 100%; margin-bottom:0"></label>
+                                <label id="AbsensesAmount" name="AbsensesAmount" style="width: 100%; margin-bottom:0"></label>
+                                <label id="NightDiffAmount" name="NightDiffAmount" style="width: 100%; margin-bottom:0"></label>
+                                <label id="TardinessAmount" name="TardinessAmount" style="width: 100%; margin-bottom:0"></label>
+                                <label id="UndertimeAmount" name="UndertimeAmount" style="width: 100%; margin-bottom:0"></label>
+                                <label id="LeaveTotalAmout" name="LeaveTotalAmout" style="width: 100%; margin-bottom:0"></label>
+                                <label id="GeneralAmount" name="GeneralAmount" style="width: 100%; margin-bottom:0"></label>
+                                <label id="NONGeneralAmount" name="NONGeneralAmount" style="width: 100%; margin-bottom:0"></label>
+                            </div>
+                        </div>
+
+                        <div id="Overtime-list" class="col-md-12 col-xl-12" style="padding-left: 15px;padding-right: 15px;"></div>
+                        <div id="Allowance-list" class="col-md-12 col-xl-12" style="padding-left: 15px;padding-right: 15px;"></div>
+                        <div id="AttAdj-list" class="col-md-12 col-xl-12" style="padding-left: 15px;padding-right: 15px;"></div>
+
+                        @*gross*@
+                        <div class="col-md-12 col-xl2-12 line"></div>
+                        <div class="col-md-9 col-xl-9" style="text-align: end;">
+                            <label style="font-weight: 700;">GROSS PAY</label>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label id="GrossAmount" name="GrossAmount" style="font-weight: 700;"></label>
+                        </div>
+                        <div class="col-md-12 col-xl2-12 line"></div>
+                        @*Contribution*@
+                        <div class="col-md-4 col-xl-4" id="contri1">
+                            <label style="font-weight: 700;">CONTRIBUTION</label>
+                            <div class="col-md-12 col-xl-12 no-padding">
+                                <label style="width: 100%;">SSS:</label>
+                                <label style="width: 100%">PHILHEALTH:</label>
+                                <label style="width: 100%">PAGIBIG:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-xl-3" id="contri2">
+                            <label style="font-weight: 700;">EE</label>
+                            <div class="col-md-12 col-xl-12 no-padding">
+                                <label id="SSSEEAmount" name="SSSEEAmount" style="width: 100%;"></label>
+                                <label id="PhilhealthEEAmount" name="PhilhealthEEAmount" style="width: 100%;"></label>
+                                <label id="PagibigEEAmount" name="PagibigEEAmount" style="width: 100%;"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-xl-2" id="contri3">
+                            <label style="font-weight: 700;">ER</label>
+                            <div class="col-md-12 col-xl-12 no-padding">
+                                <label id="SSSERAmount" name="SSSERAmount" style="width: 100%;"></label>
+                                <label id="PhilhealthERAmount" name="PhilhealthERAmount" style="width: 100%;"></label>
+                                <label id="PagibigERAmount" name="PagibigERAmount" style="width: 100%;"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-xl-3" id="contri4">
+                            <label style="font-weight: 700;">EC</label>
+                            <div class="col-md-12 col-xl-12 no-padding">
+                                <label id="SSSECAmount" name="SSSECAmount" style="width: 100%;"></label>
+                                <label id="PhilhealthTotalAmount" name="PhilhealthTotalAmount" style="width: 100%;"></label>
+                                <label id="PagibigTotalAmount" name="PagibigTotalAmount" style="width: 100%;"></label>
+                            </div>
+                        </div>
+                        @*TotalContri*@
+                        <div class="col-md-12 col-xl2-12 line"></div>
+                        <div class="col-md-9 col-xl-9" style="text-align: end;">
+                            <label style="font-weight: 700;">CONTRIBUTION</label>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label id="TotalContri" name="TotalContri" style="font-weight: 700;"></label>
+                        </div>
+                        <div id="line1" class="col-md-12 col-xl2-12 line"></div>
+
+                        @*Deductions*@
+                        <div id="head1" class="col-md-4 col-xl-4">
+                            <label style="font-weight: 700;">DEDUCTION</label>
+                        </div>
+                        <div id="head2" class="col-md-3 col-xl-3">
+                            <label>AMOUNT</label>
+                        </div>
+                        <div id="head3" class="col-md-2 col-xl-2">
+                            <label>BALANCE</label>
+                        </div>
+                        <div id="head4" class="col-md-3 col-xl-3">
+                            <label>INSTALLMENT</label>
+                        </div>
+
+                        <div id="SSLoan-list" class="col-md-12 col-xl-12" style="padding-left: 15px;padding-right: 15px;"></div>
+                        <div id="pgb-list" class="col-md-12 col-xl-12" style="padding-left: 15px;padding-right: 15px;"></div>
+                        <div id="OtLoan-list" class="col-md-12 col-xl-12" style="padding-left: 15px;padding-right: 15px;"></div>
+                        <div id="OtherDedLoan-list" class="col-md-12 col-xl-12" style="padding-left: 15px;padding-right: 15px;"></div>
+
+                        @*TotalContri*@
+                        <div class="col-md-12 col-xl2-12 line"></div>
+                        <div id="head5" class="col-md-9 col-xl-9" style="text-align: end;">
+                            <label style="font-weight: 700;">DEDUCTIONS</label>
+                        </div>
+                        <div id="line2" class="col-md-3 col-xl-3">
+                            <label id="Totalded" name="Totalded" style="font-weight: 700;"></label>
+                        </div>
+                        <div id="line3" class="col-md-12 col-xl2-12 line"></div>
+                        <div class="col-md-9 col-xl-9" style="text-align: end;">
+                            <label style="font-weight: 700;">TAXABLE INCOME</label>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label id="TaxableAmount" name="TaxableAmount" style="font-weight: 700;"></label>
+                        </div>
+                        <div class="col-md-9 col-xl-9" style="text-align: end;">
+                            <label style="font-weight: 700;">TAX AMT</label>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label id="Percent" name="Percent" style="font-weight: 700;"></label>
+                        </div>
+                        <div class="col-md-9 col-xl-9" style="text-align: end;">
+                            <label style="font-weight: 700;">NET AMT</label>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label id="NetIncome" name="NetIncome" style="font-weight: 700;"></label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-close"></i> Closed</button>
+                <button name="btnprint" value="Print" onclick="PrintMe('divid')" type="button" class="btn btn-outline-success" hidden><i class="fa fa-print"></i> Print</button>
+                <button name="btnprintme" id="btnprintme" type="button" class="btn btn-outline-success" ><i class="fa fa-print"></i> Print</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div hidden>
+    <div id="AttAdj-listprint" font-size: 12px;"></div>
+    <div id="Allowance-listprint" style="width: 50%; font-size: 12px;"></div>
+    <div id="Overtime-listprint" style="width: 50%; font-size: 12px;"></div>
+    <div id="SSLoan-listprint" style="width: 50%; font-size: 12px;"></div>
+    <div id="pgb-listprint" font-size: 12px;"></div>
+    <div id="OtLoan-listprint"  font-size: 12px;"></div>
+    <div id="OtherDedLoan-listprint"  font-size: 12px;"></div>
+
+</div>
+
+
+
+
+
+

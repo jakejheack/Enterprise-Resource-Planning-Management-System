@@ -1,0 +1,104 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@{
+    ViewBag.CurrentPageName = PageNames.LoanSummaryReportList;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Reports/LoanSummaryReportList.js" asp-append-version="true"></script>
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="float-left">
+                    <div class="btn-group" role="group" style=" padding-top:10px;padding-bottom:10px">
+                        <select name="sectors" id="sectors" style=" width: 130px;" tabindex="-1" data-live-search="true"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right">
+                    <div class="btn-group" role="group" style=" padding-top:10px;padding-bottom:10px">
+                        <button id="Search" style="width:100%" class="btn btn-outline-success btn-sm"><i class="fa fa-search"></i>&nbsp;Filter&nbsp;Data</button>
+                        <button name="ExportToExcelButton" id="ExportToExcelButton" value="Export" type="button" class="btn btn-outline-dark btn-sm"><i class="fa fa-file-excel-o"></i> Export</button>
+                        <button name="PrintActualButton" id="PrintActualButton" value="Print" type="button" class="btn btn-outline-primary btn-sm"><i class="fa fa-print"></i> Print Acknowledgement</button>
+                        @*@if (IsGranted(PermissionNames.Acknowledgement_NetPayPrint))
+                            {
+                                <button name="PrintActualButton2" id="PrintActualButton2" value="Print" type="button" class="btn btn-outline-primary btn-sm"><i class="fa fa-print"></i> Print with NetPay</button>
+                            }*@
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-body">
+                <div id="PrintTable" style="background-color: white;">
+                    <div class="col-md-12 col-xl-12">
+                        <input id="attid" name="attid" type="text" class="form-control" hidden required placeholder="" value="0">
+                        <input id="dept" name="dept" type="text" class="form-control" hidden required placeholder="companyId" value="0">
+                        <div class="page-title center" style="text-align:left">
+                            <h4>Loan Summary Report</h4>
+                        </div>
+                        @*<div class="page-title center" style="text-align:left">
+                            <label id="coveredDate" name="coveredDate"></label>
+                        </div>*@
+                        <table id="LoanTable" class="table table-striped table-bordered table-hover dt-responsive nowrap" style="width: 100%;font-size: 10px;">
+                            <thead>
+                                <tr>
+                                    <th style="font-size:smaller; background: lightgray; width: 50px;">ctrl</th> @*ctrl*@
+                                    <th style="font-size:smaller; background: lightgray;">LoanTitle</th>@*EmpId*@
+                                    <th style="font-size:smaller; background: lightgray;">Comp</th>@*AttId*@
+                                    <th style="font-size:smaller; background: lightgray;">Dept</th>@*Comp*@
+                                    <th style="font-size:smaller; background: lightgray;">EmpId</th>@*App No*@
+                                    <th style="font-size:smaller; background: lightgray;">Loantype</th>
+                                    <th style="font-size:smaller; background: lightgray; width: 250px;">FullName</th>
+                                    <th style="font-size:smaller; background: lightgray;">AppNo</th>
+                                    <th style="font-size:smaller; background: lightgray;">Description</th>@*Description*@
+                                    <th style="font-size:smaller; background: lightgray; width: 90px;">Loan Amount</th>
+                                    <th style="font-size:smaller; background: lightgray;">Start</th>
+                                    <th style="font-size:smaller; background: lightgray;">End</th>
+                                    <th style="font-size:smaller; background: lightgray;">Monthly</th>
+                                    <th style="font-size:smaller; background: lightgray;">Balance</th>
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*ELoanAmount*@
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*EMonthly*@
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*EBalance*@
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot id="tfooter" style="background: gainsboro;">
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th style="text-align:right; font-size: small;">Grand Total:</th>
+                                    <th style="text-align:right; font-size: small;"></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th style="text-align:right; font-size: small;"></th>
+                                    <th style="text-align:right; font-size: small;"></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

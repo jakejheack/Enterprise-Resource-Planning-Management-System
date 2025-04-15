@@ -1,0 +1,247 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Leads
+
+@model LeadViewModel
+@{
+    ViewBag.CurrentPageName = PageNames.Leads;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Leads/Index.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Leads</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="text-right" style="padding-top:10px">
+                    <button id="ExportButton" class="btn btn-outline-success btn-sm" hidden>Export</button>
+                    @if (IsGranted(PermissionNames.CRM_Leads_Export))
+                    {
+                        <button id="ExportToExcelButton" class="btn btn-outline-success btn-sm"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                        @*<div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Menu
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                <a id="ExportToExcelButton" class="dropdown-item" href="#"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Export</a>
+                                <a id="ExportToPDFButton" class="dropdown-item" href="#"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</a>
+                            </div>
+                        </div>*@
+                    }
+
+                    @if (IsGranted(PermissionNames.CRM_Leads_Create))
+                    {
+                        <button id="CreateNewLeadButton" onclick="location.href='@Url.Action("Create", "Leads")'" target="_blank" class="btn btn-outline-primary btn-sm"><i class="fa fa-plus"></i>&nbsp; Create Lead</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        <div class="row align-items-center m--margin-bottom-10">
+                            <input type="text" id="h1" value="@Model.EmpId" hidden>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <input type="text" id="DateFrom" name="DateFrom" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <input type="text" id="DateTo" name="DateTo" class="form-control input-sm form-control-sm date-picker" placeholder="mm/dd/yyyy" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <select id="Sources" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <select id="Tasks" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <select id="StatusTypes" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true">
+                                        <option value="" selected disabled>Status</option>
+                                        <option value="1" selected>For Approval</option>
+                                        <option value="2" selected>Approved</option>
+                                        <option value="3">Disapproved</option>
+                                        <option value="4">Closed</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <select id="AEs" class="selectpicker form-control input-sm form-control-sm" multiple data-live-search="true"></select>
+                                </div>
+                            </div>
+                            @*<div class="col-md-8 col-xl-8">
+                            </div>*@
+                            <div class="col-md-4 col-xl-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" id="SearchFilter" class="form-control m-input input-sm form-control-sm" placeholder="Ref. No./Client/Project" value="">
+                                        <span class="input-group-btn">
+                                            <button id="SearchButton" class="btn btn-default btn-sm" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="LeadsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="10%">Ref. No.</th>
+                                            <th width="10%">Date</th>
+                                            <th width="20%">Name</th>
+                                            <th width="25%">Project</th>
+                                            <th width="10%">Source</th>
+                                            <th width="10%">Task</th>
+                                            <th width="10%">Next Contact</th>
+                                            <th width="10%">Status</th>
+                                            <th width="5%">@L("Actions")</th>
+                                            <th></th> @*hidden code*@
+                                            <th></th> @*hidden statusid*@
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="col-xl-12" hidden>
+                                <table id="LeadsTable2" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="10%">Ref. No.</th>
+                                            <th width="10%">Date</th>
+                                            <th width="20%">Name</th>
+                                            <th width="25%">Project</th>
+                                            <th width="10%">Source</th>
+                                            <th width="10%">Task</th>
+                                            <th width="10%">Next Contact</th>
+                                            <th width="10%">Status</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="LeadUpdateCreateModal" tabindex="-1" role="dialog" aria-labelledby="LeadUpdateCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="LeadCreateModal" tabindex="-1" role="dialog" aria-labelledby="LeadCreateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Create New Lead</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="leadCreateForm" role="form" novalidate class="form-validation">
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input id="name" type="text" name="Name" required maxlength="128" minlength="2" class="validate form-control">
+                                    <label for="name" class="form-label">Name</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input id="email" type="email" name="Email" required maxlength="128" minlength="2" class="validate form-control">
+                                    <label for="email" class="form-label">Email</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input id="phone" type="text" name="Phone" required maxlength="32" minlength="2" class="validate form-control">
+                                    <label for="phone" class="form-label">Phone</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input id="taxno" type="text" name="TaxNo" required maxlength="32" minlength="2" class="validate form-control">
+                                    <label for="taxno" class="form-label">Tax No.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <textarea id="address" name="Address" maxlength="328" class="validate form-control"></textarea>
+                                    <label for="address" class="form-label">Address</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input id="city" type="text" name="City" class="validate form-control">
+                                    <label for="city" class="form-label">City</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">@L("Cancel")</button>
+                        <button type="submit" class="btn btn-primary waves-effect">@L("Save")</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+﻿@using ezinvmvc.Web.Models.Common.Modals
+@model ezinvmvc.Web.Models.Products.ProductUnitEditModel
+@{
+    Layout = null;
+}
+<script src="~/view-resources/Views/Products/_EditProductUnitModal.js" asp-append-version="true"></script>
+@Html.Partial("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel("Edit Product Unit"))
+<div class="modal-body">
+    <form name="ProductUnitEditForm" role="form" novalidate class="form-validation">
+        <input type="hidden" name="Id" value="@Model.ProductUnit.Id" />
+        <input type="hidden" name="ProductId" value="@Model.ProductUnit.ProductId" />
+        <input type="hidden" id="DefaultUnitId" name="DefaultUnitId" value="@Model.DefaultUnitId" />
+
+        <div class="row clearfix" style="margin-top:10px;">
+            <div class="col-sm-6">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">Product Unit</label>
+                        <select name="EditUnits" id="EditUnits" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                            @foreach (var item in Model.Units)
+                            {
+                                if (item.Id == Model.ProductUnit.UnitId)
+                                {
+                                    <option value="@item.Id" name="@Html.NameFor(c => c.ProductUnit.UnitId)" selected>@item.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Id" name="@Html.NameFor(c => c.ProductUnit.UnitId)">@item.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">Is Default</label>
+                        <select name="EditIsDafault" id="EditIsDafault" class="selectpicker form-control" tabindex="-1" data-live-search="true">
+                            @if (Model.DefaultUnitId == Model.ProductUnit.UnitId)
+                            {
+                                <option value="1" selected>Yes</option>
+                                <option value="0">No</option>
+                            }
+                            else
+                            {
+                                <option value="1">Yes</option>
+                                <option value="0" selected>No</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        <label class="form-label">Conversion</label>
+
+                        <input id="EditConversion" class="form-control" type="text" name="EditConversion" onkeypress="return decimalOnly(this.id);" value="@Model.ProductUnit.Conversion" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@Html.Partial("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")

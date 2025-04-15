@@ -1,0 +1,894 @@
+﻿@using ezinvmvc.Web.Startup
+@{
+    ViewBag.CurrentPageName = PageNames.PayrollRate;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/EmployeeSalaryRates/PayrollRate.js" asp-append-version="true"></script>
+}
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Payroll Rate</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="text-right" style="padding-top:10px">
+                    <button id="EmployeeList" data-toggle="modal" data-target="#EmployeeListModal" class="btn btn-outline-primary btn-lg"><i class="fa fa-list-ol"></i>&nbsp;Employees</button>
+                    <button id="SaveRate" name="SaveRate" class="btn btn-outline-success btn-lg"><i class="fa fa-save"></i>&nbsp;Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <form name="form" role="form" novalidate class="form-validation">
+                        @*Select Employee*@
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-2 col-xl-2">
+                                    <label for="EmployeeCode">Employee Code</label>
+                                    <input id="EmpCode" name="EmpCode" class="form-control" readonly required maxlength="128" placeholder="Employee Id">
+                                </div>
+                                <div class="col-md-10 col-xl-6">
+                                    <label for="EmployeeName">Employee Name</label>
+                                    <input id="completeName" name="completeName" type="text" class="form-control" readonly required maxlength="128" placeholder="Select Employee">
+                                    <input id="EmpId" name="EmpId" type="hidden" class="form-control" required maxlength="128">
+                                </div>
+                                <div class="col-md-2 col-xl-4">
+                                    <label for="EmployeeName">Employees Payroll Status</label>
+                                    <select class="form-control selectpicker" id="SalaryPeriod" name="SalaryPeriod" required style=" background-color: #a1e7ff;font-weight: 600;"></select>
+                                </div>
+                            </div>
+                        </div>
+                        @*Select Employee*@
+
+                        @*start Date Rates*@
+                        <div class="row" style=" height: 8px;">
+                        </div>
+                        <div class="card-body" style=" background-color: antiquewhite;">
+                            <div class="row">
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="EmployeeName">Employee Start Date Rate</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="">Start Date</span>
+                                        </div>
+                                        <input id="StartDate" name="StartDate" type="text" class="form-control form-control-md date-picker" required style=" background-color: #a1e7ff;font-weight: 600;">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="EmployeeName">Employee End Date Rate</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="">End Date</span>
+                                        </div>
+                                        <input id="EndtDate" name="EndtDate" type="text" class="form-control input-lg form-control-md date-picker" required style=" background-color: #a1e7ff;font-weight: 600;">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 col-xl-2">
+                                    <label for="EmployeeName">Payroll Period</label>
+                                    <select class="form-control selectpicker" id="Period" name="Period" required style=" background-color: #a1e7ff;font-weight: 600;"></select>
+                                </div>
+
+                                <div class="col-md-2 col-xl-2" hidden>
+                                    <label for="EmployeeName">W/Held</label>
+                                    <div class="input-group">
+                                        <input id="TaxWHeld" name="TaxWHeld" type="text" class="form-control" placeholder="0.00" style=" background-color: #a1e7ff;font-weight: 600;">
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-xl-2" style=" padding-bottom: 15px;">
+                                    <label for="EmployeeName">Rates</label>
+                                    <div class="input-group">
+                                        <input id="Rates" name="Rates" type="text" class="form-control" placeholder="0.00" required style=" background-color: #a1e7ff;font-weight: 600;">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="EmployeeName"># Of Day a Year</label>
+                                    <input id="aYear" name="aYear" type="text" class="form-control" value="313" required>
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="EmployeeName"># Of Day a month</label>
+                                    <input id="Amonth" name="Amonth" type="text" class="form-control" value="26.08" required>
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="EmployeeName"># Of days half-month</label>
+                                    <input id="halfmonth" name="halfmonth" type="text" class="form-control" value="13" required>
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="EmployeeName"># Of days a Week</label>
+                                    <input id="aWeek" name="aWeek" type="text" class="form-control" value="6" required>
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="EmployeeName"># Of Hour a Day</label>
+                                    <input id="aDay" name="aDay" type="text" class="form-control" value="8" required>
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="EmployeeName"># Of Hour</label>
+                                    <input id="aHour" name="aHour" type="text" class="form-control" value="1" required>
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="SL"># Of Sick Leave</label>
+                                    <input id="SL" name="SL" type="text" class="form-control" value="7.5">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="VL"># Of Vacation Leave</label>
+                                    <input id="VL" name="VL" type="text" class="form-control" value="7.5">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="TotalL">Total # Of Leave</label>
+                                    <input id="TotalLeave" name="TotalLeave" type="text" class="form-control" value="15">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="PL"># Of Paternity Leave</label>
+                                    <input id="PL" name="PL" type="text" class="form-control" value="7">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                    <label for="SIL"># of  SIL</label>
+                                    <input id="SIL" name="SIL" type="text" class="form-control" value="5">
+                                </div>
+                                <div class="col-md-4 col-xl-4">
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        @*start Date Rates*@
+                    </form>
+                        @*Rates*@
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="container">
+                                <ul id="tabs" class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a id="tab-A" href="#pane-A" class="nav-link active" data-toggle="tab" role="tab" style="padding: 10px;">–Earning Rate–</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a id="tab-B" href="#pane-B" class="nav-link" data-toggle="tab" role="tab" style="padding: 10px;">–Time Sched–</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a id="tab-C" href="#pane-C" class="nav-link" data-toggle="tab" role="tab" style="padding: 10px;">–Contributions–</a>
+                                    </li>
+                                </ul>
+
+                                <div id="content" class="tab-content" role="tablist">
+                                    <div id="pane-A" class="card tab-pane fade show active" role="tabpanel" aria-labelledby="tab-A">
+                                        <div class="card-header" role="tab" id="heading-A">
+                                        </div>
+
+                                        <!-- Note: New place of `data-parent` -->
+                                        <div id="collapse-A" class="collapse show" data-parent="#content" role="tabpanel" aria-labelledby="heading-A">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-xl-6">
+                                                        <div class="input-group mb-12">
+                                                            <div class="input-group-prepend">
+                                                                <label for="EmployeeName" data-toggle="modal" data-target="#CreateRateModal" class="btn btn-outline-secondary" readonly><i class="fa fa-plus"></i> New Rates Option</label>
+                                                            </div>
+                                                            <input id="Payrollrateid" name="Payrollrateid" type="text" class="form-control" hidden required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+                                                            <select id="PayrollRate2" name="PayrollRate2" class="form-control selectpicker" data-live-search="true"></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    @* RateList *@
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> Regural Rates</label>
+                                                        <input id="Regural1" name="Regural1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> Rest Day</label>
+                                                        <input id="RestDay1" name="RestDay1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> Special Holiday</label>
+                                                        <input id="SpecialHoliday1" name="SpecialHoliday1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> Legal Holiday</label>
+                                                        <input id="LegalHoliday1" name="LegalHoliday1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> SpHol Restday</label>
+                                                        <input id="SpecialHolidayRestday1" name="SpecialHolidayRestday1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> LgHol Restday</label>
+                                                        <input id="LegalHolidayRestday1" name="LegalHolidayRestday1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+                                                    </div>
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Regural Rates OT</label>
+                                                        <input id="ReguralOT1" name="ReguralOT1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Rest Day OT</label>
+                                                        <input id="RestDayOT1" name="RestDayOT1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Special Holiday OT</label>
+                                                        <input id="SpecialHolidayOT1" name="SpecialHolidayOT1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Legal Holiday OT</label>
+                                                        <input id="LegalHolidayOT1" name="LegalHolidayOT1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> SpHol Restday OT</label>
+                                                        <input id="SpecialHolidayRestdayOT1" name="SpecialHolidayRestdayOT1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> LgHol Restday OT</label>
+                                                        <input id="LegalHolidayRestdayOT1" name="LegalHolidayRestdayOT1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+                                                    </div>
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND Basic Rates</label>
+                                                        <input id="NDRegural1" name="NDRegural1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND Rest Day</label>
+                                                        <input id="NDRestDay1" name="NDRestDay1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND Special Holiday</label>
+                                                        <input id="NDSpecialHoliday1" name="NDSpecialHoliday1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND Legal Holiday</label>
+                                                        <input id="NDLegalHoliday1" name="NDLegalHoliday1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND SpHol Restday</label>
+                                                        <input id="NDSpecialHolidayRestday1" name="NDSpecialHolidayRestday1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND LgHol Restday</label>
+                                                        <input id="NDLegalHolidayRestday1" name="NDLegalHolidayRestday1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                    </div>
+
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND Regural Rates O.T.</label>
+                                                        <input id="NDReguralOT1" name="NDReguralOT1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND Rest Day O.T.</label>
+                                                        <input id="NDRestDayOT1" name="NDRestDayOT1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND Special Holiday O.T.</label>
+                                                        <input id="NDSpecialHolidayOT1" name="NDSpecialHolidayOT1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND Legal Holiday O.T.</label>
+                                                        <input id="NDLegalHolidayOT1" name="NDLegalHolidayOT1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND SpHol Restday O.T.</label>
+                                                        <input id="NDSpecialHolidayRestdayOT1" name="NDSpecialHolidayRestdayOT1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                                                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND LgHol Restday O.T.</label>
+                                                        <input id="NDLegalHolidayRestdayOT1" name="NDLegalHolidayRestdayOT1" type="text" class="form-control" required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+                                                    </div>
+
+                                                    <div class="col-md-12 col-xl-12" style=" background-color: antiquewhite; padding-bottom: 10px;">
+                                                        <table id="EmpSalaryTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th></th>
+                                                                    <th>Start</th>
+                                                                    <th>End</th>
+                                                                    <th>Monthly</th>
+                                                                    <th>Daily</th>
+                                                                    <th>Hour</th>
+                                                                    <th>@L("Actions")</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                    @* RateList *@
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="pane-B" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-B">
+
+                                        <div class="card-header" role="tab" id="heading-B">
+                                        </div>
+
+                                        <div id="collapse-B" class="collapse show" data-parent="#content" role="tabpanel" aria-labelledby="heading-B">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-xl-6">
+                                                        <div class="input-group mb-12">
+                                                            <div class="input-group mb-12">
+                                                                <div class="input-group-prepend">
+                                                                    <label for="EmployeeName" data-toggle="modal" data-target="#CreateTimeSchedModal" class="btn btn-outline-secondary" readonly><i class="fa fa-plus"></i> New Time Sched Option</label>
+                                                                </div>
+                                                                <input id="Timesched1id" name="Timesched1id" type="text" class="form-control" hidden required maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+                                                                <select id="Timesched1" name="Timesched1" class="form-control selectpicker" data-live-search="true"></select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-body">
+
+                                                <label for="EmployeeName"><i class="fa fa-clock-o"></i> TIME STATUS</label>
+                                                <div class="row">
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> Flexi Time</label>
+                                                        <select id="FlexitimeStatus1" name="FlexitimeStatus1" class="selectpicker form-control">
+                                                            <option value='1'>Yes</option>
+                                                            <option value='2' selected>No</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> With Overtime</label>
+                                                        <select id="OTStatus1" name="OTStatus1" class="selectpicker form-control">
+                                                            <option value='1' selected>Yes</option>
+                                                            <option value='2'>No</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> Employee Type</label>
+                                                        <select id="Workers" name="Workers" class="selectpicker form-control">
+                                                            <option value='0' selected>Office Staff</option>
+                                                            <option value='1'>Workers</option>
+                                                            <option value='2'>Manager</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> Shift</label>
+                                                        <select id="Shift" name="Shift" class="selectpicker form-control">
+                                                            <option value='0' selected>Day Shift</option>
+                                                            <option value='1'>Night Shift</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-body">
+
+                                                <label for="EmployeeName"><i class="fa fa-clock-o"></i> TIME IN / OUT</label>
+                                                <div class="row">
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> A.M. IN</label>
+                                                        <input id="amIn1" name="amIn1" class="form-control" type="time" placeholder="AM In 00:00" required />
+                                                    </div>
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> BREAK OUT</label>
+                                                        <input id="breakOut1" name="breakOut1" class="form-control" type="time" placeholder="AM Out 00:00" required />
+                                                    </div>
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> BREAK IN</label>
+                                                        <input id="breakIn1" name="breakIn1" class="form-control" type="time" placeholder="PM In 00:00" required />
+                                                    </div>
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> P.M. OUT</label>
+                                                        <input id="pmOut1" name="pmOut1" class="form-control" type="time" placeholder="PM Out 00:00" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-body">
+                                                <label for="EmployeeName"><i class="fa fa-clock-o"></i> LATES</label>
+                                                <div class="row">
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> A.M. Late In</label>
+                                                        <input id="amLateIn1" name="amIn1" class="form-control" type="time" placeholder="00:05" required />
+                                                    </div>
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> A.M. Late End In</label>
+                                                        <input id="amLAteEndIn1" name="amOut1" class="form-control" type="time" placeholder="00:15" required />
+                                                    </div>
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> P.M. Late In</label>
+                                                        <input id="pmLateIn1" name="pmIn1" class="form-control" type="time" placeholder="00:05" required />
+                                                    </div>
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> P.M. Late End In</label>
+                                                        <input id="pmLateEndIn1" name="pmOut1" class="form-control" type="time" placeholder="00:15" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-body">
+                                                <label for="EmployeeName"><i class="fa fa-money"></i> RATE LATES / UNDERTIME</label>
+                                                <div class="row">
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> Late Rates</label>
+                                                        <input id="Laterate" name="Laterate" class="form-control" type="text" placeholder="0.000" required value="0.000" style=" background-color: #a1e7ff;font-weight: 600;">
+                                                    </div>
+                                                    <div class="col-md-3 col-xl-3">
+                                                        <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> Undertime Rates</label>
+                                                        <input id="Undertime" name="Undertime" class="form-control" type="text" placeholder="0.000" required value="0.000" style=" background-color: #a1e7ff;font-weight: 600;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="pane-C" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-C">
+                                        <div class="card-header" role="tab" id="heading-C">
+                                        </div>
+                                        <div id="collapse-C" class="collapse show" role="tabpanel" data-parent="#content" aria-labelledby="heading-C">
+                                            <div class="card-body">
+                                                <form name="frmcontribution" role="form" novalidate class="form-validation">
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <label for="EmployeeName" class="col-md-12 col-xl-12 flat-color-4">Description</label>
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <label for="EmployeeName" class="col-md-12 col-xl-12 flat-color-4">EE</label>
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <label for="EmployeeName" class="col-md-12 col-xl-12 flat-color-4">ER</label>
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <label for="EmployeeName" class="col-md-12 col-xl-12 flat-color-4"></label>
+                                                        </div>
+
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="checkbox" class="form-check-input" id="ssscheck" checked="checked" style="height: 30px;">
+                                                            <div class="input-group mb-12">
+                                                                <div class="input-group-prepend">
+                                                                    <label for="EmployeeName" class="btn btn-outline-primary" readonly style="width: 120px;text-align: LEFT;"><i class="fa fa-th-large"></i> SSS</label>
+                                                                </div>
+                                                                <select id="SSSType" name="SSSType" class="form-control selectpicker primary" data-live-search="true">
+                                                                    <option value="" selected>-Type-</option>
+                                                                    <option value="1">Basic</option>
+                                                                    <option value="2">Gross</option>
+                                                                    <option value="3">Fix</option>
+                                                                </select>
+                                                                <select id="SSSCutOff" name="SSSCutOff" class="form-control selectpicker secondary" data-live-search="true">
+                                                                    <option value="" selected>-Cut Off-</option>
+                                                                    <option value="1">1st</option>
+                                                                    <option value="2">2nd</option>
+                                                                    <option value="3">Both</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <input id="SSSEE" name="SSSEE" type="text" class="form-control" placeholder="ER 0.00" maxlength="128">
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <input id="SSSER" name="SSSER" type="text" class="form-control" placeholder="EC 0.00" maxlength="128">
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <input id="SSSEC" name="SSSEC" type="text" class="form-control" placeholder="ECC 0.00" maxlength="128">
+                                                        </div>
+
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="checkbox" class="form-check-input" id="Pagibigcheck" checked="checked" style="height: 30px;">
+                                                            <div class="input-group mb-12">
+                                                                <div class="input-group-prepend">
+                                                                    <label for="EmployeeName" class="btn btn-outline-primary" readonly style="width: 120px;text-align: LEFT;"><i class="fa fa-th-large"></i> Pag-ibig</label>
+                                                                </div>
+                                                                <select id="PagibigType" name="PagibigType" class="form-control selectpicker primary" data-live-search="true">
+                                                                    <option value="" selected>-Type-</option>
+                                                                    <option value="1">Basic</option>
+                                                                    <option value="2">Gross</option>
+                                                                    <option value="3">Fix</option>
+                                                                </select>
+                                                                <select id="PagibigCutOff" name="PagibigCutOff" class="form-control selectpicker secondary" data-live-search="true">
+                                                                    <option value="" selected>-Cut Off-</option>
+                                                                    <option value="1">1st</option>
+                                                                    <option value="2">2nd</option>
+                                                                    <option value="3">Both</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <input id="PagibigEC" name="PagibigEC" type="text" class="form-control" placeholder="EC 0.00" maxlength="128">
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <input id="PagibigER" name="PagibigER" type="text" class="form-control" placeholder="ER 0.00" maxlength="128">
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <input id="PagibigECC" name="PagibigECC" type="text" class="form-control" placeholder="TOTAL" maxlength="128">
+                                                        </div>
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="checkbox" class="form-check-input" id="PhilHealthcheck" checked="checked" style="height: 30px;">
+                                                            <div class="input-group mb-12">
+                                                                <div class="input-group-prepend">
+                                                                    <label for="EmployeeName" class="btn btn-outline-primary" readonly style="width: 120px;text-align: LEFT;"><i class="fa fa-th-large"></i> Phil-Health</label>
+                                                                </div>
+                                                                <select id="PhilHealthType" name="PhilHealthType" class="form-control selectpicker primary" data-live-search="true">
+                                                                    <option value="" selected>-Type-</option>
+                                                                    <option value="1">Basic</option>
+                                                                    <option value="2">Gross</option>
+                                                                    <option value="3">Fix</option>
+                                                                </select>
+                                                                <select id="PhilHealthCutOff" name="PhilHealthCutOff" class="form-control selectpicker secondary" data-live-search="true">
+                                                                    <option value="" selected>-Cut Off-</option>
+                                                                    <option value="1">1st</option>
+                                                                    <option value="2">2nd</option>
+                                                                    <option value="3">Both</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <input id="PhilHealthEC" name="PhilHealthEC" type="text" class="form-control" placeholder="EC 0.00" maxlength="128">
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <input id="PhilHealthER" name="PhilHealthER" type="text" class="form-control" placeholder="ER 0.00" maxlength="128">
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <input id="PhilHealthECC" name="PhilHealthECC" type="text" class="form-control" placeholder="TOTAL" maxlength="128">
+                                                        </div>
+
+                                                        <div class="col-md-6 col-xl-6">
+                                                            <input type="checkbox" class="form-check-input" id="WTaxcheck" checked="checked" style="height: 30px;">
+                                                            <div class="input-group mb-12">
+                                                                <div class="input-group-prepend">
+                                                                    <label for="EmployeeName" class="btn btn-outline-primary" readonly style="width: 120px;text-align: LEFT;"><i class="fa fa-th-large"></i> W/Tax</label>
+                                                                </div>
+                                                                <select id="WTaxType" name="WTaxType" class="form-control selectpicker primary" data-live-search="true">
+                                                                    <option value="" selected>-Type-</option>
+                                                                    <option value="1">Basic</option>
+                                                                    <option value="2">Gross</option>
+                                                                    <option value="3">Fix</option>
+                                                                </select>
+                                                                <select id="WTaxCutOff" name="WTaxCutOff" class="form-control selectpicker secondary" data-live-search="true">
+                                                                    <option value="" selected>-Cut Off-</option>
+                                                                    <option value="1">1st</option>
+                                                                    <option value="2">2nd</option>
+                                                                    <option value="3">Both</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <button id="btnCompute" type="button" class="btn btn-outline-success btn-lg pull-right" style="width:100%"><i class="fa fa-calculator"></i>&nbsp;Compute</button>
+                                                            <input id="WTaxER" name="WTaxER" type="text" class="form-control" hidden placeholder="0.00" required maxlength="128">
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <input id="WTaxEC" name="WTaxEC" type="text" class="form-control" placeholder="0.00" maxlength="128">
+                                                        </div>
+                                                        <div class="col-md-2 col-xl-2">
+                                                            <input id="WTaxECC" name="WTaxECC" type="text" class="form-control" placeholder="TOTAL" maxlength="128">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <div class="col-md-12 col-xl-12">
+                                                    <button id="btnsetContri" type="button" class="btn btn-outline-success btn-lg pull-right"><i class="fa fa-save"></i>&nbsp;Set Contribution</button>
+                                                </div>                                                
+                                            </div>
+
+                                            <div class="card-body">
+                                                <form name="frmcontributionlist" role="form" novalidate class="form-validation">
+                                                    <div class="col-md-12 col-xl-12" style=" background-color: antiquewhite; padding-bottom: 10px;">
+                                                        <table id="EmpContributionTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th></th>
+                                                                    <th>SS TYPE</th>
+                                                                    <th>SSS</th>
+                                                                    <th>Pgb Type</th>
+                                                                    <th>Pagibig</th>
+                                                                    <th>Phl Type</th>
+                                                                    <th>PhilHealth</th>
+                                                                    <th>Tax Type</th>
+                                                                    <th>Wtax</th>
+                                                                    <th>Status</th>
+                                                                    <th>@L("Actions")</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Employee List *@
+<div class="modal fade" id="EmployeeListModal" tabindex="-1" role="dialog" aria-labelledby="EmployeeListModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Employee List</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row align-items-center m--margin-bottom-10">
+                    <div class="col-md-1 col-xl-1">
+                    </div>
+                    <div class="col-md-4 col-xl-4">
+                        <div class="form-group">
+                            <select name="SearchBy" id="SearchBy" class="selectpicker form-control">
+                                <option value=0>-- Search By --</option>
+                                <option value="CompleteName">Full Name</option>
+                                <option value="Department">Department</option>
+                                <option value="Division">Division</option>
+                                <option value="Sectors">Sectors</option>
+                                <option value="Position">Position</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-xl-3 ">
+                        <div class="form-group">
+                            <select name="StatusId" id="StatusId" class="selectpicker form-control" multiple>
+                                <option value="1" selected>Hired</option>
+                                <option value="2">Resigned</option>
+                                <option value="3">Terminated</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-xl-4">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" id="EmployeeTableFilter" class="form-control m-input" placeholder="Search...">
+                                <span class="input-group-btn">
+                                    <button id="GetEmployeeButton" class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    @* List *@
+                    <div class="col-md-12 col-xl-12">
+                        <table id="EmployeesTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Employee ID</th>
+                                    <th>Full Name</th>
+                                    <th>Cell No</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Status</th>
+                                    <th>@L("Actions")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+@* Employee List *@
+
+@* Rate List *@
+<div class="modal fade" id="CreateRateModal" tabindex="-1" role="dialog" aria-labelledby="CreateRateModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Rates</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="formsaverate" role="form" novalidate class="form-validation">
+                    <div class="row align-items-center m--margin-bottom-10">
+                        <div class="col-md-6 col-xl-6" style="margin-bottom: 10px;">
+                            <div class="input-group mb-12" id="AddRate">
+                                <div class="input-group-prepend">
+                                    <label for="EmployeeName" id="AddOption" name="AddOption" class="btn btn-outline-secondary" readonly><i class="fa fa-plus"></i> New Rates Option</label>
+                                </div>
+                                <select id="PayrollRate" name="PayrollRate" class="form-control selectpicker" data-live-search="true"></select>
+                            </div>
+                            <div class="input-group mb-3" id="ViewRate">
+                                <div class="input-group-prepend">
+                                    <button type="button" id="SelectOption" class="btn btn-outline-secondary"><i class="fa fa-list-ol"></i> Select Option</button>
+                                </div>
+                                <input id="idrate" name="idrate" type="text" class="form-control"hidden maxlength="128" value="0">
+                                <input id="RateDescription" name="RateDescription" type="text" class="form-control" required maxlength="256" placeholder="Type Rates Description here....">
+                            </div>
+
+                        </div>
+                        <div class="col-md-6 col-xl-6">
+
+                        </div>
+                        @* RateList *@
+                        <div class="col-md-3 col-xl-3">
+                            <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> Regural Rates</label>
+                            <input id="Regural" name="Regural" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> Rest Day</label>
+                            <input id="RestDay" name="RestDay" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> Special Holiday</label>
+                            <input id="SpecialHoliday" name="SpecialHoliday" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> Legal Holiday</label>
+                            <input id="LegalHoliday" name="LegalHoliday" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> SpHol Restday</label>
+                            <input id="SpecialHolidayRestday" name="SpecialHolidayRestday" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-2"><i class="fa fa-check"></i> LgHol Restday</label>
+                            <input id="LegalHolidayRestday" name="LegalHolidayRestday" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Regural Rates OT</label>
+                            <input id="ReguralOT" name="ReguralOT" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Rest Day OT</label>
+                            <input id="RestDayOT" name="RestDayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Special Holiday OT</label>
+                            <input id="SpecialHolidayOT" name="SpecialHolidayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Legal Holiday OT</label>
+                            <input id="LegalHolidayOT" name="LegalHolidayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> SpHol Restday OT</label>
+                            <input id="SpecialHolidayRestdayOT" name="SpecialHolidayRestdayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> LgHol Restday OT</label>
+                            <input id="LegalHolidayRestdayOT" name="LegalHolidayRestdayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND Basic Rates</label>
+                            <input id="NDRegural" name="NDRegural" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND Rest Day</label>
+                            <input id="NDRestDay" name="NDRestDay" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND Special Holiday</label>
+                            <input id="NDSpecialHoliday" name="NDSpecialHoliday" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND Legal Holiday</label>
+                            <input id="NDLegalHoliday" name="NDLegalHoliday" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND SpHol Restday</label>
+                            <input id="NDSpecialHolidayRestday" name="NDSpecialHolidayRestday" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> ND LgHol Restday</label>
+                            <input id="NDLegalHolidayRestday" name="NDLegalHolidayRestday" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND Regural Rates O.T.</label>
+                            <input id="NDReguralOT" name="NDReguralOT" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND Rest Day O.T.</label>
+                            <input id="NDRestDayOT" name="NDRestDayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND Special Holiday O.T.</label>
+                            <input id="NDSpecialHolidayOT" name="NDSpecialHolidayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND Legal Holiday O.T.</label>
+                            <input id="NDLegalHolidayOT" name="NDLegalHolidayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND SpHol Restday O.T.</label>
+                            <input id="NDSpecialHolidayRestdayOT" name="NDSpecialHolidayRestdayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+
+                            <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> ND LgHol Restday O.T.</label>
+                            <input id="NDLegalHolidayRestdayOT" name="NDLegalHolidayRestdayOT" type="text" class="form-control" maxlength="256" placeholder="0.000" value="0.000" style="margin-bottom: 10px;">
+                        </div>
+                        @* RateList *@
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="Btndismiss" class="btn btn-outline-warning pull-right"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+                <button type="button" id="BtnDelete" name="BtnDelete" class="btn btn-outline-danger pull-right"><i class="fa fa-trash-o" aria-label="@L("Delete")"></i>&nbsp;Delete</button>
+                <button type="button" id="BtnSave" name="BtnSave" class="btn btn-outline-success pull-right"><i class="fa fa-save" aria-label="@L("Save")"></i>&nbsp;Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+@* Rate List *@
+
+@* Time Rate List *@
+<div class="modal fade" id="CreateTimeSchedModal" tabindex="-1" role="dialog" aria-labelledby="CreateTimeSchedModal" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Time Option</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="formsaveTimeSChed" role="form" novalidate class="form-validation">
+                    <div class="row align-items-center m--margin-bottom-10">
+                        <div class="col-md-6 col-xl-6" style="margin-bottom: 10px;">
+                            <div class="input-group mb-12" id="AddTimeSched">
+                                <div class="input-group-prepend">
+                                    <label for="EmployeeName" id="AddTimeSchedOption" class="btn btn-outline-secondary" readonly><i class="fa fa-plus"></i> New Time Option</label>
+                                </div>
+                                <select id="TimeSchedOption" name="TimeSchedOption" class="form-control selectpicker" data-live-search="true"></select>
+                            </div>
+                            <div class="input-group mb-3" id="ViewTimeSched" >
+                                <div class="input-group-prepend">
+                                    <button type="button" id="SelectTimeSchedOption" name="SelectTimeSchedOption" class="btn btn-outline-secondary"><i class="fa fa-list-ol"></i> Select Time Option</button>
+                                </div>
+                                <input id="idTimeSchedOption" name="idTimeSchedOption" type="text" class="form-control" hidden maxlength="128" value="0">
+                                <input id="TimeSchedDescription" name="TimeSchedDescription" type="text" class="form-control" required maxlength="256" placeholder="Type Time Description here....">
+                            </div>
+
+                        </div>
+                        <div class="col-md-6 col-xl-6">
+
+                        </div>
+                        @* RateList *@
+                        <div class="card-body">
+
+                            <label for="EmployeeName"><i class="fa fa-clock-o"></i> TIME STATUS</label>
+                            <div class="row">
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> Flexi Time</label>
+                                    <select id="FlexitimeStatus" name="FlexitimeStatus" class="selectpicker form-control">
+                                        <option value='1'>Yes</option>
+                                        <option value='2' selected>No</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="EmployeeName" class="flat-color-1"><i class="fa fa-check"></i> With Overtime</label>
+                                    <select id="OTStatus" name="OTStatus" class="selectpicker form-control">
+                                        <option value='1' selected>Yes</option>
+                                        <option value='2'>No</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <label for="EmployeeName"><i class="fa fa-clock-o"></i> TIME IN / OUT</label>
+                            <div class="row">
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> A.M. IN</label>
+                                    <input id="amIn" name="amIn" class="form-control" type="time" placeholder="AM In 00:00" required />
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> BREAK OUT</label>
+                                    <input id="breakOut" name="breakOut" class="form-control" type="time" placeholder="AM Out 00:00" required />
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> BREAK IN</label>
+                                    <input id="breakIn" name="breakIn" class="form-control" type="time" placeholder="PM In 00:00" required />
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> P.M. OUT</label>
+                                    <input id="pmOut" name="pmOut" class="form-control" type="time" placeholder="PM Out 00:00" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <label for="EmployeeName"><i class="fa fa-clock-o"></i> LATES</label>
+                            <div class="row">
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> A.M. Late In</label>
+                                    <input id="amLateIn" name="amLateIn" class="form-control" type="time" placeholder="00:05" required />
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="EmployeeName" class="flat-color-3"><i class="fa fa-check"></i> A.M. Late End In</label>
+                                    <input id="amLAteEndIn" name="amLAteEndIn" class="form-control" type="time" placeholder="00:15" required />
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> P.M. Late In</label>
+                                    <input id="pmLateIn" name="pmLateIn" class="form-control" type="time" placeholder="00:05" required />
+                                </div>
+                                <div class="col-md-3 col-xl-3">
+                                    <label for="EmployeeName" class="flat-color-4"><i class="fa fa-check"></i> P.M. Late End In</label>
+                                    <input id="pmLateEndIn" name="pmLateEndIn" class="form-control" type="time" placeholder="00:15" required />
+                                </div>
+                            </div>
+                        </div>
+                        @* RateList *@
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="BtnTimeSchedismiss" class="btn btn-outline-warning pull-right"><i class="fa fa-close" aria-label="@L("Closed")"></i>&nbsp;Closed</button>
+                <button type="button" id="BtnTimeSchedDelete" name="BtnTimeSchedDelete" class="btn btn-outline-danger pull-right"><i class="fa fa-trash-o" aria-label="@L("Delete")"></i>&nbsp;Delete</button>
+                <button type="button" id="BtnTimeSchedSave" name="BtnTimeSchedSave" class="btn btn-outline-success pull-right"><i class="fa fa-save" aria-label="@L("Save")"></i>&nbsp;Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+@* Time Rate List *@
+
+
+
+

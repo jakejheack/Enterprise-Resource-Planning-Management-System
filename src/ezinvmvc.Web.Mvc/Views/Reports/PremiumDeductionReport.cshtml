@@ -1,0 +1,136 @@
+﻿@using ezinvmvc.Web.Startup
+@{
+    ViewBag.CurrentPageName = PageNames.PremiumDeductionReport;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Reports/PremiumDeductionReport.js" asp-append-version="true"></script>
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="float-left">
+                    <div class="btn-group" role="group" style=" padding-top:10px;padding-bottom:10px">
+                        <select name="sectors" id="sectors" style=" width: 130px;" tabindex="-1" data-live-search="true"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right">
+                    <div class="btn-group" role="group" style=" padding-top:10px;padding-bottom:10px">
+                        <button id="AttendanceList" style="width:100%" data-toggle="modal" data-target="#AttList" class="btn btn-outline-success btn-sm"><i class="fa fa-list-ol"></i>&nbsp;Filter&nbsp;Data</button>
+                        <button name="ExportToExcelButton" id="ExportToExcelButton" value="Export" type="button" class="btn btn-outline-dark btn-sm"><i class="fa fa-file-excel-o"></i> Export</button>
+                        <button name="PrintActualButton" id="PrintActualButton" value="Print" type="button" class="btn btn-outline-primary btn-sm"><i class="fa fa-print"></i> Print Acknowledgement</button>
+                        @*@if (IsGranted(PermissionNames.Acknowledgement_NetPayPrint))
+                            {
+                                <button name="PrintActualButton2" id="PrintActualButton2" value="Print" type="button" class="btn btn-outline-primary btn-sm"><i class="fa fa-print"></i> Print with NetPay</button>
+                            }*@
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-body">
+                <div id="PrintTable" style="background-color: white;">
+                    <div class="col-md-12 col-xl-12">
+                        <input id="attid" name="attid" type="text" class="form-control" hidden required placeholder="" value="0">
+                        <input id="dept" name="dept" type="text" class="form-control" hidden required placeholder="companyId" value="0">
+                        <div class="page-title center" style="text-align:left">
+                            <h4>Premium Deduction Report</h4>
+                        </div>
+                        <div class="page-title center" style="text-align:left">
+                            <label id="coveredDate" name="coveredDate"></label>
+                        </div>
+                        <table id="LoanTable" class="table table-striped table-bordered table-hover dt-responsive nowrap" style="width: 100%;font-size: 10px;">
+                            <thead>
+                                <tr>
+                                    <th style="font-size:smaller; background: lightgray; width: 50px;">ctrl</th> @*ctrl*@
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*EmpId*@
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*Comp*@
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*Attid*@
+                                    <th style="font-size:smaller; background: lightgray;">Emp Code</th>@*App No*@
+                                    <th style="font-size:smaller; background: lightgray; width: 150px;">Name</th>
+                                    <th style="font-size:smaller; background: lightgray;">Department</th>
+                                    <th style="font-size:smaller; background: lightgray;">SS ER</th>
+                                    <th style="font-size:smaller; background: lightgray;">SS EE</th>@*Description*@
+                                    <th style="font-size:smaller; background: lightgray;">PHTL ER</th>
+                                    <th style="font-size:smaller; background: lightgray;">PHTL EE</th>
+                                    <th style="font-size:smaller; background: lightgray;">PGB ER</th>
+                                    <th style="font-size:smaller; background: lightgray;">PGB EE</th>
+                                    <th style="font-size:smaller; background: lightgray;">TAX</th>
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*SS ER*@
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*SS EE*@
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*PHTL ER*@
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*PHTL EE*@
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*PGB ER*@
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*PGB EE*@
+                                    <th style="font-size:smaller; background: lightgray;"></th>@*TAX*@
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot id="tfooter" style="background: gainsboro;">
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th style="text-align:right; font-size: small;">Grand Total:</th>
+                                    <th style="text-align:right; font-size: small;"></th>
+                                    <th style="text-align:right; font-size: small;"></th>
+                                    <th style="text-align:right; font-size: small;"></th>
+                                    <th style="text-align:right; font-size: small;"></th>
+                                    <th style="text-align:right; font-size: small;"></th>
+                                    <th style="text-align:right; font-size: small;"></th>
+                                    <th style="text-align:right; font-size: small;"></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="AttList" tabindex="-1" role="dialog" aria-labelledby="AttListLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <span>Attendance List</span>
+                </h6>
+            </div>
+            <div class="modal-body">
+                <table id="AttendanceTable" class="table table-striped table-hover dt-responsive nowrap" style="padding: 10px;">
+                    <thead>
+                        <tr>
+                            <th width="20%">#</th>
+                            <th width="20%">Timekeeping&nbsp;Code</th>
+                            <th width="40%">Period</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Closed</button>
+            </div>
+        </div>
+    </div>
+</div>
+

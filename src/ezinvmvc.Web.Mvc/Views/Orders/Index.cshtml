@@ -1,0 +1,96 @@
+﻿@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+@using ezinvmvc.Web.Models.Orders
+
+@model OrdersViewModel
+@{
+    ViewBag.CurrentPageName = PageNames.Purchase_Orders;
+}
+@section scripts
+{
+
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Orders</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="text-right" style="padding-top:10px">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        @* Filter *@
+                        <div class="row align-items-center m--margin-bottom-10">
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <input type="datetime" id="DateFrom" class="form-control m-input daterangepicker" placeholder="From:mm/dd/yyyy" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <input type="datetime" id="DateTo" class="form-control m-input" placeholder="To:mm/dd/yyyy" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <select name="spStatus" id="spStatus" class="selectpicker form-control" multiple data-live-search="true">
+                                        @foreach (var item in Model.Status)
+                                        {
+                                            <option value="@item.Value">@item.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xl-3">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" id="SearchFilter" class="form-control m-input" placeholder="Id or Vendor" value="">
+                                        <span class="input-group-btn">
+                                            <button id="SearchButton" class="btn btn-default" type="submit"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* List *@
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <table id="VendorsTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th width="20%">Id</th>
+                                            <th width="20%">Date</th>
+                                            <th width="15%">Vendor</th>
+                                            <th width="20%">Total</th>
+                                            <th width="20%">Status</th>
+                                            <th width="5%">@L("Actions")</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

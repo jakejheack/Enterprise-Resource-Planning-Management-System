@@ -1,0 +1,256 @@
+﻿@using Abp.Application.Services.Dto
+@using ezinvmvc.Web.Startup
+@using ezinvmvc.Authorization
+
+@{
+    ViewBag.CurrentPageName = PageNames.Collections_Edit;
+}
+@section scripts
+    {
+    <script src="~/view-resources/Views/Collections/Edit.js" asp-append-version="true"></script>
+}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-md-6 col-xl-6">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>
+                            Edit Collection
+
+                            <span id="StatusBadge"></span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="float-right" style="padding-top:10px">
+                    <button id="SaveButton" class="btn btn-outline-primary btn-sm" hidden><i class="fa fa-save"></i>&nbsp; Update</button>
+                    <button id="SubmitButton" class="btn btn-outline-success btn-sm" hidden><i class="fa fa-save"></i>&nbsp; Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn">
+        <form id="CollectionForm" name="CollectionForm" enctype="multipart/form-data" role="form" novalidate class="form-validation">
+            <div class="row clearfix">
+                <div class="col-md-12  col-xl-12">
+                    <div class="card">
+                        <div class="card-body card-block">
+                            <div class="row">
+                                <div class="col-md-3  col-xl-3">
+                                    <div class="form-group">
+                                        <label for="Product">Series</label>
+                                        <div class="input-group">
+                                            <select name="SeriesTypeId" id="Series" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3  col-xl-3">
+                                    <div class="form-group">
+                                        <label for="txtClient">Code</label>
+                                        <input id="Id" name="Id" type="hidden" value="@ViewBag.Id">
+                                        <input id="SeriesCode" name="Code" class="form-control" type="text" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label for="Product">Company</label>
+                                        <div class="input-group">
+                                            <input id="DepositAccountId" name="DepositAccountId" type="hidden" value="0">
+                                            <select name="CompanyId" id="Companies" class="selectpicker form-control" tabindex="-1" data-live-search="true" readonly required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label for="txtClient">Client Name</label>
+                                        <input id="ClientId" type="hidden" name="ClientId" required>
+                                        <input id="ClientName" class="form-control" type="text" name="Client" placeholder="Type here" readonly required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label>Date</label>
+                                        <div class="input-group date" data-provide="datepicker">
+                                            <input type="text" name="TransactionTime" class="form-control date-picker" required>
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3  col-xl-3" hidden>
+                                    <div class="form-group">
+                                        <label for="txtNotes">EWT Type</label>
+                                        <select name="EWTTypes" id="EWTTypes" class="selectpicker form-control" tabindex="-1" data-live-search="true"></select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3  col-xl-3">
+                                    <div class="form-group">
+                                        <label for="ddOrderType">Mode of Payment</label>
+                                        <select name="PaymentModeId" id="PaymentModes" class="selectpicker form-control" tabindex="-1" data-live-search="true" required></select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3  col-xl-3">
+                                    <div class="form-group">
+                                        <label>Account</label>
+                                        <input id="DefaultAccountId" type="hidden" name="DefaultAccountId" required>
+                                        <input id="DefaultAccount" class="form-control" type="text" name="DefaultAccount" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label>Paid Amount</label>
+                                        <input id="PaidAmount" class="form-control" type="text" name="PaidAmount" value="0" onkeypress="return decimalOnly(this.id);" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label>Reference</label>
+                                        <input id="ReferenceNo" class="form-control" type="text" name="ReferenceNo" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix" hidden>
+                <div class="col-md-12  col-xl-12">
+                    <div class="card">
+                        <div class="card-body card-block">
+                            <div class="row">
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label for="txtClient">Sales Order</label>
+                                        <input id="SalesOrderCode" class="form-control" type="text" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="form-group">
+                                        <label for="txtClient">Project</label>
+                                        <input id="Project" class="form-control" type="text" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-md-12  col-xl-12">
+                    <div class="card">
+                        <div class="card-body card-block">
+                            <div class="row">
+                                <div class="col-md-12  col-xl-12">
+                                    <div id="divAR">
+                                        <table id="AccountsReceivableTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>@*0*@
+                                                    <th width="10%">Id</th>@*1*@
+                                                    <th width="10%">Date</th>@*2*@
+                                                    <th width="12%">Total</th>@*3*@
+                                                    <th width="12%">Paid</th>@*4*@
+                                                    <th width="15%">Credit</th>@*5*@
+                                                    <th width="12%">Balance</th>@*6*@
+                                                    <th width="12%">Allocated</th>@*7*@
+                                                    <th></th>@*8 Id*@
+                                                    <th></th>@*9 TaxAccountId*@
+                                                    <th></th>@*10 ReceivableAccountId*@
+                                                    <th></th>@*11 CashAccountId*@
+                                                    <th></th>@*12 Allocated*@
+                                                    <th width="12%">EWT</th>@*13 ewt select*@
+                                                    <th width="12%">EWT Amt</th>@*14 ewt text*@
+                                                    <th width="15%">EWT Amt</th>@*15 ewt amount*@
+                                                    <th width="15%">EWT Id</th>@*16 EWT id*@
+                                                    <th width="15%">EWT Act</th>@*17 EWT accountid*@
+                                                    <th width="15%">Id</th>@*18 Id*@
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                        </div>
+                                    <div id="divApplied">
+                                        <table id="ListTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>@*0*@
+                                                    <th width="15%">SI</th>@*1*@
+                                                    <th width="15%">Date</th>@*2*@
+                                                    <th width="15%">Total</th>@*3*@
+                                                    <th width="15%">Account</th>@*4*@
+                                                    <th width="10%">Status</th>@*5*@
+                                                    <th width="15%">Date Applied</th>@*6*@
+                                                    <th width="15%">Applied</th>@*7*@
+                                                    <th></th>@*8 Id*@
+                                                    <th></th>@*9 SalesInvoiceId*@
+                                                    <th></th>@*10 AccountId*@
+                                                    <th></th>@*11 IsFullyPaid*@
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                        <div id="divTable" hidden>
+                                            <table id="LedgerTable" class="display table table-striped table-bordered table-hover dt-responsive nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="5%">#</th>@*0*@
+                                                        <th width="35%">Account</th>@*1*@
+                                                        <th width="15%">Debit</th>@*2*@
+                                                        <th width="15%">Credit</th>@*3 Price*@
+                                                        <th width="15%">Party</th>@*4 Total*@
+                                                        <th></th>@*5 AccountId*@
+                                                        <th></th>@*6 PartyId*@
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-6  col-xl-6">
+
+                                </div>
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="row form-group">
+                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                            <label for="email-input" class=" form-control-label"><strong>Total Allocation</strong></label>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <input type="text" id="AllocatedTotal" disabled name="AllocatedTotal" class="form-control text-right font-weight-bold" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6  col-xl-6">
+
+                                </div>
+                                <div class="col-md-6  col-xl-6">
+                                    <div class="row form-group">
+                                        <div class="col-md-6 col-xl-6 text-right" style="padding-top:5px">
+                                            <label for="email-input" class=" form-control-label"><strong>Total Unallocated</strong></label>
+                                        </div>
+                                        <div class="col-md-6 col-xl-6">
+                                            <input type="text" id="UnAllocatedTotal" disabled name="UnAllocatedTotal" class="form-control text-right font-weight-bold" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
